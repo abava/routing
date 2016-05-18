@@ -27,6 +27,7 @@
         "phpunit/phpunit": "5.2"
     },
     "require": {
-        "venta/contracts": "dev-master"
+        "venta/contracts": "dev-master",
+        "nikic/fast-route": "^1.0"
     }
 }
