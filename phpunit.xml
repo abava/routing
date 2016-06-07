@@ -9,7 +9,7 @@
          processIsolation="false"
          stopOnFailure="false">
     <testsuites>
-        <testsuite name="Venta eCommerce Framework Routing package tests">
+        <testsuite name="Venta Framework Routing package tests">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
