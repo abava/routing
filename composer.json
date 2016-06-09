@@ -24,7 +24,7 @@
     ],
     "require": {
         "nikic/fast-route": "^1.0",
-        "league/pipeline": "^0.2.2",
-        "ventaframework/container": "dev-master"
+        "ventaframework/container": "dev-master",
+        "zendframework/zend-diactoros": "^1.3"
     }
 }
