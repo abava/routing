@@ -18,6 +18,7 @@
     },
     "require": {
         "nikic/fast-route": "^1.0",
-        "league/pipeline": "^0.2.2"
+        "league/pipeline": "^0.2.2",
+        "container-interop/container-interop": "^1.1"
     }
 }
