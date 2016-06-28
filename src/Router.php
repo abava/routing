@@ -81,15 +81,16 @@ class Router
      *
      * @param string $method
      * @param string $uri
+     * @return ResponseInterface
      */
-    public function dispatch(string $method, string $uri)
+    public function dispatch(string $method, string $uri): ResponseInterface
     {
         $match = $this->dispatcher->dispatch($method, $uri);
 
         switch ($match[0]) {
             case GroupCountBased::FOUND:
                 $pipe = $this->buildMiddlewarePipeline($match[1], $match[2]);
-                $pipe($this->container->get(RequestInterface::class));
+                return $pipe($this->container->get(RequestInterface::class));
                 break;
             case GroupCountBased::METHOD_NOT_ALLOWED:
                 throw new NotAllowedException($match[1]);
@@ -115,17 +116,31 @@ class Router
      * @param  mixed $handler
      * @param  array $parameters
      * @return ResponseInterface
+     * @throws \RuntimeException
      */
-    protected function handleFoundRoute($handler, array $parameters)
+    protected function handleFoundRoute($handler, array $parameters): ResponseInterface
     {
         $controller = $this->container->call($handler, $parameters);
-        $response = $this->container->get('response');
 
-        if (is_string($controller)) {
-            $response->getBody()->write($controller);
+        if ($controller instanceof ResponseInterface) {
+            // Response should be returned directly
+            return $controller;
         }
 
-        return $response;
+        if (is_object($controller) && method_exists($controller, '__toString')) {
+            // Try to get string out of object as last fallback
+            $controller = $controller->__toString();
+        }
+
+        if (is_string($controller)) {
+            // String supposed to be appended to response body
+            /** @var ResponseInterface $response */
+            $response = $this->container->get(ResponseInterface::class);
+            $response->getBody()->write($controller);
+            return $response;
+        }
+
+        throw new \RuntimeException('Controller action result must be either ResponseInterface or string');
     }
 
     /**
