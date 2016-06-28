@@ -21,7 +21,7 @@ class Router
     /**
      * Container instance holder
      *
-     * @var ContainerInterface
+     * @var ContainerInterface|\Venta\Container\Container
      */
     protected $container;
 
@@ -42,7 +42,7 @@ class Router
     /**
      * Array of defined middleware
      *
-     * @var array
+     * @var MiddlewareCollector
      */
     protected $middleware;
 
@@ -54,7 +54,7 @@ class Router
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->middleware = [];
+        $this->middleware = $container->get(MiddlewareCollector::class);
     }
 
     /**
@@ -73,6 +73,18 @@ class Router
             $this->routesCollected = true;
         }
 
+        return $this;
+    }
+
+    /**
+     * Collect middlewares with passed in collector callable
+     *
+     * @param callable $collectionCallback
+     * @return $this
+     */
+    public function collectMiddlewares(callable $collectionCallback)
+    {
+        $collectionCallback($this->middleware);
         return $this;
     }
 
@@ -97,17 +109,6 @@ class Router
             default:
                 throw new NotFoundException;
         }
-    }
-
-    /**
-     * Define middleware to use
-     *
-     * @param string             $name
-     * @param MiddlewareContract $middleware
-     */
-    public function addMiddleware(string $name, MiddlewareContract $middleware)
-    {
-        $this->middleware[$name] = $middleware;
     }
 
     /**
@@ -153,9 +154,8 @@ class Router
     protected function buildMiddlewarePipeline($handler, array $parameters): \Closure
     {
         $next = $this->getLastStep($handler, $parameters);
-        $middleware = array_reverse($this->middleware);
 
-        foreach ($middleware as $class) {
+        foreach ($this->middleware->getMiddlewares() as $class) {
             $next = function (RequestInterface $request) use ($class, $next) {
                 /** @var MiddlewareContract $class */
                 return $class->handle($request, $next);
