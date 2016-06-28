@@ -2,6 +2,8 @@
 
 namespace Venta\Routing\Contract;
 
+use \Psr\Http\Message\{RequestInterface, ResponseInterface};
+
 /**
  * Interface MiddlewareContract
  *
@@ -16,5 +18,5 @@ interface MiddlewareContract
      * @param \Closure                           $next
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function handle(\Psr\Http\Message\RequestInterface $request, \Closure $next);
+    public function handle(RequestInterface $request, \Closure $next) : ResponseInterface;
 }
