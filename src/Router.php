@@ -50,30 +50,14 @@ class Router
      * Construct function
      *
      * @param ContainerInterface $container
+     * @param  callable $collectionCallback
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, callable $collectionCallback)
     {
         $this->container = $container;
         $this->middleware = $container->get(MiddlewareCollector::class);
-    }
 
-    /**
-     * Collect routes with passed in collector callable
-     *
-     * @param  callable $collectionCallback
-     * @return $this
-     */
-    public function collectRoutes(callable $collectionCallback)
-    {
-        if ($this->routesCollected === false) {
-            $collector = new RoutesCollector(new Std, new \FastRoute\DataGenerator\GroupCountBased);
-            $collectionCallback($collector);
-
-            $this->dispatcher = new GroupCountBased($collector->getRoutesCollection());
-            $this->routesCollected = true;
-        }
-
-        return $this;
+        $this->collectRoutes($collectionCallback);
     }
 
     /**
@@ -109,6 +93,22 @@ class Router
             default:
                 throw new NotFoundException;
         }
+    }
+
+    /**
+     * Collect routes with passed in collector callable
+     *
+     * @param  callable $collectionCallback
+     * @return $this
+     */
+    protected function collectRoutes(callable $collectionCallback)
+    {
+        $collector = new RoutesCollector(new Std, new \FastRoute\DataGenerator\GroupCountBased);
+        $collectionCallback($collector);
+
+        $this->dispatcher = new GroupCountBased($collector->getRoutesCollection());
+
+        return $this;
     }
 
     /**
