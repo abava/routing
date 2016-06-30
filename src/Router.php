@@ -6,7 +6,8 @@ use FastRoute\Dispatcher\GroupCountBased;
 use FastRoute\RouteParser\Std;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Venta\Container\Contract\ContainerContract;
+use Venta\Container\Contract\CallerContract;
+use Venta\Framework\Http\Response;
 use Venta\Routing\Contract\MiddlewareContract;
 use Venta\Routing\Contract\RouterContract;
 use Venta\Routing\Exceptions\NotAllowedException;
@@ -22,9 +23,9 @@ class Router implements RouterContract
     /**
      * Container instance holder
 
-     * @var ContainerContract
+     * @var CallerContract
      */
-    protected $container;
+    protected $caller;
 
     /**
      * Dispatcher instance holder
@@ -41,16 +42,16 @@ class Router implements RouterContract
     protected $middleware;
 
     /**
-     * Construct function
-
-     * @param ContainerContract $container
-     * @param  callable         $collectionCallback
+     * Router constructor.
+     *
+     * @param CallerContract      $caller
+     * @param MiddlewareCollector $middlewareCollector
+     * @param callable            $collectionCallback
      */
-    public function __construct(ContainerContract $container, callable $collectionCallback)
+    public function __construct(CallerContract $caller, MiddlewareCollector $middlewareCollector, callable $collectionCallback)
     {
-        $this->container = $container;
-        $this->middleware = $container->get(MiddlewareCollector::class);
-
+        $this->middleware = $middlewareCollector;
+        $this->caller = $caller;
         $this->collectRoutes($collectionCallback);
     }
 
@@ -68,19 +69,19 @@ class Router implements RouterContract
 
     /**
      * Dispatch router
+     * Find matching route, pass through middlewares, fire controller action, return response
      *
-     * @param string $method
-     * @param string $uri
+     * @param $request RequestInterface
      * @return ResponseInterface
      */
-    public function dispatch(string $method, string $uri): ResponseInterface
+    public function dispatch(RequestInterface $request): ResponseInterface
     {
-        $match = $this->dispatcher->dispatch($method, $uri);
+        $match = $this->dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
 
         switch ($match[0]) {
             case GroupCountBased::FOUND:
                 $pipe = $this->buildMiddlewarePipeline($match[1], $match[2]);
-                return $pipe($this->container->get(RequestInterface::class));
+                return $pipe($request);
                 break;
             case GroupCountBased::METHOD_NOT_ALLOWED:
                 throw new NotAllowedException($match[1]);
@@ -108,31 +109,28 @@ class Router implements RouterContract
     /**
      * Handles found route
      *
-     * @param  mixed $handler
+     * @param  \Closure|string $handler
      * @param  array $parameters
      * @return ResponseInterface
      * @throws \RuntimeException
      */
     protected function handleFoundRoute($handler, array $parameters): ResponseInterface
     {
-        $controller = $this->container->call($handler, $parameters);
+        $response = $this->caller->call($handler, $parameters);
 
-        if ($controller instanceof ResponseInterface) {
+        if ($response instanceof ResponseInterface) {
             // Response should be returned directly
-            return $controller;
-        }
-
-        if (is_object($controller) && method_exists($controller, '__toString')) {
-            // Try to get string out of object as last fallback
-            $controller = $controller->__toString();
-        }
-
-        if (is_string($controller)) {
-            // String supposed to be appended to response body
-            /** @var ResponseInterface $response */
-            $response = $this->container->get(ResponseInterface::class);
-            $response->getBody()->write($controller);
             return $response;
+        }
+
+        if (is_object($response) && method_exists($response, '__toString')) {
+            // Try to get string out of object as last fallback
+            $response = $response->__toString();
+        }
+
+        if (is_string($response)) {
+            // String supposed to be appended to response body
+            return (new Response())->append($response);
         }
 
         throw new \RuntimeException('Controller action result must be either ResponseInterface or string');
