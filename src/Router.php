@@ -4,10 +4,11 @@ namespace Venta\Routing;
 
 use FastRoute\Dispatcher\GroupCountBased;
 use FastRoute\RouteParser\Std;
-use Interop\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Venta\Container\Contract\ContainerContract;
 use Venta\Routing\Contract\MiddlewareContract;
+use Venta\Routing\Contract\RouterContract;
 use Venta\Routing\Exceptions\NotAllowedException;
 use Venta\Routing\Exceptions\NotFoundException;
 
@@ -16,12 +17,12 @@ use Venta\Routing\Exceptions\NotFoundException;
  *
  * @package Venta\Routing
  */
-class Router
+class Router implements RouterContract
 {
     /**
      * Container instance holder
-     *
-     * @var ContainerInterface|\Venta\Container\Container
+
+     * @var ContainerContract
      */
     protected $container;
 
@@ -33,14 +34,7 @@ class Router
     protected $dispatcher;
 
     /**
-     * Flag, indicating if routes where collected
-     *
-     * @var bool
-     */
-    protected $routesCollected = false;
-
-    /**
-     * Array of defined middleware
+     * Collection of defined middleware
      *
      * @var MiddlewareCollector
      */
@@ -48,11 +42,11 @@ class Router
 
     /**
      * Construct function
-     *
-     * @param ContainerInterface $container
-     * @param  callable $collectionCallback
+
+     * @param ContainerContract $container
+     * @param  callable         $collectionCallback
      */
-    public function __construct(ContainerInterface $container, callable $collectionCallback)
+    public function __construct(ContainerContract $container, callable $collectionCallback)
     {
         $this->container = $container;
         $this->middleware = $container->get(MiddlewareCollector::class);
