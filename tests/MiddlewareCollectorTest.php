@@ -86,5 +86,39 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(['m2', 'm1'], array_keys($this->collector->getMiddlewares()));
     }
 
+    /**
+     * @test
+     */
+    public function cannotAddNonMiddlewareContactInstance()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Middleware must either implement MiddlewareContract or be callable');
+
+        $this->collector->addMiddleware('test', 42);
+    }
+
+    /**
+     * @test
+     */
+    public function canUseCommonAddMethod()
+    {
+        $contract = new class implements MiddlewareContract{
+            public function handle(RequestInterface $request, Closure $next) : ResponseInterface { return $next($request); }
+        };
+
+        $closure = function (RequestInterface $request, Closure $next): ResponseInterface {
+            return $next($request->withHeader('header','request'))->withHeader('header','response');
+        };
+
+        $this->collector->addMiddleware('contract', $contract);
+        $this->collector->addMiddleware('closure', $closure);
+
+        $collection = $this->collector->getMiddlewares();
+        $this->assertCount(2, $collection);
+        $this->assertArrayHasKey('contract', $collection);
+        $this->assertArrayHasKey('closure', $collection);
+        $this->assertInstanceOf(MiddlewareContract::class, $collection['closure']);
+        $this->assertInstanceOf(MiddlewareContract::class, $collection['contract']);
+    }
 
 }
