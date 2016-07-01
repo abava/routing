@@ -8,9 +8,10 @@ class RoutesCollectorTest extends PHPUnit_Framework_TestCase
      */
     public function testGetRoutesCollectionFromGenerator()
     {
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\FastRoute\RouteParser $parser */
         $parser = $this->getMockBuilder(FastRoute\RouteParser::class)->getMock();
-        //$parser->method('parse')->with('')->willReturn([]);
 
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\FastRoute\DataGenerator $generator */
         $generator = $this->getMockBuilder(FastRoute\DataGenerator::class)->getMock();
         $generator->method('getData')->willReturn(['routes']);
 
@@ -23,108 +24,30 @@ class RoutesCollectorTest extends PHPUnit_Framework_TestCase
      */
     public function testAddRoutes()
     {
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\FastRoute\RouteParser $parser */
         $parser = $this->getMockBuilder(FastRoute\RouteParser::class)->getMock();
         $parser->method('parse')->with('/url')->willReturn(['data']);
 
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|PHPUnit_Framework_MockObject_MockObject|\FastRoute\DataGenerator $generator */
         $generator = $this->getMockBuilder(FastRoute\DataGenerator::class)->getMock();
         $generator->method('getData')->willReturn(['routes']);
-        $generator->expects($this->exactly(2))->method('addRoute')
+        $generator->expects($this->exactly(7))->method('addRoute')
             ->withConsecutive(
                 ['GET', 'data', 'handle'],
-                ['HEAD', 'data', 'handle']
+                ['HEAD', 'data', 'handle'],
+                ['PUT', 'data', 'handle'],
+                ['POST', 'data', 'handle'],
+                ['OPTIONS', 'data', 'handle'],
+                ['PATCH', 'data', 'handle'],
+                ['DELETE', 'data', 'handle']
             );
 
         $collector = new \Venta\Routing\RoutesCollector($parser, $generator);
         $collector->get('/url','handle');
-        $collector->getRoutesCollection();
-        $this->assertEquals(['routes'], $collector->getRoutesCollection());
-    }
-
-    /**
-     * @test
-     */
-    public function testAddPostRoute()
-    {
-        $parser = $this->getMockBuilder(FastRoute\RouteParser::class)->getMock();
-        $parser->method('parse')->with('/url')->willReturn(['data']);
-
-        $generator = $this->getMockBuilder(FastRoute\DataGenerator::class)->getMock();
-        $generator->method('getData')->willReturn(['routes']);
-        $generator->method('addRoute')->with('POST', 'data', 'handle');
-
-        $collector = new \Venta\Routing\RoutesCollector($parser, $generator);
-        $collector->post('/url','handle');
-        $collector->getRoutesCollection();
-        $this->assertEquals(['routes'], $collector->getRoutesCollection());
-    }
-
-    /**
-     * @test
-     */
-    public function testAddPatchRoute()
-    {
-        $parser = $this->getMockBuilder(FastRoute\RouteParser::class)->getMock();
-        $parser->method('parse')->with('/url')->willReturn(['data']);
-
-        $generator = $this->getMockBuilder(FastRoute\DataGenerator::class)->getMock();
-        $generator->method('getData')->willReturn(['routes']);
-        $generator->method('addRoute')->with('PATCH', 'data', 'handle');
-
-        $collector = new \Venta\Routing\RoutesCollector($parser, $generator);
-        $collector->patch('/url','handle');
-        $collector->getRoutesCollection();
-        $this->assertEquals(['routes'], $collector->getRoutesCollection());
-    }
-
-    /**
-     * @test
-     */
-    public function testAddPutRoute()
-    {
-        $parser = $this->getMockBuilder(FastRoute\RouteParser::class)->getMock();
-        $parser->method('parse')->with('/url')->willReturn(['data']);
-
-        $generator = $this->getMockBuilder(FastRoute\DataGenerator::class)->getMock();
-        $generator->method('getData')->willReturn(['routes']);
-        $generator->method('addRoute')->with('PUT', 'data', 'handle');
-
-        $collector = new \Venta\Routing\RoutesCollector($parser, $generator);
         $collector->put('/url','handle');
-        $collector->getRoutesCollection();
-        $this->assertEquals(['routes'], $collector->getRoutesCollection());
-    }
-
-    /**
-     * @test
-     */
-    public function testAddOptionsRoute()
-    {
-        $parser = $this->getMockBuilder(FastRoute\RouteParser::class)->getMock();
-        $parser->method('parse')->with('/url')->willReturn(['data']);
-
-        $generator = $this->getMockBuilder(FastRoute\DataGenerator::class)->getMock();
-        $generator->method('getData')->willReturn(['routes']);
-        $generator->method('addRoute')->with('OPTIONS', 'data', 'handle');
-
-        $collector = new \Venta\Routing\RoutesCollector($parser, $generator);
+        $collector->post('/url','handle');
         $collector->options('/url','handle');
-        $collector->getRoutesCollection();
-        $this->assertEquals(['routes'], $collector->getRoutesCollection());
-    }
-
-    /**
-     * @test
-     */
-    public function testAddDeleteRoute()
-    {
-        $parser = $this->getMockBuilder(FastRoute\RouteParser::class)->getMock();
-        $parser->method('parse')->with('/url')->willReturn(['data']);
-
-        $generator = $this->getMockBuilder(FastRoute\DataGenerator::class)->getMock();
-        $generator->method('getData')->willReturn(['routes']);
-        $generator->method('addRoute')->with('DELETE', 'data', 'handle');
-
-        $collector = new \Venta\Routing\RoutesCollector($parser, $generator);
+        $collector->patch('/url','handle');
         $collector->delete('/url','handle');
         $collector->getRoutesCollection();
         $this->assertEquals(['routes'], $collector->getRoutesCollection());
