@@ -51,21 +51,21 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
 
         // Checking if closure is still doing its job
         /** @var RequestInterface|PHPUnit_Framework_MockObject_Builder_InvocationMocker $request */
-        $request = $this->createMock(RequestInterface::class)
-            ->method('withHeader')
-            ->willReturn($this->returnArgument(1));
+        $request = $this->getMockBuilder(RequestInterface::class)->getMock();
+        $request->method('withHeader')->with('header','request')->willReturnSelf();
 
-        $response = $this->createMock(ResponseInterface::class)
-            ->method('withHeader')
-            ->willReturn($this->returnArgument(1));
+        $response = $this->getMockBuilder(ResponseInterface::class)->getMock();
+        $response->method('withHeader')->with('header','response')->willReturnSelf();
 
-        $next = function ($string) use ($response) {
-            $this->assertEquals('request', $string);
+        $next = function ($r) use ($request, $response) {
+            $this->assertInstanceOf(RequestInterface::class, $r);
+            $this->assertSame($request, $r);
             return $response;
         };
 
         $result = $middlewares['test']->handle($request, $next);
-        $this->assertEquals('response', $result);
+        $this->assertInstanceOf(ResponseInterface::class, $result);
+        $this->assertSame($response, $result);
     }
 
     /**
@@ -86,15 +86,5 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(['m2', 'm1'], array_keys($this->collector->getMiddlewares()));
     }
 
-    /**
-     * @test
-     */
-    public function cannotAddNonMiddlewareContactInstance()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Middleware must either implement MiddlewareContract or be callable');
-
-        $this->collector->addMiddleware('test', 42);
-    }
 
 }
