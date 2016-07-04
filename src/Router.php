@@ -7,7 +7,6 @@ use FastRoute\RouteParser\Std;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Venta\Container\Contract\CallerContract;
-use Venta\Framework\Http\Response;
 use Venta\Routing\Contract\MiddlewareContract;
 use Venta\Routing\Contract\RouterContract;
 use Venta\Routing\Exceptions\NotAllowedException;
@@ -130,7 +129,10 @@ class Router implements RouterContract
 
         if (is_string($response)) {
             // String supposed to be appended to response body
-            return (new Response())->append($response);
+            return $this->caller->call(
+                '\Venta\Framework\Http\Factory\ResponseFactory@make',
+                ['stream' => null]
+            )->append($response);
         }
 
         throw new \RuntimeException('Controller action result must be either ResponseInterface or string');
