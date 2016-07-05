@@ -57,19 +57,19 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $request->method('getMethod')->willReturn('GET');
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\UriInterface $uri */
         $uri = $this->getMockBuilder(\Psr\Http\Message\UriInterface::class)->getMock();
-        $uri->method('getPath')->willReturn('/url');
+        $uri->method('getPath')->willReturn('/url/value');
         $request->method('getUri')->willReturn($uri);
 
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Container\Contract\CallerContract $caller */
         $caller = $this->getMockBuilder(\Venta\Container\Contract\CallerContract::class)->getMock();
-        $caller->method('call')->with('handle', [])->willReturn($response);
+        $caller->method('call')->with('handle', ['param'=>'value'])->willReturn($response);
 
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Routing\MiddlewareCollector $collector */
         $collector = $this->getMockBuilder(\Venta\Routing\MiddlewareCollector::class)->getMock();
         $collector->method('getMiddlewares')->willReturn([]);
 
         $router = new \Venta\Routing\Router($caller, $collector, function(\Venta\Routing\RoutesCollector $routesCollector){
-            $routesCollector->get('/url', 'handle');
+            $routesCollector->get('/url/{param}', 'handle');
         });
         $result = $router->dispatch($request);
         $this->assertSame($response, $result);
