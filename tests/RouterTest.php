@@ -49,11 +49,11 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testDispatch()
     {
-        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getMockBuilder(\Psr\Http\Message\ResponseInterface::class)->getMock();
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\ResponseContract $response */
+        $response = $this->getMockBuilder(\Venta\Http\Contract\ResponseContract::class)->getMock();
 
-        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\RequestInterface $request */
-        $request = $this->getMockBuilder(\Psr\Http\Message\RequestInterface::class)->getMock();
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\RequestContract $request */
+        $request = $this->getMockBuilder(\Venta\Http\Contract\RequestContract::class)->getMock();
         $request->method('getMethod')->willReturn('GET');
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\UriInterface $uri */
         $uri = $this->getMockBuilder(\Psr\Http\Message\UriInterface::class)->getMock();
@@ -80,11 +80,11 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testDispatchWithMiddleware()
     {
-        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getMockBuilder(\Psr\Http\Message\ResponseInterface::class)->getMock();
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\ResponseContract $response */
+        $response = $this->getMockBuilder(\Venta\Http\Contract\ResponseContract::class)->getMock();
 
-        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\RequestInterface $request */
-        $request = $this->getMockBuilder(\Psr\Http\Message\RequestInterface::class)->getMock();
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\RequestContract $request */
+        $request = $this->getMockBuilder(\Venta\Http\Contract\RequestContract::class)->getMock();
         $request->method('getMethod')->willReturn('GET');
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\UriInterface $uri */
         $uri = $this->getMockBuilder(\Psr\Http\Message\UriInterface::class)->getMock();
@@ -98,7 +98,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Routing\MiddlewareCollector $collector */
         $collector = $this->getMockBuilder(\Venta\Routing\MiddlewareCollector::class)->getMock();
         $middleware = new class implements \Venta\Routing\Contract\MiddlewareContract{
-            public function handle(\Psr\Http\Message\RequestInterface $request, Closure $next) : \Psr\Http\Message\ResponseInterface { return $next($request); }
+            public function handle(\Venta\Http\Contract\RequestContract $request, Closure $next) : \Venta\Http\Contract\ResponseContract { return $next($request); }
         };
         $collector->method('addMiddleware')->with('test', $middleware);
         $collector->method('getMiddlewares')->willReturn(['test'=>$middleware]);
@@ -119,12 +119,12 @@ class RouterTest extends PHPUnit_Framework_TestCase
         // todo Make consistent Response interface
         $this->markTestSkipped('Psr Response & Venta Response conflict about ->append() method');
 
-        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getMockBuilder(\Psr\Http\Message\ResponseInterface::class)->getMock();
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\ResponseContract $response */
+        $response = $this->getMockBuilder(\Venta\Http\Contract\ResponseContract::class)->getMock();
         $response->method('append')->with('string')->willReturnSelf();
 
-        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\RequestInterface $request */
-        $request = $this->getMockBuilder(\Psr\Http\Message\RequestInterface::class)->getMock();
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\RequestContract $request */
+        $request = $this->getMockBuilder(\Venta\Http\Contract\RequestContract::class)->getMock();
         $request->method('getMethod')->willReturn('GET');
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\UriInterface $uri */
         $uri = $this->getMockBuilder(\Psr\Http\Message\UriInterface::class)->getMock();
@@ -160,15 +160,15 @@ class RouterTest extends PHPUnit_Framework_TestCase
         // todo Make consistent Response interface
         $this->markTestSkipped('Psr Response & Venta Response conflict about ->append() method');
 
-        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\ResponseInterface $response */
-        $response = $this->getMockBuilder(\Psr\Http\Message\ResponseInterface::class)->getMock();
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\ResponseContract $response */
+        $response = $this->getMockBuilder(\Venta\Http\Contract\ResponseContract::class)->getMock();
 
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|Stringable $stringable */
         $stringable = $this->getMockBuilder(Stringable::class)->getMock();
         $stringable->method('__toString')->with()->willReturn('string');
 
-        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\RequestInterface $request */
-        $request = $this->getMockBuilder(\Psr\Http\Message\RequestInterface::class)->getMock();
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\RequestContract $request */
+        $request = $this->getMockBuilder(\Venta\Http\Contract\RequestContract::class)->getMock();
         $request->method('getMethod')->willReturn('GET');
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\UriInterface $uri */
         $uri = $this->getMockBuilder(\Psr\Http\Message\UriInterface::class)->getMock();
@@ -201,8 +201,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testDispatchWithInvalidControllerResult()
     {
-        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\RequestInterface $request */
-        $request = $this->getMockBuilder(\Psr\Http\Message\RequestInterface::class)->getMock();
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\RequestContract $request */
+        $request = $this->getMockBuilder(\Venta\Http\Contract\RequestContract::class)->getMock();
         $request->method('getMethod')->willReturn('GET');
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\UriInterface $uri */
         $uri = $this->getMockBuilder(\Psr\Http\Message\UriInterface::class)->getMock();
@@ -230,8 +230,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testDispatchNotFound()
     {
-        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\RequestInterface $request */
-        $request = $this->getMockBuilder(\Psr\Http\Message\RequestInterface::class)->getMock();
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\RequestContract $request */
+        $request = $this->getMockBuilder(\Venta\Http\Contract\RequestContract::class)->getMock();
         $request->method('getMethod')->willReturn('GET');
 
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\UriInterface $uri */
@@ -258,8 +258,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testDispatchMethodNotAllowed()
     {
-        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\RequestInterface $request */
-        $request = $this->getMockBuilder(\Psr\Http\Message\RequestInterface::class)->getMock();
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\RequestContract $request */
+        $request = $this->getMockBuilder(\Venta\Http\Contract\RequestContract::class)->getMock();
         $request->method('getMethod')->willReturn('POST');
 
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\UriInterface $uri */

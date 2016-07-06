@@ -2,8 +2,9 @@
 
 namespace Venta\Routing\Contract;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Venta\Http\Contract\{
+    RequestContract, ResponseContract
+};
 
 /**
  * Interface RouterContract
@@ -16,9 +17,9 @@ interface RouterContract
     /**
      * Dispatches request
      *
-     * @param $request RequestInterface
-     * @return ResponseInterface
+     * @param $request RequestContract
+     * @return ResponseContract
      */
-    public function dispatch(RequestInterface $request): ResponseInterface;
+    public function dispatch(RequestContract $request): ResponseContract;
 
 }

@@ -4,13 +4,16 @@ namespace Venta\Routing;
 
 use FastRoute\Dispatcher\GroupCountBased;
 use FastRoute\RouteParser\Std;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Venta\Container\Contract\CallerContract;
-use Venta\Routing\Contract\MiddlewareContract;
-use Venta\Routing\Contract\RouterContract;
-use Venta\Routing\Exceptions\NotAllowedException;
-use Venta\Routing\Exceptions\NotFoundException;
+use Venta\Http\Contract\{
+    RequestContract, ResponseContract
+};
+use Venta\Routing\Contract\{
+    MiddlewareContract, RouterContract
+};
+use Venta\Routing\Exceptions\{
+    NotAllowedException, NotFoundException
+};
 
 /**
  * Class Router
@@ -21,7 +24,7 @@ class Router implements RouterContract
 {
     /**
      * Container instance holder
-
+     *
      * @var CallerContract
      */
     protected $caller;
@@ -70,10 +73,10 @@ class Router implements RouterContract
      * Dispatch router
      * Find matching route, pass through middlewares, fire controller action, return response
      *
-     * @param $request RequestInterface
-     * @return ResponseInterface
+     * @param $request RequestContract
+     * @return ResponseContract
      */
-    public function dispatch(RequestInterface $request): ResponseInterface
+    public function dispatch(RequestContract $request): ResponseContract
     {
         $match = $this->dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
 
@@ -110,14 +113,14 @@ class Router implements RouterContract
      *
      * @param  \Closure|string $handler
      * @param  array $parameters
-     * @return ResponseInterface
+     * @return ResponseContract
      * @throws \RuntimeException
      */
-    protected function handleFoundRoute($handler, array $parameters): ResponseInterface
+    protected function handleFoundRoute($handler, array $parameters): ResponseContract
     {
         $response = $this->caller->call($handler, $parameters);
 
-        if ($response instanceof ResponseInterface) {
+        if ($response instanceof ResponseContract) {
             // Response should be returned directly
             return $response;
         }
@@ -147,7 +150,7 @@ class Router implements RouterContract
         $next = $this->getLastStep($handler, $parameters);
 
         foreach ($this->middleware->getMiddlewares() as $class) {
-            $next = function (RequestInterface $request) use ($class, $next) {
+            $next = function (RequestContract $request) use ($class, $next) {
                 /** @var MiddlewareContract $class */
                 return $class->handle($request, $next);
             };

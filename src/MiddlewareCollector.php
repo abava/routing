@@ -2,7 +2,9 @@
 
 namespace Venta\Routing;
 
-use Psr\Http\Message\{RequestInterface, ResponseInterface};
+use Venta\Http\Contract\{
+    RequestContract, ResponseContract
+};
 use Venta\Routing\Contract\MiddlewareContract;
 
 /**
@@ -64,7 +66,7 @@ class MiddlewareCollector
                 $this->callable = $callable;
             }
 
-            public function handle(RequestInterface $request, \Closure $next): ResponseInterface
+            public function handle(RequestContract $request, \Closure $next): ResponseContract
             {
                 $middleware = $this->callable;
                 return $middleware($request, $next);

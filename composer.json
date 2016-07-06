@@ -20,11 +20,15 @@
         {
             "type": "vcs",
             "url": "https://github.com/ventaframework/container.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/ventaframework/http.git"
         }
     ],
     "require": {
         "nikic/fast-route": "^1.0",
         "ventaframework/container": "dev-master",
-        "zendframework/zend-diactoros": "^1.3"
+        "ventaframework/http": "dev-master"
     }
 }

@@ -1,6 +1,8 @@
 <?php declare(strict_types = 1);
 
-use Psr\Http\Message\{RequestInterface, ResponseInterface};
+use Venta\Http\Contract\{
+    RequestContract, ResponseContract
+};
 use Venta\Routing\Contract\MiddlewareContract;
 
 /**
@@ -25,7 +27,7 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
     public function canAddMiddlewareByContract()
     {
         $middleware = new class implements MiddlewareContract{
-            public function handle(RequestInterface $request, Closure $next) : ResponseInterface { return $next($request); }
+            public function handle(RequestContract $request, Closure $next) : ResponseContract { return $next($request); }
         };
         $this->collector->addContractMiddleware('test', $middleware);
         $middlewares = $this->collector->getMiddlewares();
@@ -39,7 +41,7 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
      */
     public function canAddClosureMiddleware()
     {
-        $middleware = function (RequestInterface $request, Closure $next): ResponseInterface {
+        $middleware = function (RequestContract $request, Closure $next): ResponseContract {
             return $next($request->withHeader('header','request'))->withHeader('header','response');
         };
 
@@ -50,21 +52,21 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(MiddlewareContract::class, $middlewares['test']);
 
         // Checking if closure is still doing its job
-        /** @var RequestInterface|PHPUnit_Framework_MockObject_Builder_InvocationMocker $request */
-        $request = $this->getMockBuilder(RequestInterface::class)->getMock();
+        /** @var RequestContract|PHPUnit_Framework_MockObject_Builder_InvocationMocker $request */
+        $request = $this->getMockBuilder(RequestContract::class)->getMock();
         $request->method('withHeader')->with('header','request')->willReturnSelf();
 
-        $response = $this->getMockBuilder(ResponseInterface::class)->getMock();
+        $response = $this->getMockBuilder(ResponseContract::class)->getMock();
         $response->method('withHeader')->with('header','response')->willReturnSelf();
 
         $next = function ($r) use ($request, $response) {
-            $this->assertInstanceOf(RequestInterface::class, $r);
+            $this->assertInstanceOf(RequestContract::class, $r);
             $this->assertSame($request, $r);
             return $response;
         };
 
         $result = $middlewares['test']->handle($request, $next);
-        $this->assertInstanceOf(ResponseInterface::class, $result);
+        $this->assertInstanceOf(ResponseContract::class, $result);
         $this->assertSame($response, $result);
     }
 
@@ -74,11 +76,11 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
     public function getMiddlewaresReversesArray()
     {
         $middleware1 = new class implements MiddlewareContract{
-            public function handle(RequestInterface $request, Closure $next) : ResponseInterface { return $next($request); }
+            public function handle(RequestContract $request, Closure $next) : ResponseContract { return $next($request); }
         };
 
         $middleware2 = new class implements MiddlewareContract{
-            public function handle(RequestInterface $request, Closure $next) : ResponseInterface { return $next($request); }
+            public function handle(RequestContract $request, Closure $next) : ResponseContract { return $next($request); }
         };
 
         $this->collector->addContractMiddleware('m1', $middleware1);
@@ -103,10 +105,10 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
     public function canUseCommonAddMethod()
     {
         $contract = new class implements MiddlewareContract{
-            public function handle(RequestInterface $request, Closure $next) : ResponseInterface { return $next($request); }
+            public function handle(RequestContract $request, Closure $next) : ResponseContract { return $next($request); }
         };
 
-        $closure = function (RequestInterface $request, Closure $next): ResponseInterface {
+        $closure = function (RequestContract $request, Closure $next): ResponseContract {
             return $next($request->withHeader('header','request'))->withHeader('header','response');
         };
 
