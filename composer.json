@@ -5,6 +5,10 @@
         {
             "name": "Konstantins Zukovs",
             "email": "kz@scandiweb.com"
+        },
+        {
+            "name": "Alexey Rehov",
+            "email": "aleksejs@scandiweb.com"
         }
     ],
     "autoload": {
