@@ -132,7 +132,7 @@ class Router implements RouterContract
 
         if (is_string($response)) {
             // String supposed to be appended to response body
-            return $this->caller->call('\Venta\Framework\Http\Factory\ResponseFactory@new')->append($response);
+            return $this->caller->call('\Venta\Http\Factory\ResponseFactory@new')->append($response);
         }
 
         throw new \RuntimeException('Controller action result must be either ResponseInterface or string');
