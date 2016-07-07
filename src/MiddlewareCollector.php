@@ -20,10 +20,10 @@ class MiddlewareCollector
     /**
      * Universal method to add middleware
      *
-     * @param $name
-     * @param $middleware
+     * @param string $name
+     * @param callable|MiddlewareContract $middleware
      */
-    public function addMiddleware($name, $middleware)
+    public function addMiddleware(string $name, $middleware)
     {
         if ($middleware instanceof MiddlewareContract) {
             $this->addContractMiddleware($name, $middleware);
