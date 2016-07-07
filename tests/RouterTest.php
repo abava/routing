@@ -116,9 +116,6 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testDispatchWithStringControllerResult()
     {
-        // todo Make consistent Response interface
-        $this->markTestSkipped('Psr Response & Venta Response conflict about ->append() method');
-
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\ResponseContract $response */
         $response = $this->getMockBuilder(\Venta\Http\Contract\ResponseContract::class)->getMock();
         $response->method('append')->with('string')->willReturnSelf();
@@ -135,7 +132,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $caller = $this->getMockBuilder(\Venta\Container\Contract\CallerContract::class)->getMock();
         $caller->expects($this->exactly(2))->method('call')->withConsecutive(
             ['handle', []],
-            ['\Venta\Framework\Http\Factory\ResponseFactory@new']
+            ['\Venta\Http\Factory\ResponseFactory@new']
         )->willReturn(
             'string',
             $response
@@ -157,11 +154,9 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     public function testDispatchWithStringableControllerResult()
     {
-        // todo Make consistent Response interface
-        $this->markTestSkipped('Psr Response & Venta Response conflict about ->append() method');
-
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\ResponseContract $response */
         $response = $this->getMockBuilder(\Venta\Http\Contract\ResponseContract::class)->getMock();
+        $response->method('append')->with('string')->willReturnSelf();
 
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|Stringable $stringable */
         $stringable = $this->getMockBuilder(Stringable::class)->getMock();
@@ -179,10 +174,10 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $caller = $this->getMockBuilder(\Venta\Container\Contract\CallerContract::class)->getMock();
         $caller->expects($this->exactly(2))->method('call')->withConsecutive(
             ['handle', []],
-            ['\Venta\Framework\Http\Factory\ResponseFactory@new']
+            ['\Venta\Http\Factory\ResponseFactory@new']
         )->willReturn(
-            'string',
-            $stringable
+            $stringable,
+            $response
         );
 
         /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Routing\MiddlewareCollector $collector */
@@ -248,6 +243,36 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $collector->method('getMiddlewares')->willReturn([]);
 
         $router = new \Venta\Routing\Router($caller, $collector, function(){});
+        $this->expectException(\Venta\Routing\Exceptions\NotFoundException::class);
+        $this->expectExceptionMessage('Can not route to this URI.');
+        $router->dispatch($request);
+    }
+
+    /**
+     * @test
+     */
+    public function testDispatchNotFoundDueToParameterMismatch()
+    {
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Http\Contract\RequestContract $request */
+        $request = $this->getMockBuilder(\Venta\Http\Contract\RequestContract::class)->getMock();
+        $request->method('getMethod')->willReturn('GET');
+
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Psr\Http\Message\UriInterface $uri */
+        $uri = $this->getMockBuilder(\Psr\Http\Message\UriInterface::class)->getMock();
+        $uri->method('getPath')->willReturn('/url/word');
+        $request->method('getUri')->willReturn($uri);
+
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Container\Contract\CallerContract $caller */
+        $caller = $this->getMockBuilder(\Venta\Container\Contract\CallerContract::class)->getMock();
+        $caller->method('call')->with('handle', [])->willReturn(new stdClass());
+
+        /** @var PHPUnit_Framework_MockObject_Builder_InvocationMocker|\Venta\Routing\MiddlewareCollector $collector */
+        $collector = $this->getMockBuilder(\Venta\Routing\MiddlewareCollector::class)->getMock();
+        $collector->method('getMiddlewares')->willReturn([]);
+
+        $router = new \Venta\Routing\Router($caller, $collector, function(\Venta\Routing\RoutesCollector $collector){
+            $collector->get('/url/{number:\d+}', 'handle');
+        });
         $this->expectException(\Venta\Routing\Exceptions\NotFoundException::class);
         $this->expectExceptionMessage('Can not route to this URI.');
         $router->dispatch($request);
