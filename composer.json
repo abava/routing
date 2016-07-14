@@ -1,6 +1,6 @@
 {
-    "name": "ventaframework/routing",
-    "description": "Venta Framework Routing package",
+    "name": "abava/routing",
+    "description": "Abava Routing package",
     "authors": [
         {
             "name": "Konstantins Zukovs",
@@ -13,7 +13,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Venta\\Routing\\": "src/"
+            "Abava\\Routing\\": "src/"
         }
     },
     "minimum-stability": "dev",
@@ -23,16 +23,16 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/ventaframework/container.git"
+            "url": "https://github.com/abava/container.git"
         },
         {
             "type": "vcs",
-            "url": "https://github.com/ventaframework/http.git"
+            "url": "https://github.com/abava/http.git"
         }
     ],
     "require": {
         "nikic/fast-route": "^1.0",
-        "ventaframework/container": "dev-master",
-        "ventaframework/http": "dev-master"
+        "abava/container": "dev-master",
+        "abava/http": "dev-master"
     }
 }

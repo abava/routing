@@ -1,24 +1,24 @@
 <?php declare(strict_types = 1);
 
-namespace Venta\Routing;
+namespace Abava\Routing;
 
-use FastRoute\Dispatcher\GroupCountBased;
-use FastRoute\RouteParser\Std;
-use Venta\Container\Contract\CallerContract;
-use Venta\Http\Contract\{
+use Abava\Container\Contract\CallerContract;
+use Abava\Http\Contract\{
     RequestContract, ResponseContract
 };
-use Venta\Routing\Contract\{
+use Abava\Routing\Contract\{
     MiddlewareContract, RouterContract
 };
-use Venta\Routing\Exceptions\{
+use Abava\Routing\Exceptions\{
     NotAllowedException, NotFoundException
 };
+use FastRoute\Dispatcher\GroupCountBased;
+use FastRoute\RouteParser\Std;
 
 /**
  * Class Router
  *
- * @package Venta\Routing
+ * @package Abava\Routing
  */
 class Router implements RouterContract
 {
@@ -132,7 +132,7 @@ class Router implements RouterContract
 
         if (is_string($response)) {
             // String supposed to be appended to response body
-            return $this->caller->call('\Venta\Http\Factory\ResponseFactory@new')->append($response);
+            return $this->caller->call('\Abava\Http\Factory\ResponseFactory@new')->append($response);
         }
 
         throw new \RuntimeException('Controller action result must be either ResponseInterface or string');

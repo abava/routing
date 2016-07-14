@@ -15,7 +15,7 @@ class RoutesCollectorTest extends PHPUnit_Framework_TestCase
         $generator = $this->getMockBuilder(FastRoute\DataGenerator::class)->getMock();
         $generator->method('getData')->willReturn(['routes']);
 
-        $collector = new \Venta\Routing\RoutesCollector($parser, $generator);
+        $collector = new \Abava\Routing\RoutesCollector($parser, $generator);
         $this->assertEquals(['routes'], $collector->getRoutesCollection());
     }
 
@@ -42,7 +42,7 @@ class RoutesCollectorTest extends PHPUnit_Framework_TestCase
                 ['DELETE', 'data', 'handle']
             );
 
-        $collector = new \Venta\Routing\RoutesCollector($parser, $generator);
+        $collector = new \Abava\Routing\RoutesCollector($parser, $generator);
         $collector->get('/url','handle');
         $collector->put('/url','handle');
         $collector->post('/url','handle');

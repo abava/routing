@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-use Venta\Http\Contract\{
+use Abava\Http\Contract\{
     RequestContract, ResponseContract
 };
-use Venta\Routing\Contract\MiddlewareContract;
+use Abava\Routing\Contract\MiddlewareContract;
 
 /**
  * Class MiddlewareCollectorTest
@@ -12,13 +12,13 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
 {
 
     /**
-     * @var \Venta\Routing\MiddlewareCollector
+     * @var \Abava\Routing\MiddlewareCollector
      */
     private $collector;
 
     public function setUp()
     {
-        $this->collector = new \Venta\Routing\MiddlewareCollector();
+        $this->collector = new \Abava\Routing\MiddlewareCollector();
     }
 
     /**

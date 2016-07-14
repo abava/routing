@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace Venta\Routing\Contract;
+namespace Abava\Routing\Contract;
 
-use Venta\Http\Contract\{
+use Abava\Http\Contract\{
     RequestContract, ResponseContract
 };
 
 /**
  * Interface RouterContract
  *
- * @package Venta\Routing\Contract
+ * @package Abava\Routing\Contract
  */
 interface RouterContract
 {

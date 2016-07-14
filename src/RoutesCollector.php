@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Venta\Routing;
+namespace Abava\Routing;
 
 use FastRoute\DataGenerator;
 use FastRoute\RouteParser;
@@ -8,7 +8,7 @@ use FastRoute\RouteParser;
 /**
  * Class RoutesCollector
  *
- * @package Venta\Routing
+ * @package Abava\Routing
  */
 class RoutesCollector
 {

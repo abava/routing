@@ -1,16 +1,16 @@
 <?php declare(strict_types = 1);
 
-namespace Venta\Routing;
+namespace Abava\Routing;
 
-use Venta\Http\Contract\{
+use Abava\Http\Contract\{
     RequestContract, ResponseContract
 };
-use Venta\Routing\Contract\MiddlewareContract;
+use Abava\Routing\Contract\MiddlewareContract;
 
 /**
  * Class MiddlewareCollector
  *
- * @package Venta\Routing
+ * @package Abava\Routing
  */
 class MiddlewareCollector
 {
