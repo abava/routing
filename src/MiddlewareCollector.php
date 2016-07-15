@@ -3,9 +3,9 @@
 namespace Abava\Routing;
 
 use Abava\Http\Contract\{
-    RequestContract, ResponseContract
+    Request, Response
 };
-use Abava\Routing\Contract\MiddlewareContract;
+use Abava\Routing\Contract\Middleware;
 
 /**
  * Class MiddlewareCollector
@@ -14,49 +14,48 @@ use Abava\Routing\Contract\MiddlewareContract;
  */
 class MiddlewareCollector
 {
-    /** @var array|MiddlewareContract[] */
+    /** @var array|Middleware[] */
     protected $middlewares = [];
 
     /**
      * Universal method to add middleware
      *
      * @param string $name
-     * @param callable|MiddlewareContract $middleware
+     * @param callable|Middleware $middleware
      */
     public function addMiddleware(string $name, $middleware)
     {
-        if ($middleware instanceof MiddlewareContract) {
+        if ($middleware instanceof Middleware) {
             $this->addContractMiddleware($name, $middleware);
-        }
-        elseif (is_callable($middleware)) {
+        } elseif (is_callable($middleware)) {
             $this->addCallableMiddleware($name, $middleware);
-        }
-        else {
-            throw new \InvalidArgumentException('Middleware must either implement MiddlewareContract or be callable');
+        } else {
+            throw new \InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
         }
     }
 
     /**
      * Adds middleware to collection straightforward
      *
-     * @param                    $name
-     * @param MiddlewareContract $middleware
+     * @param string $name
+     * @param Middleware $middleware
      */
-    public function addContractMiddleware($name, MiddlewareContract $middleware)
+    public function addContractMiddleware(string $name, Middleware $middleware)
     {
         $this->middlewares[$name] = $middleware;
     }
 
     /**
-     * Wraps callable (e.g. closure) with anonymous class that implements MiddlewareContract
-     * Does not check if callable's typehinting fits MiddlewareContract's handle method.
+     * Wraps callable (e.g. closure) with anonymous class that implements Middleware contract
+     * Does not check if callable's typehinting fits Middleware contract's handle method.
      *
-     * @param          $name
+     * @param string $name
      * @param callable $callable
      */
-    public function addCallableMiddleware($name, callable $callable)
+    public function addCallableMiddleware(string $name, callable $callable)
     {
-        $this->middlewares[$name] = new class($callable) implements MiddlewareContract {
+        $this->middlewares[$name] = new class($callable) implements Middleware
+        {
 
             /** @var callable */
             protected $callable;
@@ -66,7 +65,7 @@ class MiddlewareCollector
                 $this->callable = $callable;
             }
 
-            public function handle(RequestContract $request, \Closure $next): ResponseContract
+            public function handle(Request $request, \Closure $next): Response
             {
                 $middleware = $this->callable;
                 return $middleware($request, $next);
@@ -76,7 +75,7 @@ class MiddlewareCollector
     }
 
     /**
-     * @return array|Contract\MiddlewareContract[]
+     * @return array|Contract\Middleware[]
      */
     public function getMiddlewares()
     {

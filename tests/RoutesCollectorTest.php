@@ -43,12 +43,12 @@ class RoutesCollectorTest extends PHPUnit_Framework_TestCase
             );
 
         $collector = new \Abava\Routing\RoutesCollector($parser, $generator);
-        $collector->get('/url','handle');
-        $collector->put('/url','handle');
-        $collector->post('/url','handle');
-        $collector->options('/url','handle');
-        $collector->patch('/url','handle');
-        $collector->delete('/url','handle');
+        $collector->get('/url', 'handle');
+        $collector->put('/url', 'handle');
+        $collector->post('/url', 'handle');
+        $collector->options('/url', 'handle');
+        $collector->patch('/url', 'handle');
+        $collector->delete('/url', 'handle');
         $collector->getRoutesCollection();
         $this->assertEquals(['routes'], $collector->getRoutesCollection());
     }

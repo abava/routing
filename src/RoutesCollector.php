@@ -29,7 +29,7 @@ class RoutesCollector
     /**
      * Construct function
      *
-     * @param RouteParser   $parser
+     * @param RouteParser $parser
      * @param DataGenerator $generator
      */
     public function __construct(RouteParser $parser, DataGenerator $generator)
@@ -42,7 +42,7 @@ class RoutesCollector
      * Register GET route
      *
      * @param string $route
-     * @param mixed  $handle
+     * @param mixed $handle
      */
     public function get(string $route, $handle)
     {
@@ -53,7 +53,7 @@ class RoutesCollector
      * Register POST route
      *
      * @param string $route
-     * @param mixed  $handle
+     * @param mixed $handle
      */
     public function post(string $route, $handle)
     {
@@ -64,7 +64,7 @@ class RoutesCollector
      * Register PATCH route
      *
      * @param string $route
-     * @param mixed  $handle
+     * @param mixed $handle
      */
     public function patch(string $route, $handle)
     {
@@ -75,7 +75,7 @@ class RoutesCollector
      * Register PUT route
      *
      * @param string $route
-     * @param mixed  $handle
+     * @param mixed $handle
      */
     public function put(string $route, $handle)
     {
@@ -86,7 +86,7 @@ class RoutesCollector
      * Register OPTIONS route
      *
      * @param string $route
-     * @param mixed  $handle
+     * @param mixed $handle
      */
     public function options(string $route, $handle)
     {
@@ -97,7 +97,7 @@ class RoutesCollector
      * Register DELETE route
      *
      * @param string $route
-     * @param mixed  $handle
+     * @param mixed $handle
      */
     public function delete(string $route, $handle)
     {
@@ -119,7 +119,7 @@ class RoutesCollector
      *
      * @param array $methods
      * @param string $route
-     * @param mixed  $handle
+     * @param mixed $handle
      */
     protected function addRoute(array $methods, string $route, $handle)
     {

@@ -2,12 +2,12 @@
 
 namespace Abava\Routing;
 
-use Abava\Container\Contract\CallerContract;
+use Abava\Container\Contract\Caller;
 use Abava\Http\Contract\{
-    RequestContract, ResponseContract
+    Request, Response
 };
 use Abava\Routing\Contract\{
-    MiddlewareContract, RouterContract
+    Middleware, Router as RouterContract
 };
 use Abava\Routing\Exceptions\{
     NotAllowedException, NotFoundException
@@ -25,7 +25,7 @@ class Router implements RouterContract
     /**
      * Container instance holder
      *
-     * @var CallerContract
+     * @var Caller
      */
     protected $caller;
 
@@ -46,11 +46,11 @@ class Router implements RouterContract
     /**
      * Router constructor.
      *
-     * @param CallerContract      $caller
+     * @param Caller $caller
      * @param MiddlewareCollector $middlewareCollector
-     * @param callable            $collectionCallback
+     * @param callable $collectionCallback
      */
-    public function __construct(CallerContract $caller, MiddlewareCollector $middlewareCollector, callable $collectionCallback)
+    public function __construct(Caller $caller, MiddlewareCollector $middlewareCollector, callable $collectionCallback)
     {
         $this->middleware = $middlewareCollector;
         $this->caller = $caller;
@@ -73,10 +73,10 @@ class Router implements RouterContract
      * Dispatch router
      * Find matching route, pass through middlewares, fire controller action, return response
      *
-     * @param $request RequestContract
-     * @return ResponseContract
+     * @param $request Request
+     * @return Response
      */
-    public function dispatch(RequestContract $request): ResponseContract
+    public function dispatch(Request $request): Response
     {
         $match = $this->dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
 
@@ -113,14 +113,14 @@ class Router implements RouterContract
      *
      * @param  \Closure|string $handler
      * @param  array $parameters
-     * @return ResponseContract
+     * @return Response
      * @throws \RuntimeException
      */
-    protected function handleFoundRoute($handler, array $parameters): ResponseContract
+    protected function handleFoundRoute($handler, array $parameters): Response
     {
         $response = $this->caller->call($handler, $parameters);
 
-        if ($response instanceof ResponseContract) {
+        if ($response instanceof Response) {
             // Response should be returned directly
             return $response;
         }
@@ -150,8 +150,8 @@ class Router implements RouterContract
         $next = $this->getLastStep($handler, $parameters);
 
         foreach ($this->middleware->getMiddlewares() as $class) {
-            $next = function (RequestContract $request) use ($class, $next) {
-                /** @var MiddlewareContract $class */
+            $next = function (Request $request) use ($class, $next) {
+                /** @var Middleware $class */
                 return $class->handle($request, $next);
             };
         }

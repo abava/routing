@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
 use Abava\Http\Contract\{
-    RequestContract, ResponseContract
+    Request, Response
 };
-use Abava\Routing\Contract\MiddlewareContract;
+use Abava\Routing\Contract\Middleware;
 
 /**
  * Class MiddlewareCollectorTest
@@ -26,8 +26,12 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
      */
     public function canAddMiddlewareByContract()
     {
-        $middleware = new class implements MiddlewareContract{
-            public function handle(RequestContract $request, Closure $next) : ResponseContract { return $next($request); }
+        $middleware = new class implements Middleware
+        {
+            public function handle(Request $request, Closure $next) : Response
+            {
+                return $next($request);
+            }
         };
         $this->collector->addContractMiddleware('test', $middleware);
         $middlewares = $this->collector->getMiddlewares();
@@ -41,32 +45,32 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
      */
     public function canAddClosureMiddleware()
     {
-        $middleware = function (RequestContract $request, Closure $next): ResponseContract {
-            return $next($request->withHeader('header','request'))->withHeader('header','response');
+        $middleware = function (Request $request, Closure $next): Response {
+            return $next($request->withHeader('header', 'request'))->withHeader('header', 'response');
         };
 
         $this->collector->addCallableMiddleware('test', $middleware);
         $middlewares = $this->collector->getMiddlewares();
         $this->assertCount(1, $middlewares);
         $this->assertArrayHasKey('test', $middlewares);
-        $this->assertInstanceOf(MiddlewareContract::class, $middlewares['test']);
+        $this->assertInstanceOf(Middleware::class, $middlewares['test']);
 
         // Checking if closure is still doing its job
-        /** @var RequestContract|PHPUnit_Framework_MockObject_Builder_InvocationMocker $request */
-        $request = $this->getMockBuilder(RequestContract::class)->getMock();
-        $request->method('withHeader')->with('header','request')->willReturnSelf();
+        /** @var Request|PHPUnit_Framework_MockObject_Builder_InvocationMocker $request */
+        $request = $this->getMockBuilder(Request::class)->getMock();
+        $request->method('withHeader')->with('header', 'request')->willReturnSelf();
 
-        $response = $this->getMockBuilder(ResponseContract::class)->getMock();
-        $response->method('withHeader')->with('header','response')->willReturnSelf();
+        $response = $this->getMockBuilder(Response::class)->getMock();
+        $response->method('withHeader')->with('header', 'response')->willReturnSelf();
 
         $next = function ($r) use ($request, $response) {
-            $this->assertInstanceOf(RequestContract::class, $r);
+            $this->assertInstanceOf(Request::class, $r);
             $this->assertSame($request, $r);
             return $response;
         };
 
         $result = $middlewares['test']->handle($request, $next);
-        $this->assertInstanceOf(ResponseContract::class, $result);
+        $this->assertInstanceOf(Response::class, $result);
         $this->assertSame($response, $result);
     }
 
@@ -75,12 +79,20 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
      */
     public function getMiddlewaresReversesArray()
     {
-        $middleware1 = new class implements MiddlewareContract{
-            public function handle(RequestContract $request, Closure $next) : ResponseContract { return $next($request); }
+        $middleware1 = new class implements Middleware
+        {
+            public function handle(Request $request, Closure $next) : Response
+            {
+                return $next($request);
+            }
         };
 
-        $middleware2 = new class implements MiddlewareContract{
-            public function handle(RequestContract $request, Closure $next) : ResponseContract { return $next($request); }
+        $middleware2 = new class implements Middleware
+        {
+            public function handle(Request $request, Closure $next) : Response
+            {
+                return $next($request);
+            }
         };
 
         $this->collector->addContractMiddleware('m1', $middleware1);
@@ -94,7 +106,7 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
     public function cannotAddNonMiddlewareContactInstance()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Middleware must either implement MiddlewareContract or be callable');
+        $this->expectExceptionMessage('Middleware must either implement Middleware contract or be callable');
 
         $this->collector->addMiddleware('test', 42);
     }
@@ -104,12 +116,16 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
      */
     public function canUseCommonAddMethod()
     {
-        $contract = new class implements MiddlewareContract{
-            public function handle(RequestContract $request, Closure $next) : ResponseContract { return $next($request); }
+        $contract = new class implements Middleware
+        {
+            public function handle(Request $request, Closure $next) : Response
+            {
+                return $next($request);
+            }
         };
 
-        $closure = function (RequestContract $request, Closure $next): ResponseContract {
-            return $next($request->withHeader('header','request'))->withHeader('header','response');
+        $closure = function (Request $request, Closure $next): Response {
+            return $next($request->withHeader('header', 'request'))->withHeader('header', 'response');
         };
 
         $this->collector->addMiddleware('contract', $contract);
@@ -119,8 +135,8 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
         $this->assertCount(2, $collection);
         $this->assertArrayHasKey('contract', $collection);
         $this->assertArrayHasKey('closure', $collection);
-        $this->assertInstanceOf(MiddlewareContract::class, $collection['closure']);
-        $this->assertInstanceOf(MiddlewareContract::class, $collection['contract']);
+        $this->assertInstanceOf(Middleware::class, $collection['closure']);
+        $this->assertInstanceOf(Middleware::class, $collection['contract']);
     }
 
 }
