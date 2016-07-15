@@ -4,7 +4,7 @@ namespace Abava\Routing;
 
 use Abava\Container\Contract\Caller;
 use Abava\Http\Contract\{
-    Request, Response
+    Response
 };
 use Abava\Routing\Contract\{
     Middleware, Router as RouterContract
@@ -14,6 +14,8 @@ use Abava\Routing\Exceptions\{
 };
 use FastRoute\Dispatcher\GroupCountBased;
 use FastRoute\RouteParser\Std;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Router
@@ -73,10 +75,10 @@ class Router implements RouterContract
      * Dispatch router
      * Find matching route, pass through middlewares, fire controller action, return response
      *
-     * @param $request Request
-     * @return Response
+     * @param RequestInterface $request Request
+     * @return ResponseInterface
      */
-    public function dispatch(Request $request): Response
+    public function dispatch(RequestInterface $request): ResponseInterface
     {
         $match = $this->dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
 
@@ -150,7 +152,7 @@ class Router implements RouterContract
         $next = $this->getLastStep($handler, $parameters);
 
         foreach ($this->middleware->getMiddlewares() as $class) {
-            $next = function (Request $request) use ($class, $next) {
+            $next = function (RequestInterface $request) use ($class, $next) {
                 /** @var Middleware $class */
                 return $class->handle($request, $next);
             };

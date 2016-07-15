@@ -2,9 +2,8 @@
 
 namespace Abava\Routing\Contract;
 
-use Abava\Http\Contract\{
-    Request, Response
-};
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Interface RouterContract
@@ -16,9 +15,9 @@ interface Router
     /**
      * Dispatches request
      *
-     * @param $request Request
-     * @return Response
+     * @param RequestInterface $request Request
+     * @return ResponseInterface
      */
-    public function dispatch(Request $request): Response;
+    public function dispatch(RequestInterface $request): ResponseInterface;
 
 }

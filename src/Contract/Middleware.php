@@ -2,9 +2,8 @@
 
 namespace Abava\Routing\Contract;
 
-use Abava\Http\Contract\{
-    Request, Response
-};
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Interface Middleware
@@ -16,10 +15,10 @@ interface Middleware
     /**
      * Function, called on middleware execution
      *
-     * @param Request $request
+     * @param RequestInterface $request
      * @param \Closure next
-     * @return Response
+     * @return ResponseInterface
      */
-    public function handle(Request $request, \Closure $next) : Response;
+    public function handle(RequestInterface $request, \Closure $next) : ResponseInterface;
 
 }

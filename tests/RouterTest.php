@@ -104,7 +104,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $collector = $this->getMockBuilder(\Abava\Routing\MiddlewareCollector::class)->getMock();
         $middleware = new class implements \Abava\Routing\Contract\Middleware
         {
-            public function handle(\Abava\Http\Contract\Request $request, Closure $next) : \Abava\Http\Contract\Response
+            public function handle(\Psr\Http\Message\RequestInterface $request, Closure $next) : \Psr\Http\Message\RequestInterface
             {
                 return $next($request);
             }

@@ -2,10 +2,9 @@
 
 namespace Abava\Routing;
 
-use Abava\Http\Contract\{
-    Request, Response
-};
 use Abava\Routing\Contract\Middleware;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class MiddlewareCollector
@@ -65,7 +64,7 @@ class MiddlewareCollector
                 $this->callable = $callable;
             }
 
-            public function handle(Request $request, \Closure $next): Response
+            public function handle(RequestInterface $request, \Closure $next): ResponseInterface
             {
                 $middleware = $this->callable;
                 return $middleware($request, $next);
