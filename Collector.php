@@ -4,6 +4,7 @@ namespace Abava\Routing;
 
 use Abava\Routing\Contract\Collector as CollectorContract;
 use Abava\Routing\Contract\Group as GroupRouteCollectorContract;
+use Abava\Routing\Contract\UrlGenerator;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\RequestInterface;
 
@@ -12,7 +13,7 @@ use Psr\Http\Message\RequestInterface;
  *
  * @package Abava\Routing
  */
-class Collector extends RouteCollector implements CollectorContract
+class Collector extends RouteCollector implements CollectorContract, UrlGenerator
 {
     use CollectorTrait;
 
@@ -48,7 +49,11 @@ class Collector extends RouteCollector implements CollectorContract
      */
     public function add(Route $route)
     {
-        $this->routes[] = $route;
+        if ($route->getName()) {
+            $this->routes[$route->getName()] = $route;
+        } else {
+            $this->routes[] = $route;
+        }
     }
 
     /**
@@ -132,5 +137,58 @@ class Collector extends RouteCollector implements CollectorContract
         }
     }
 
+    /**
+     * Generate a URI based on a given route.
+     *
+     * Replacements in FastRoute are written as `{name}` or `{name:<pattern>}`;
+     * this method uses a regular expression to search for substitutions that
+     * match, and replaces them with the value provided.
+     *
+     *
+     * @param string $name Route name.
+     * @param array $substitutions Key/value pairs to substitute into the route pattern.
+     * @return string URI path generated.
+     * @throws \InvalidArgumentException
+     */
+    public function url(string $name, array $substitutions = []): string
+    {
+        $routes = $this->getRoutes();
+        if (!isset($routes[$name])) {
+            throw new \InvalidArgumentException('');
+        }
+        $route = $routes[$name];
+        $path = Parser::replacePatternMatchers($route->getPath());
+        foreach ($substitutions as $key => $value) {
+            $pattern = sprintf(
+                '~%s~x',
+                sprintf('\{\s*%s\s*(?::\s*([^{}]*(?:\{(?-1)\}[^{}]*)*))?\}', preg_quote($key))
+            );
+            preg_match($pattern, $path, $matches);
+            if (isset($matches[1]) && !preg_match('/'.$matches[1].'/', $value)) {
+                throw new \InvalidArgumentException(
+                    "Substitution value '$value' does not match '$key' parameter '{$matches[1]}' pattern."
+                );
+            }
+            $path = preg_replace($pattern, $value, $path);
+        }
+        // 1. remove optional segments' ending delimiters
+        // 2. split path into an array of optional segments and remove those
+        //    containing unsubstituted parameters starting from the last segment
+        $path = str_replace(']', '', $path);
+        $segs = array_reverse(explode('[', $path));
+        foreach ($segs as $n => $seg) {
+            if (strpos($seg, '{') !== false) {
+                if (isset($segs[$n - 1])) {
+                    throw new \InvalidArgumentException(
+                        'Optional segments with unsubstituted parameters cannot '
+                        . 'contain segments with substituted parameters when using FastRoute'
+                    );
+                }
+                unset($segs[$n]);
+            }
+        }
+        $path = implode('', array_reverse($segs));
+        return $path;
+    }
 
 }

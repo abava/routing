@@ -17,7 +17,7 @@ class Parser extends Std
      *
      * @var array
      */
-    protected $patternMatchers = [
+    protected static $patternMatchers = [
         '/{(.+?):number}/'  => '{$1:[0-9]+}',
         '/{(.+?):word}/'    => '{$1:[a-zA-Z]+}',
         '/{(.+?):alphanum}/'=> '{$1:[a-zA-Z0-9-_]+}',
@@ -29,15 +29,14 @@ class Parser extends Std
      *
      * @param $alias
      * @param $regex
-     * @return Parser
+     * @return void
      */
-    public function addPatternMatcher(string $alias, string $regex): Parser
+    public static function addPatternMatcher(string $alias, string $regex)
     {
         $pattern = '/{(.+?):' . $alias . '}/';
         $regex   = '{$1:' . $regex . '}';
 
-        $this->patternMatchers[$pattern] = $regex;
-        return $this;
+        static::$patternMatchers[$pattern] = $regex;
     }
 
     /**
@@ -45,9 +44,15 @@ class Parser extends Std
      */
     public function parse($route)
     {
-        $route = preg_replace(array_keys($this->patternMatchers), array_values($this->patternMatchers), $route);
-        return parent::parse($route);
+        return parent::parse(static::replacePatternMatchers($route));
     }
 
-
+    /**
+     * @param string $path
+     * @return string
+     */
+    public static function replacePatternMatchers(string $path): string
+    {
+        return preg_replace(array_keys(static::$patternMatchers), array_values(static::$patternMatchers), $path);
+    }
 }
