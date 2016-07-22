@@ -31,6 +31,13 @@ interface Collector extends DataGenerator
     public function getFilteredData(RequestInterface $request): array;
 
     /**
+     * Returns all collected routes
+     *
+     * @return Route[]
+     */
+    public function getRoutes(): array;
+
+    /**
      * Add a group of routes
      *
      * @param string $prefix

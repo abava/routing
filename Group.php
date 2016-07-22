@@ -127,6 +127,14 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getRoutes(): array
+    {
+        return $this->routes;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function group(string $prefix, callable $callback): GroupRouteCollectorContract
