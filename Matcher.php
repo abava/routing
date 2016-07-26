@@ -3,10 +3,10 @@
 namespace Abava\Routing;
 
 use Abava\Routing\Contract\Collector as RouteCollector;
+use Abava\Routing\Contract\Dispatcher\Factory;
 use Abava\Routing\Contract\Matcher as MatcherContract;
 use Abava\Routing\Exceptions\NotAllowedException;
 use Abava\Routing\Exceptions\NotFoundException;
-use FastRoute\Dispatcher\GroupCountBased as GroupCountBasedDispatcher;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -18,13 +18,25 @@ class Matcher implements MatcherContract
 {
 
     /**
+     * Dispatcher factory instance
+     *
+     * @var Factory
+     */
+    protected $factory;
+
+    public function __construct(Factory $factory)
+    {
+        $this->factory = $factory;
+    }
+
+    /**
      * {@inheritdoc
      * @throws NotFoundException
      * @throws NotAllowedException
      */
     public function match(RequestInterface $request, RouteCollector $collector): Route
     {
-        $dispatcher = new GroupCountBasedDispatcher($collector->getFilteredData($request));
+        $dispatcher = $this->factory->make($collector->getFilteredData($request));
         $match = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
         switch ($match[0]) {
             case $dispatcher::FOUND:
