@@ -115,7 +115,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
      */
     public function getData()
     {
-        $this->collector->getData();
+        return $this->collector->getData();
     }
 
     /**
@@ -123,7 +123,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
      */
     public function getFilteredData(RequestInterface $request): array
     {
-        $this->collector->getFilteredData($request);
+        return $this->collector->getFilteredData($request);
     }
 
     /**
