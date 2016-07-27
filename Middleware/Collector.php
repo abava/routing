@@ -40,6 +40,13 @@ class Collector implements CollectorContract
     protected $order = [];
 
     /**
+     * If $order is reversed
+     *
+     * @var bool
+     */
+    private $reversed = false;
+
+    /**
      * Collector constructor.
      *
      * @param Container $container
@@ -59,7 +66,11 @@ class Collector implements CollectorContract
         } elseif ($this->isValidMiddleware($middleware)) {
             $this->middlewares[$name] = $middleware;
             // Adding middleware to the end of the list
-            $this->order[] = $name;
+            if ($this->reversed) {
+                array_unshift($this->order, $name);
+            } else {
+                $this->order[] = $name;
+            }
         } else {
             throw new \InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
         }
@@ -74,11 +85,17 @@ class Collector implements CollectorContract
             throw new \InvalidArgumentException("Middleware '$name' is already defined");
         } elseif (!$this->has($after)) {
             throw new \InvalidArgumentException("Middleware '$after' cannot be found");
+        } elseif ($this->reversed) {
+            throw new \RuntimeException("Middleware stack is reversed inside foreach loop, pushAfter is restricted");
         } elseif ($this->isValidMiddleware($middleware)) {
             $this->middlewares[$name] = $middleware;
             $afterIndex = array_search($after, $this->order);
             // Adding middleware after provided name
-            $this->order = array_slice($this->order, 0, $afterIndex) + [$name] + array_slice($this->order, $afterIndex);
+            $this->order = array_merge(
+                array_slice($this->order, 0, $afterIndex+1),
+                [$name],
+                array_slice($this->order, $afterIndex+1)
+            );
         } else {
             throw new \InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
         }
@@ -93,11 +110,17 @@ class Collector implements CollectorContract
             throw new \InvalidArgumentException("Middleware '$name' is already defined");
         } elseif (!$this->has($before)) {
             throw new \InvalidArgumentException("Middleware '$before' cannot be found");
+        } elseif ($this->reversed) {
+            throw new \RuntimeException("Middleware stack is reversed inside foreach loop, pushBefore is restricted");
         } elseif ($this->isValidMiddleware($middleware)) {
             $this->middlewares[$name] = $middleware;
             $beforeIndex = array_search($before, $this->order);
             // Adding middleware before provided name
-            $this->order = array_slice($this->order, 0, $beforeIndex-1) + [$name] + array_slice($this->order, $beforeIndex);
+            $this->order = array_merge(
+                array_slice($this->order, 0, $beforeIndex),
+                [$name],
+                array_slice($this->order, $beforeIndex)
+            );
         } else {
             throw new \InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
         }
@@ -168,6 +191,9 @@ class Collector implements CollectorContract
      */
     public function rewind()
     {
+        if (!$this->reversed) {
+            $this->reverse();
+        }
         return reset($this->order);
     }
 
@@ -202,6 +228,17 @@ class Collector implements CollectorContract
             }
 
         };
+    }
+
+    /**
+     * Reversed order and toggles reverse flag
+     *
+     * @return void
+     */
+    private function reverse()
+    {
+        $this->order = array_reverse($this->order);
+        $this->reversed ^= 1;
     }
 
 }
