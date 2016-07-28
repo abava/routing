@@ -139,7 +139,10 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
      */
     public function group(string $prefix, callable $callback): GroupRouteCollectorContract
     {
-        return $this->collector->group($prefix, $callback);
+        $group = $this->collector->group($this->addPrefixToPath($prefix), $callback);
+        $group->setHost($this->host);
+        $group->setScheme($this->scheme);
+        return $group;
     }
 
     /**

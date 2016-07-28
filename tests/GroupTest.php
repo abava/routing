@@ -82,9 +82,13 @@ class GroupTest extends PHPUnit_Framework_TestCase
         $request = Mockery::mock(\Psr\Http\Message\RequestInterface::class);
         $this->collector->shouldReceive('getFilteredData')->with($request)->andReturn(['data'])->once();
         $this->assertSame(['data'], $group->getFilteredData($request));
+        $group->setHost('localhost');
+        $group->setScheme('https');
         $groupMock = Mockery::mock(\Abava\Routing\Contract\Group::class);
+        $groupMock->shouldReceive('setHost')->with('localhost')->andReturnSelf()->once();
+        $groupMock->shouldReceive('setScheme')->with('https')->andReturnSelf()->once();
         $this->collector->shouldReceive('group')
-            ->with('prefix', $callback)
+            ->with('/prefix', $callback)
             ->andReturn($groupMock)
             ->once();
         $this->assertSame($groupMock, $group->group('prefix', $callback));

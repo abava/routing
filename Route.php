@@ -3,6 +3,7 @@
 namespace Abava\Routing;
 
 use Abava\Routing\Contract\Middleware;
+use Abava\Routing\Contract\UrlBuilder;
 use Abava\Routing\Middleware\ValidatorTrait;
 
 /**
@@ -11,7 +12,7 @@ use Abava\Routing\Middleware\ValidatorTrait;
  *
  * @package Abava\Routing
  */
-class Route
+class Route implements UrlBuilder
 {
 
     use ValidatorTrait;
@@ -247,6 +248,49 @@ class Route
         $route = clone $this;
         $route->path = $path;
         return $route;
+    }
+
+    /**
+     * Replacements in FastRoute are written as `{name}` or `{name:<pattern>}`;
+     * this method uses a regular expression to search for substitutions that
+     * match, and replaces them with the value provided.
+     *
+     * @inheritDoc
+     */
+    public function url(array $parameters = []): string
+    {
+        $path = Parser::replacePatternMatchers($this->getPath());
+        foreach ($parameters as $key => $value) {
+            $pattern = sprintf(
+                '~%s~x',
+                sprintf('\{\s*%s\s*(?::\s*([^{}]*(?:\{(?-1)\}[^{}]*)*))?\}', preg_quote($key))
+            );
+            preg_match($pattern, $path, $matches);
+            if (isset($matches[1]) && !preg_match('/'.$matches[1].'/', $value)) {
+                throw new \InvalidArgumentException(
+                    "Substitution value '$value' does not match '$key' parameter '{$matches[1]}' pattern."
+                );
+            }
+            $path = preg_replace($pattern, $value, $path);
+        }
+        // 1. remove optional segments' ending delimiters
+        // 2. split path into an array of optional segments and remove those
+        //    containing unsubstituted parameters starting from the last segment
+        $path = str_replace(']', '', $path);
+        $segs = array_reverse(explode('[', $path));
+        foreach ($segs as $n => $seg) {
+            if (strpos($seg, '{') !== false) {
+                if (isset($segs[$n - 1])) {
+                    throw new \InvalidArgumentException(
+                        'Optional segments with unsubstituted parameters cannot '
+                        . 'contain segments with substituted parameters when using FastRoute'
+                    );
+                }
+                unset($segs[$n]);
+            }
+        }
+        $path = implode('', array_reverse($segs));
+        return $path;
     }
 
 }

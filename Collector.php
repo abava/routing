@@ -130,11 +130,16 @@ class Collector extends RouteCollector implements CollectorContract, UrlGenerato
      */
     protected function collectGroups()
     {
-        foreach ($this->groups as $key => $group) {
-            $group->collect();
-            // delete group to prevent route duplication
-            unset($this->groups[$key]);
-        }
+        do {
+            // Groups may add other groups,
+            // so we need to iterate through array
+            // until no groups remain
+            foreach ($this->groups as $key => $group) {
+                $group->collect();
+                // delete group to prevent route duplication
+                unset($this->groups[$key]);
+            }
+        } while (count($this->groups) > 0);
     }
 
     /**
@@ -154,41 +159,10 @@ class Collector extends RouteCollector implements CollectorContract, UrlGenerato
     {
         $routes = $this->getRoutes();
         if (!isset($routes[$name])) {
-            throw new \InvalidArgumentException('');
+            throw new \InvalidArgumentException("Route '$name' not found");
         }
         $route = $routes[$name];
-        $path = Parser::replacePatternMatchers($route->getPath());
-        foreach ($substitutions as $key => $value) {
-            $pattern = sprintf(
-                '~%s~x',
-                sprintf('\{\s*%s\s*(?::\s*([^{}]*(?:\{(?-1)\}[^{}]*)*))?\}', preg_quote($key))
-            );
-            preg_match($pattern, $path, $matches);
-            if (isset($matches[1]) && !preg_match('/'.$matches[1].'/', $value)) {
-                throw new \InvalidArgumentException(
-                    "Substitution value '$value' does not match '$key' parameter '{$matches[1]}' pattern."
-                );
-            }
-            $path = preg_replace($pattern, $value, $path);
-        }
-        // 1. remove optional segments' ending delimiters
-        // 2. split path into an array of optional segments and remove those
-        //    containing unsubstituted parameters starting from the last segment
-        $path = str_replace(']', '', $path);
-        $segs = array_reverse(explode('[', $path));
-        foreach ($segs as $n => $seg) {
-            if (strpos($seg, '{') !== false) {
-                if (isset($segs[$n - 1])) {
-                    throw new \InvalidArgumentException(
-                        'Optional segments with unsubstituted parameters cannot '
-                        . 'contain segments with substituted parameters when using FastRoute'
-                    );
-                }
-                unset($segs[$n]);
-            }
-        }
-        $path = implode('', array_reverse($segs));
-        return $path;
+        return $route->url($substitutions);
     }
 
 }
