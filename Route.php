@@ -266,16 +266,18 @@ class Route implements UrlBuilder
                 sprintf('\{\s*%s\s*(?::\s*([^{}]*(?:\{(?-1)\}[^{}]*)*))?\}', preg_quote($key))
             );
             preg_match($pattern, $path, $matches);
-            if (isset($matches[1]) && !preg_match('/'.$matches[1].'/', $value)) {
+            if (isset($matches[1]) && !preg_match('/'.$matches[1].'/', (string)$value)) {
                 throw new \InvalidArgumentException(
                     "Substitution value '$value' does not match '$key' parameter '{$matches[1]}' pattern."
                 );
             }
             $path = preg_replace($pattern, $value, $path);
         }
-        // 1. remove optional segments' ending delimiters
-        // 2. split path into an array of optional segments and remove those
+        // 1. remove patterns for named prameters
+        // 2. remove optional segments' ending delimiters
+        // 3. split path into an array of optional segments and remove those
         //    containing unsubstituted parameters starting from the last segment
+        $path = preg_replace('/{(\w+):(.+?)}/', '{$1}', $path);
         $path = str_replace(']', '', $path);
         $segs = array_reverse(explode('[', $path));
         foreach ($segs as $n => $seg) {
@@ -287,6 +289,11 @@ class Route implements UrlBuilder
                     );
                 }
                 unset($segs[$n]);
+                if (count($segs) == 0) {
+                    preg_match('/{.+}/', $seg, $params);
+                    $mandatory = $params[0] ?? $seg;
+                    throw new \InvalidArgumentException("Parameter '$mandatory' is mandatory");
+                }
             }
         }
         $path = implode('', array_reverse($segs));

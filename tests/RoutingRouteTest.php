@@ -74,4 +74,49 @@ class RoutingRouteTest extends PHPUnit_Framework_TestCase
         $route->withMiddleware('invalid', 'middleware');
     }
 
+    public function testUrlBuild()
+    {
+        $route = new \Abava\Routing\Route(['GET'], '/url/{id}', 'handle');
+        $this->assertSame('/url/123', $route->url(['id' => 123]), 'common parameter replaced');
+
+        $route = new \Abava\Routing\Route(['GET'], '/url/{id:[0-9]+}', 'handle');
+        $this->assertSame('/url/123', $route->url(['id' => 123]), 'parameter with pattern replaced');
+
+        $route = new \Abava\Routing\Route(['GET'], '/url/{id:number}', 'handle');
+        $this->assertSame('/url/123', $route->url(['id' => 123]), 'parameter with named pattern replaced');
+
+        $route = new \Abava\Routing\Route(['GET'], '/url[/{id:number}[/{name}]]', 'handle');
+        $this->assertSame('/url/123', $route->url(['id' => 123]), 'optional parameter with named pattern replaced');
+
+        $route = new \Abava\Routing\Route(['GET'], '/url[/{id:number}[//{name}]]', 'handle');
+        $this->assertSame('/url/123', $route->url(['id' => 123]), 'optional parameter with named pattern replaced');
+
+        $route = new \Abava\Routing\Route(['GET'], '/url[/{id:number}[/{name}]]', 'handle');
+        $this->assertSame('/url/123/a', $route->url(['id' => 123, 'name' => 'a']), 'all optional parameters replaced');
+
+        $route = new \Abava\Routing\Route(['GET'], '/url[/{one:number}[/{two}[/{three:[0-9]+}[/{four}]]]]', 'handle');
+        $this->assertSame('/url', $route->url(), 'none optional parameters replaced');
+    }
+
+    public function testUrlBuildParameterDoesntMatchPattern()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $route = new \Abava\Routing\Route(['GET'], '/url/{id:number}', 'handle');
+        $route->url(['id' => 'abc']);
+    }
+
+    public function testUrlBuildNonOptionalParameterIsNotProvided()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $route = new \Abava\Routing\Route(['GET'], '/url/{id:number}[/{optional}]', 'handle');
+        $route->url();
+    }
+
+    public function testUrlBuildOptionalParametersPassed()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $route = new \Abava\Routing\Route(['GET'], '/url[/{one}[/{two}[/{three}]]]', 'handle');
+        $route->url(['two' => 'abc']);
+    }
+
 }
