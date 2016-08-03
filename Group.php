@@ -77,19 +77,22 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
      * @param string $method
      * @param string $path
      * @param mixed $handler
-     * @return void
+     * @return Route
      */
     public function addRoute($method, $path, $handler)
     {
-        $this->collector->addRoute($method, $this->addPrefixToPath($path), $handler);
+        $route = new Route($method, $this->addPrefixToPath($path), $handler);
+        
+        return $this->routes[] = $route;
     }
 
     /**
      * {@inheritdoc}
+     * @return Route
      */
     public function add(Route $route)
     {
-        $this->routes[] = $route;
+        return $this->routes[] = $route;
     }
 
 
@@ -151,6 +154,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
     public function setPrefix(string $prefix): GroupRouteCollectorContract
     {
         $this->prefix = $prefix;
+        
         return $this;
     }
 
@@ -160,6 +164,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
     public function setHost(string $host): GroupRouteCollectorContract
     {
         $this->host = $host;
+        
         return $this;
     }
     
@@ -169,6 +174,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
     public function setScheme(string $scheme): GroupRouteCollectorContract
     {
         $this->scheme = $scheme;
+        
         return $this;
     }
 
