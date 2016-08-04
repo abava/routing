@@ -1,8 +1,12 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface as Uri;
 
-class MatcherTest extends PHPUnit_Framework_TestCase
+/**
+ * Class MatcherTest
+ */
+class MatcherTest extends TestCase
 {
 
     protected $factory;
@@ -25,6 +29,9 @@ class MatcherTest extends PHPUnit_Framework_TestCase
             )->once();
     }
 
+    /**
+     * @test
+     */
     public function testMatchFound()
     {
         // Match result for found route
@@ -48,6 +55,9 @@ class MatcherTest extends PHPUnit_Framework_TestCase
         $this->assertNotSame($route, $result);
     }
 
+    /**
+     * @test
+     */
     public function testMethodNotAllowed()
     {
         $this->expectException(\Abava\Routing\Exceptions\NotAllowedException::class);

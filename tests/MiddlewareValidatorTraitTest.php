@@ -1,9 +1,13 @@
 <?php
 
-class MiddlewareValidatorTraitTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
 
-    public function testIsValidMiddleware()
+class MiddlewareValidatorTraitTest extends TestCase
+{
+    /**
+     * @test
+     */
+    public function canValidateMiddleware()
     {
         $validator = new class {
             use \Abava\Routing\Middleware\ValidatorTrait;

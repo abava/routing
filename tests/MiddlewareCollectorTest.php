@@ -1,6 +1,8 @@
 <?php
 
-class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class MiddlewareCollectorTest extends TestCase
 {
 
     /**
@@ -19,29 +21,41 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
         $this->collector = new \Abava\Routing\Middleware\Collector($this->container);
     }
 
+    /**
+     * @test
+     */
     public function testPushMiddleware()
     {
         $this->assertFalse($this->collector->has('middleware'));
         $this->collector->pushMiddleware('middleware', Mockery::mock(\Abava\Routing\Contract\Middleware::class));
         $this->assertTrue($this->collector->has('middleware'));
     }
-
-    public function testPushMiddlewareWithTheSameNameTwice()
+    
+    /**
+     * @test
+     */
+    public function throwsExceptionOnMiddlewareWithTheSameNameTwice()
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->collector->pushMiddleware('middleware', Mockery::mock(\Abava\Routing\Contract\Middleware::class));
         $this->collector->pushMiddleware('middleware', Mockery::mock(\Abava\Routing\Contract\Middleware::class));
     }
-
-    public function testPushInvalidMiddleware()
+    
+    /**
+     * @test
+     */
+    public function throwsExceptionOnPushInvalidMiddleware()
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->collector->pushMiddleware('middleware', new stdClass());
     }
-
-    public function testPushBefore()
+    
+    /**
+     * @test
+     */
+    public function canPushBefore()
     {
         /** @var \Abava\Routing\Middleware\Collector $collector */
         $collector = new class($this->container) extends \Abava\Routing\Middleware\Collector{
@@ -52,8 +66,11 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
         $collector->pushBefore('third', 'second', function(){});
         $this->assertSame(['first', 'second', 'third'], $collector->getOrder());
     }
-
-    public function testPushAfter()
+    
+    /**
+     * @test
+     */
+    public function canPushAfter()
     {
         /** @var \Abava\Routing\Middleware\Collector $collector */
         $collector = new class($this->container) extends \Abava\Routing\Middleware\Collector{
@@ -64,54 +81,75 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
         $collector->pushAfter('first', 'second', function(){});
         $this->assertSame(['first', 'second', 'third'], $collector->getOrder());
     }
-
-    public function testPushBeforeNonExistingMiddleware()
+    
+    /**
+     * @test
+     */
+    public function throwsExceptionOnPushBeforeNonExistingMiddleware()
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->collector->pushBefore('non-existing', 'middleware', function (){});
     }
-
-    public function testPushAfterNonExistingMiddleware()
+    
+    /**
+     * @test
+     */
+    public function throwsExceptionOnPushAfterNonExistingMiddleware()
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->collector->pushAfter('non-existing', 'middleware', function (){});
     }
-
-    public function testPushBeforeExistingMiddlewareTwice()
+    
+    /**
+     * @test
+     */
+    public function throwsExceptionOnPushBeforeExistingMiddlewareTwice()
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->collector->pushMiddleware('middleware', function (){});
         $this->collector->pushBefore('middleware', 'middleware', function (){});
     }
-
-    public function testPushAfterExistingMiddlewareTwice()
+    
+    /**
+     * @test
+     */
+    public function throwsExceptionOnPushAfterExistingMiddlewareTwice()
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->collector->pushMiddleware('middleware', function (){});
         $this->collector->pushAfter('middleware', 'middleware', function (){});
     }
-
-    public function testPushBeforeInvalidMiddleware()
+    
+    /**
+     * @test
+     */
+    public function throwsExceptionOnPushBeforeInvalidMiddleware()
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->collector->pushMiddleware('middleware', function (){});
         $this->collector->pushBefore('middleware', 'name', new stdClass());
     }
-
-    public function testPushAfterInvalidMiddleware()
+    
+    /**
+     * @test
+     */
+    public function throwsExceptionOnPushAfterInvalidMiddleware()
     {
         $this->expectException(InvalidArgumentException::class);
 
         $this->collector->pushMiddleware('middleware', function (){});
         $this->collector->pushAfter('middleware', 'name', new stdClass());
     }
-
-    public function testCurrentMiddlewareIsString()
+    
+    /**
+     * @test
+     */
+    public function canPushMiddlewareAsString()
     {
         $middleware = Mockery::mock(\Abava\Routing\Contract\Middleware::class);
         $this->container->shouldReceive('make')
@@ -124,8 +162,11 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
         // saving the result in $middlewares property
         $this->assertSame($middleware, $this->collector->current());
     }
-
-    public function testCurrentMiddlewareIsClosure()
+    
+    /**
+     * @test
+     */
+    public function canPushMiddlewareAsClosure()
     {
         $this->collector->pushMiddleware('middleware', function($request, $next){ return $next($request); });
         $middleware = $this->collector->current();
@@ -137,8 +178,11 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
         );
         $this->assertSame($response, $result);
     }
-
-    public function testCollectorIterator()
+    
+    /**
+     * @test
+     */
+    public function canIterateMiddlewares()
     {
         $request = Mockery::mock(\Psr\Http\Message\RequestInterface::class);
         $first = Mockery::mock(\Abava\Routing\Contract\Middleware::class);
@@ -194,8 +238,11 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
         $this->assertSame(['third', 'second', 'first'], $names);
         $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $response);
     }
-
-    public function testReverseOrder()
+    
+    /**
+     * @test
+     */
+    public function canReverseOrder()
     {
         $middleware = Mockery::mock(\Abava\Routing\Contract\Middleware::class);
         $this->collector->pushMiddleware('first', $middleware);
@@ -205,8 +252,11 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
         // Middlewares must be returned (traversed) in reversed order
         $this->assertSame(['second','first'], $middlewares);
     }
-
-    public function testPushBeforeInReversedMode()
+    
+    /**
+     * @test
+     */
+    public function canPushBeforeInReversedMode()
     {
         $this->collector->pushMiddleware('middleware', function(){});
         $this->collector->rewind();
@@ -215,8 +265,11 @@ class MiddlewareCollectorTest extends PHPUnit_Framework_TestCase
 
         $this->collector->pushBefore('middleware', 'another', function(){});
     }
-
-    public function testPushAfterInReversedMode()
+    
+    /**
+     * @test
+     */
+    public function canPushAfterInReversedMode()
     {
         $this->collector->pushMiddleware('middleware', function(){});
         $this->collector->rewind();

@@ -1,11 +1,19 @@
 <?php
 
-class CollectorTraitTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
 
-    public function testGet()
+/**
+ * Class CollectorTraitTest
+ */
+class CollectorTraitTest extends TestCase
+{
+    /**
+     * @test
+     */
+    public function canCreateGetRoute()
     {
-        $collector = new class {
+        $collector = new class
+        {
             use \Abava\Routing\CollectorTrait;
         };
         /** @var \Abava\Routing\Route $route */
@@ -14,10 +22,14 @@ class CollectorTraitTest extends PHPUnit_Framework_TestCase
         $this->assertSame('/url', $route->getPath());
         $this->assertSame('handler', $route->getCallable());
     }
-    
-    public function testPost()
+
+    /**
+     * @test
+     */
+    public function canCreatePostRoute()
     {
-        $collector = new class {
+        $collector = new class
+        {
             use \Abava\Routing\CollectorTrait;
         };
         /** @var \Abava\Routing\Route $route */
@@ -27,9 +39,13 @@ class CollectorTraitTest extends PHPUnit_Framework_TestCase
         $this->assertSame('handler', $route->getCallable());
     }
 
-    public function testPut()
+    /**
+     * @test
+     */
+    public function canCreatePutRoute()
     {
-        $collector = new class {
+        $collector = new class
+        {
             use \Abava\Routing\CollectorTrait;
         };
         /** @var \Abava\Routing\Route $route */
@@ -39,9 +55,13 @@ class CollectorTraitTest extends PHPUnit_Framework_TestCase
         $this->assertSame('handler', $route->getCallable());
     }
 
-    public function testPatch()
+    /**
+     * @test
+     */
+    public function canCreatePatchRoute()
     {
-        $collector = new class {
+        $collector = new class
+        {
             use \Abava\Routing\CollectorTrait;
         };
         /** @var \Abava\Routing\Route $route */
@@ -51,9 +71,13 @@ class CollectorTraitTest extends PHPUnit_Framework_TestCase
         $this->assertSame('handler', $route->getCallable());
     }
 
-    public function testDelete()
+    /**
+     * @test
+     */
+    public function canCreateDeleteRoute()
     {
-        $collector = new class {
+        $collector = new class
+        {
             use \Abava\Routing\CollectorTrait;
         };
         /** @var \Abava\Routing\Route $route */
@@ -63,9 +87,13 @@ class CollectorTraitTest extends PHPUnit_Framework_TestCase
         $this->assertSame('handler', $route->getCallable());
     }
 
-    public function testHead()
+    /**
+     * @test
+     */
+    public function canCreateHeadRoute()
     {
-        $collector = new class {
+        $collector = new class
+        {
             use \Abava\Routing\CollectorTrait;
         };
         /** @var \Abava\Routing\Route $route */
@@ -75,9 +103,13 @@ class CollectorTraitTest extends PHPUnit_Framework_TestCase
         $this->assertSame('handler', $route->getCallable());
     }
 
-    public function testOptions()
+    /**
+     * @test
+     */
+    public function canCreateOptionsRoute()
     {
-        $collector = new class {
+        $collector = new class
+        {
             use \Abava\Routing\CollectorTrait;
         };
         /** @var \Abava\Routing\Route $route */

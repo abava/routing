@@ -1,6 +1,11 @@
 <?php
 
-class GenericStrategyTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Class GenericStrategyTest
+ */
+class GenericStrategyTest extends TestCase
 {
 
     protected $caller;
@@ -17,7 +22,10 @@ class GenericStrategyTest extends \PHPUnit_Framework_TestCase
         $this->factory = Mockery::mock(\Abava\Http\Factory\ResponseFactory::class);
     }
 
-    public function testResponseInterfaceResult()
+    /**
+     * @test
+     */
+    public function canReturnResponseInterfaceResult()
     {
         $this->caller->shouldReceive('call')
             ->with($this->route->getCallable(), $this->route->getParameters())
@@ -29,19 +37,25 @@ class GenericStrategyTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->response, $result);
     }
 
-    public function testStringableResult()
+    /**
+     * @test
+     */
+    public function canReturnStringableResult()
     {
         $this->caller->shouldReceive('call')
-             ->with($this->route->getCallable(), $this->route->getParameters())
-             ->andReturn(new class {
-                 public function __toString() { return 'string'; }
-             })
-             ->once();
+            ->with($this->route->getCallable(), $this->route->getParameters())
+            ->andReturn(new class
+            {
+                public function __toString()
+                {
+                    return 'string';
+                }
+            })
+            ->once();
         // todo check of can be replaced with contract
         $ventaResponse = Mockery::mock(\Abava\Http\Response::class);
         $ventaResponse->shouldReceive('append')->with('string')->andReturn($ventaResponse)->once();
         $this->factory->shouldReceive('new')->withNoArgs()->andReturn($ventaResponse);
-        // todo check why "new" method mock is not enough
         $this->factory->shouldReceive('createResponse')->withNoArgs()->andReturn($ventaResponse);
         $strategy = new \Abava\Routing\Strategy\Generic($this->caller, $this->factory);
         $result = $strategy->dispatch($this->route);
@@ -49,15 +63,18 @@ class GenericStrategyTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $result);
     }
 
-    public function testInvalidCallerResult()
+    /**
+     * @test
+     */
+    public function throwsExceptionOnInvalidCallerResult()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Controller action result must be either ResponseInterface or string');
 
         $this->caller->shouldReceive('call')
-                     ->with($this->route->getCallable(), $this->route->getParameters())
-                     ->andReturn(new stdClass)
-                     ->once();
+            ->with($this->route->getCallable(), $this->route->getParameters())
+            ->andReturn(new stdClass)
+            ->once();
         $strategy = new \Abava\Routing\Strategy\Generic($this->caller, $this->factory);
         $result = $strategy->dispatch($this->route);
     }

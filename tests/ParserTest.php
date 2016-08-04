@@ -1,16 +1,23 @@
 <?php
 
-class ParserTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
 
-    public function testReplacePatternMatchers()
+class ParserTest extends TestCase
+{
+    /**
+     * @test
+     */
+    public function canReplacePatternMatchers()
     {
         $path = '{id:number}';
         $replaced = \Abava\Routing\Parser::replacePatternMatchers($path);
         $this->assertEquals('{id:[0-9]+}', $replaced);
     }
 
-    public function testAddPatterMatcher()
+    /**
+     * @test
+     */
+    public function canAddPatterMatcher()
     {
         \Abava\Routing\Parser::addPatternMatcher('test', 'abava');
         $path = '{id:test}';
@@ -18,7 +25,10 @@ class ParserTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('{id:abava}', $replaced);
     }
 
-    public function testParse()
+    /**
+     * @test
+     */
+    public function canParse()
     {
         $parser = new \Abava\Routing\Parser();
         $data = $parser->parse('{id:number}');

@@ -1,9 +1,11 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * Class GroupTest
  */
-class GroupTest extends PHPUnit_Framework_TestCase
+class GroupTest extends TestCase
 {
 
     /**
@@ -16,24 +18,36 @@ class GroupTest extends PHPUnit_Framework_TestCase
         $this->collector = Mockery::mock(\Abava\Routing\Collector::class);
     }
 
-    public function testAddRouteInstance()
+    /**
+     * @test
+     */
+    public function canAddRouteInstance()
     {
         $route = new \Abava\Routing\Route(['GET'], '/', 'callable');
-        $group = new \Abava\Routing\Group('/', function () {}, $this->collector);
+        $group = new \Abava\Routing\Group('/', function () {
+        }, $this->collector);
         $group->add($route);
         $this->assertContains($route, $group->getRoutes());
     }
 
-    public function testAddRoute()
+    /**
+     * @test
+     */
+    public function canAddRoute()
     {
         $this->collector->shouldReceive('addRoute')->with('GET', '/', 'handle')->once();
-        $group = new \Abava\Routing\Group('/', function () { }, $this->collector);
+        $group = new \Abava\Routing\Group('/', function () {
+        }, $this->collector);
         $group->addRoute('GET', '/', 'handle');
     }
 
-    public function testSetPrefix()
+    /**
+     * @test
+     */
+    public function canSetPrefix()
     {
-        $group = new \Abava\Routing\Group('/', function () { }, $this->collector);
+        $group = new \Abava\Routing\Group('/', function () {
+        }, $this->collector);
         $this->collector->shouldReceive('addRoute')->with('GET', '/abcdef', 'handler');
         $group->addRoute('GET', '/abcdef', 'handler');
         $group->setPrefix('/qwerty');
@@ -41,9 +55,13 @@ class GroupTest extends PHPUnit_Framework_TestCase
         $group->addRoute('POST', '/zxcv', 'handle');
     }
 
-    public function testCallbackIsCalledOnCollect()
+    /**
+     * @test
+     */
+    public function callbackIsCalledOnCollect()
     {
-        $callbackMock = Mockery::mock(function(){});
+        $callbackMock = Mockery::mock(function () {
+        });
         $group = new \Abava\Routing\Group('/', [$callbackMock, '__invoke'], $this->collector);
         $callbackMock->shouldReceive('__invoke')
             ->with($group)
@@ -51,14 +69,17 @@ class GroupTest extends PHPUnit_Framework_TestCase
         $group->collect();
     }
 
-    public function testCollectSetsHostAndScheme()
+    /**
+     * @test
+     */
+    public function collectSetsHostAndScheme()
     {
         $callback = function (\Abava\Routing\Contract\Collector $collector) {
             $collector->add(new \Abava\Routing\Route(['GET'], 'abc', 'handle'));
             $collector->add(
                 (new \Abava\Routing\Route(['POST'], 'def', 'handle'))
-                ->withHost('127.0.0.1')
-                ->withScheme('http')
+                    ->withHost('127.0.0.1')
+                    ->withScheme('http')
             );
         };
         $group = new \Abava\Routing\Group('/prefix', $callback, $this->collector);
@@ -73,9 +94,12 @@ class GroupTest extends PHPUnit_Framework_TestCase
         $group->collect();
     }
 
-    public function testProxyToCollectorInstance()
+    /**
+     * @test
+     */
+    public function canProxyToCollectorInstance()
     {
-        $callback = function(){};
+        $callback = function () {};
         $group = new \Abava\Routing\Group('/', $callback, $this->collector);
         $this->collector->shouldReceive('getData')->withNoArgs()->andReturn(['data'])->once();
         $this->assertSame(['data'], $group->getData());

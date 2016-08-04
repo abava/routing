@@ -1,8 +1,12 @@
 <?php
 
-class RoutingRouteTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
 
+class RoutingRouteTest extends TestCase
+{
+    /**
+     * @test
+     */
     public function testConstruct()
     {
         $route = new \Abava\Routing\Route(['GET', 'POST'], '/uri', 'controller@action');
@@ -11,6 +15,9 @@ class RoutingRouteTest extends PHPUnit_Framework_TestCase
         $this->assertSame('controller@action', $route->getCallable());
     }
 
+    /**
+     * @test
+     */
     public function testImmutability()
     {
         // creating basic route
@@ -66,6 +73,7 @@ class RoutingRouteTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Middleware must either implement Middleware contract or be callable
+     * @test 
      */
     public function testPassingInvalidMiddleware()
     {
@@ -74,6 +82,9 @@ class RoutingRouteTest extends PHPUnit_Framework_TestCase
         $route->withMiddleware('invalid', 'middleware');
     }
 
+    /**
+     * @test
+     */
     public function testUrlBuild()
     {
         $route = new \Abava\Routing\Route(['GET'], '/url/{id}', 'handle');
@@ -98,6 +109,9 @@ class RoutingRouteTest extends PHPUnit_Framework_TestCase
         $this->assertSame('/url', $route->url(), 'none optional parameters replaced');
     }
 
+    /**
+     * @test
+     */
     public function testUrlBuildParameterDoesntMatchPattern()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -105,6 +119,9 @@ class RoutingRouteTest extends PHPUnit_Framework_TestCase
         $route->url(['id' => 'abc']);
     }
 
+    /**
+     * @test
+     */
     public function testUrlBuildNonOptionalParameterIsNotProvided()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -112,6 +129,9 @@ class RoutingRouteTest extends PHPUnit_Framework_TestCase
         $route->url();
     }
 
+    /**
+     * @test
+     */
     public function testUrlBuildOptionalParametersPassed()
     {
         $this->expectException(InvalidArgumentException::class);

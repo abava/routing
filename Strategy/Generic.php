@@ -70,7 +70,7 @@ class Generic implements Strategy
 
         if (is_string($result)) {
             // String supposed to be appended to response body
-            return $this->responseFactory->new()->append($result);
+            return $this->responseFactory->createResponse()->append($result);
         }
 
         // arrays, non-stringable objects, resources are considered as invalid controller action results

@@ -1,21 +1,24 @@
 <?php
 
-class MiddlewarePipelineTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class MiddlewarePipelineTest extends TestCase
 {
-
-
-    public function testHandle()
+    /**
+     * @test
+     */
+    public function canHandleMiddleware()
     {
         $this->expectOutputString('12321');
 
-        $middleware1 = function($request, $next){
+        $middleware1 = function ($request, $next) {
             echo '1';
             $response = $next($request);
             echo '1';
             return $response;
         };
 
-        $middleware2 = function($request, $next){
+        $middleware2 = function ($request, $next) {
             echo '2';
             $response = $next($request);
             echo '2';
@@ -39,7 +42,7 @@ class MiddlewarePipelineTest extends PHPUnit_Framework_TestCase
         $pipeline = new \Abava\Routing\Middleware\Pipeline($collector);
         $pipeline->handle(
             Mockery::mock(\Psr\Http\Message\RequestInterface::class),
-            function(){
+            function () {
                 echo '3';
                 return Mockery::mock(\Psr\Http\Message\ResponseInterface::class);
             }

@@ -157,6 +157,7 @@ class Route implements UrlBuilder
     {
         $route = clone $this;
         $route->host = $host;
+
         return $route;
     }
 
@@ -170,6 +171,7 @@ class Route implements UrlBuilder
     {
         $route = clone $this;
         $route->scheme = $scheme;
+
         return $route;
     }
 
@@ -183,6 +185,7 @@ class Route implements UrlBuilder
     {
         $route = clone $this;
         $route->name = $name;
+
         return $route;
     }
 
@@ -206,6 +209,7 @@ class Route implements UrlBuilder
     {
         $route = clone $this;
         $route->parameters = $parameters;
+
         return $route;
     }
 
@@ -231,6 +235,7 @@ class Route implements UrlBuilder
         if ($this->isValidMiddleware($middleware)) {
             $route = clone $this;
             $route->middlewares[$name] = $middleware;
+
             return $route;
         } else {
             throw new \InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
@@ -247,6 +252,7 @@ class Route implements UrlBuilder
     {
         $route = clone $this;
         $route->path = $path;
+
         return $route;
     }
 
@@ -266,7 +272,7 @@ class Route implements UrlBuilder
                 sprintf('\{\s*%s\s*(?::\s*([^{}]*(?:\{(?-1)\}[^{}]*)*))?\}', preg_quote($key))
             );
             preg_match($pattern, $path, $matches);
-            if (isset($matches[1]) && !preg_match('/'.$matches[1].'/', (string)$value)) {
+            if (isset($matches[1]) && !preg_match('/' . $matches[1] . '/', (string)$value)) {
                 throw new \InvalidArgumentException(
                     "Substitution value '$value' does not match '$key' parameter '{$matches[1]}' pattern."
                 );
@@ -297,6 +303,7 @@ class Route implements UrlBuilder
             }
         }
         $path = implode('', array_reverse($segs));
+
         return $path;
     }
 

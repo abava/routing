@@ -165,7 +165,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
         
         return $this;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -178,12 +178,13 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
 
     /**
      * Adds group prefix to provided path
-     * 
+     *
      * @param string $path
      * @return string
      */
-    protected function addPrefixToPath(string $path): string {
-        return $path === '/' || $path === '' ? $this->prefix : rtrim($this->prefix, '/') . '/'.  ltrim($path, '/');
+    protected function addPrefixToPath(string $path): string
+    {
+        return $path === '/' || $path === '' ? $this->prefix : rtrim($this->prefix, '/') . '/' . ltrim($path, '/');
     }
 
 }
