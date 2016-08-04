@@ -35,10 +35,12 @@ class GroupTest extends TestCase
      */
     public function canAddRoute()
     {
-        $this->collector->shouldReceive('addRoute')->with('GET', '/', 'handle')->once();
-        $group = new \Abava\Routing\Group('/', function () {
+        $group = new \Abava\Routing\Group('/', function() {
         }, $this->collector);
         $group->addRoute('GET', '/', 'handle');
+        $existingRoutes = $group->getRoutes();
+        $this->assertCount(1, $existingRoutes);
+        $this->assertInstanceOf(\Abava\Routing\Route::class, $existingRoutes[0]);
     }
 
     /**
