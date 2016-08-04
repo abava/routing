@@ -77,11 +77,12 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
      * @param string $method
      * @param string $path
      * @param mixed $handler
+     * @thrown InvalidArgumentException
      * @return void
      */
     public function addRoute($method, $path, $handler)
     {
-        $this->routes[] = new Route($method, $this->addPrefixToPath($path), $handler);
+        $this->routes[] = new Route((array) $method, $this->addPrefixToPath($path), $handler);
     }
 
     /**
