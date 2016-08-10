@@ -15,7 +15,6 @@ use Psr\Http\Message\RequestInterface;
  */
 class Collector extends RouteCollector implements CollectorContract, UrlGenerator
 {
-    use CollectorTrait;
 
     /**
      * Captured routes

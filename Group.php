@@ -13,7 +13,6 @@ use Psr\Http\Message\RequestInterface;
  */
 class Group implements RouteCollectorContract, GroupRouteCollectorContract
 {
-    use CollectorTrait;
 
     /**
      * Route collector instance
