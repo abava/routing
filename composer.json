@@ -14,22 +14,15 @@
     "autoload": {
         "psr-4": {
             "Abava\\Routing\\": "/"
-        }
+        },
+        "exclude-from-classmap": [
+            "/tests/"
+        ]
     },
     "minimum-stability": "dev",
     "require-dev": {
-        "phpunit/phpunit": "5.4"
+        "phpunit/phpunit": "^5.4"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/abava/container.git"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/abava/http.git"
-        }
-    ],
     "require": {
         "nikic/fast-route": "^1.0",
         "abava/container": "dev-master",
