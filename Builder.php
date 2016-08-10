@@ -48,30 +48,23 @@ class Builder
      * Builder constructor.
      *
      * @param array $methods
+     * @param string $path
+     * @param $action
      */
-    public function __construct(array $methods)
+    public function __construct(array $methods, string $path, $action)
     {
         $this->methods = $methods;
+        $this->path = $path;
+        $this->action = $action;
     }
 
     /**
      * @param string $path
      * @return Builder
      */
-    public function url(string $path): Builder
+    public function path(string $path): Builder
     {
         $this->path = $path;
-
-        return $this;
-    }
-
-    /**
-     * @param array $methods
-     * @return Builder
-     */
-    public function methods(array $methods): Builder
-    {
-        $this->methods = $methods;
 
         return $this;
     }
@@ -80,9 +73,20 @@ class Builder
      * @param callable|string $action
      * @return Builder
      */
-    public function to($action): Builder
+    public function action($action): Builder
     {
         $this->action = $action;
+
+        return $this;
+    }
+
+    /**
+     * @param array ...$method
+     * @return Builder
+     */
+    public function method(...$method): Builder
+    {
+        $this->methods = $method;
 
         return $this;
     }
@@ -160,74 +164,93 @@ class Builder
 
     /**
      * @param string $path
+     * @param $action
      * @return Builder
      */
-    public static function get(string $path): Builder
+    public static function get(string $path, $action): Builder
     {
-        return (new static(['GET']))->url($path);
+        return new static(['GET'], $path, $action);
     }
 
     /**
      * @param string $path
+     * @param $action
      * @return Builder
      */
-    public static function post(string $path): Builder
+    public static function post(string $path, $action): Builder
     {
-        return (new static(['POST']))->url($path);
+        return new static(['POST'], $path, $action);
     }
 
     /**
      * @param string $path
+     * @param $action
      * @return Builder
      */
-    public static function put(string $path): Builder
+    public static function put(string $path, $action): Builder
     {
-        return (new static(['PUT']))->url($path);
+        return new static(['PUT'], $path, $action);
     }
 
     /**
      * @param string $path
+     * @param $action
      * @return Builder
      */
-    public static function patch(string $path): Builder
+    public static function patch(string $path, $action): Builder
     {
-        return (new static(['PATCH']))->url($path);
+        return new static(['PATCH'], $path, $action);
     }
 
     /**
      * @param string $path
+     * @param $action
      * @return Builder
      */
-    public static function options(string $path): Builder
+    public static function options(string $path, $action): Builder
     {
-        return (new static(['OPTIONS']))->url($path);
+        return new static(['OPTIONS'], $path, $action);
     }
 
     /**
      * @param string $path
+     * @param $action
      * @return Builder
      */
-    public static function delete(string $path): Builder
+    public static function delete(string $path, $action): Builder
     {
-        return (new static(['DELETE']))->url($path);
+        return new static(['DELETE'], $path, $action);
     }
 
     /**
      * @param string $path
+     * @param $action
      * @return Builder
      */
-    public static function head(string $path): Builder
+    public static function head(string $path, $action): Builder
     {
-        return (new static(['HEAD']))->url($path);
+        return new static(['HEAD'], $path, $action);
     }
 
     /**
      * @param $path
+     * @param $action
      * @return Builder
      */
-    public static function any($path): Builder
+    public static function any($path, $action): Builder
     {
-        return (new static(['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE']))->url($path);
+        return new static(['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE'], $path, $action);
+    }
+
+    /**
+     * @param array $methods
+     * @param string $path
+     * @param $action
+     * @return Builder
+     */
+    public static function create(array $methods, string $path, $action): Builder
+    {
+        return new static($methods, $path, $action);
     }
 
 }
