@@ -2,6 +2,8 @@
 
 namespace Abava\Routing;
 
+use Abava\Routing\Contract\Middleware;
+
 /**
  * Class Builder
  *
@@ -49,7 +51,7 @@ class Builder
      *
      * @param array $methods
      * @param string $path
-     * @param $action
+     * @param callable|string $action
      */
     public function __construct(array $methods, string $path, $action)
     {
@@ -115,7 +117,7 @@ class Builder
 
     /**
      * @param string $name
-     * @param $middleware
+     * @param string|callable|Middleware $middleware
      * @return Builder
      */
     public function middleware(string $name, $middleware): Builder
@@ -164,7 +166,7 @@ class Builder
 
     /**
      * @param string $path
-     * @param $action
+     * @param callable|string $action
      * @return Builder
      */
     public static function get(string $path, $action): Builder
@@ -174,7 +176,7 @@ class Builder
 
     /**
      * @param string $path
-     * @param $action
+     * @param callable|string $action
      * @return Builder
      */
     public static function post(string $path, $action): Builder
@@ -184,7 +186,7 @@ class Builder
 
     /**
      * @param string $path
-     * @param $action
+     * @param callable|string $action
      * @return Builder
      */
     public static function put(string $path, $action): Builder
@@ -194,7 +196,7 @@ class Builder
 
     /**
      * @param string $path
-     * @param $action
+     * @param callable|string $action
      * @return Builder
      */
     public static function patch(string $path, $action): Builder
@@ -204,7 +206,7 @@ class Builder
 
     /**
      * @param string $path
-     * @param $action
+     * @param callable|string $action
      * @return Builder
      */
     public static function options(string $path, $action): Builder
@@ -214,7 +216,7 @@ class Builder
 
     /**
      * @param string $path
-     * @param $action
+     * @param callable|string $action
      * @return Builder
      */
     public static function delete(string $path, $action): Builder
@@ -224,7 +226,7 @@ class Builder
 
     /**
      * @param string $path
-     * @param $action
+     * @param callable|string $action
      * @return Builder
      */
     public static function head(string $path, $action): Builder
@@ -234,7 +236,7 @@ class Builder
 
     /**
      * @param $path
-     * @param $action
+     * @param callable|string $action
      * @return Builder
      */
     public static function any($path, $action): Builder
@@ -245,7 +247,7 @@ class Builder
     /**
      * @param array $methods
      * @param string $path
-     * @param $action
+     * @param callable|string $action
      * @return Builder
      */
     public static function create(array $methods, string $path, $action): Builder
