@@ -68,6 +68,11 @@ class Generic implements Strategy
             $result = $result->__toString();
         }
 
+        if ($this->shouldBeJson($result)) {
+            // Returns JSON response in case of arrayed data
+            return $this->responseFactory->createJsonResponse($result);
+        }
+
         if (is_string($result)) {
             // String supposed to be appended to response body
             return $this->responseFactory->createResponse()->append($result);
@@ -77,5 +82,16 @@ class Generic implements Strategy
         throw new \RuntimeException('Controller action result must be either ResponseInterface or string');
     }
 
-
+    /**
+     * Defines, if response should be JSON response, based on content body data type
+     *
+     * @param  mixed $content
+     * @return bool
+     */
+    protected function shouldBeJson($content)
+    {
+        return $content instanceof \JsonSerializable
+            || $content instanceof \ArrayObject
+            || is_array($content);
+    }
 }
