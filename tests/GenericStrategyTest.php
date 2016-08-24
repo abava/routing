@@ -66,6 +66,27 @@ class GenericStrategyTest extends TestCase
     /**
      * @test
      */
+    public function canReturnJSONResponse()
+    {
+        $this->caller->shouldReceive('call')
+            ->with($this->route->getCallable(), $this->route->getParameters())
+            ->andReturn(['foo' => 'bar'])
+            ->once();
+
+        $response = Mockery::mock(\Abava\Http\JsonResponse::class);
+        $this->factory->shouldReceive('createJsonResponse')->with(['foo' => 'bar'])->andReturn($response)->once();
+
+        $strategy = new \Abava\Routing\Strategy\Generic($this->caller, $this->factory);
+        $result = $strategy->dispatch($this->route);
+
+        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $result);
+        $this->assertInstanceOf(\Abava\Http\JsonResponse::class, $result);
+        $this->assertSame($response, $result);
+    }
+
+    /**
+     * @test
+     */
     public function throwsExceptionOnInvalidCallerResult()
     {
         $this->expectException(RuntimeException::class);

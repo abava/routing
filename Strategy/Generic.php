@@ -7,6 +7,8 @@ use Abava\Http\Factory\ResponseFactory;
 use Abava\Routing\Contract\Strategy;
 use Abava\Routing\Route;
 use Psr\Http\Message\ResponseInterface;
+use ArrayObject;
+use JsonSerializable;
 
 /**
  * Class Generic
@@ -90,8 +92,8 @@ class Generic implements Strategy
      */
     protected function shouldBeJson($content)
     {
-        return $content instanceof \JsonSerializable
-            || $content instanceof \ArrayObject
+        return $content instanceof JsonSerializable
+            || $content instanceof ArrayObject
             || is_array($content);
     }
 }
