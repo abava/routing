@@ -2,13 +2,13 @@
 
 namespace Abava\Routing\Strategy;
 
-use Abava\Container\Contract\Caller;
+use Abava\Container\Contract\Container;
 use Abava\Http\Factory\ResponseFactory;
 use Abava\Routing\Contract\Strategy;
 use Abava\Routing\Route;
-use Psr\Http\Message\ResponseInterface;
 use ArrayObject;
 use JsonSerializable;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Generic
@@ -21,9 +21,9 @@ class Generic implements Strategy
     /**
      * Caller instance to create controller and call action
      *
-     * @var Caller
+     * @var Container
      */
-    protected $caller;
+    protected $container;
 
     /**
      * Response factory will create new response instance if controller action will not return any
@@ -35,12 +35,12 @@ class Generic implements Strategy
     /**
      * Generic strategy constructor.
      *
-     * @param Caller $caller
+     * @param Container $container
      * @param ResponseFactory $responseFactory
      */
-    public function __construct(Caller $caller, ResponseFactory $responseFactory)
+    public function __construct(Container $container, ResponseFactory $responseFactory)
     {
-        $this->caller = $caller;
+        $this->container = $container;
         $this->responseFactory = $responseFactory;
     }
 
@@ -49,7 +49,7 @@ class Generic implements Strategy
      */
     public function dispatch(Route $route): ResponseInterface
     {
-        $response = $this->caller->call($route->getCallable(), $route->getParameters());
+        $response = $this->container->call($route->getCallable(), $route->getParameters());
 
         return $this->handleResult($response);
     }
