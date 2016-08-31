@@ -9,7 +9,7 @@ use FastRoute\Dispatcher;
  *
  * @package Abava\Routing\Contract\Dispatcher
  */
-interface Factory
+interface DispatcherFactory
 {
 
     /**

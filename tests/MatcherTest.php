@@ -16,7 +16,7 @@ class MatcherTest extends TestCase
 
     public function setUp()
     {
-        $this->factory = Mockery::mock(\Abava\Routing\Contract\Dispatcher\Factory::class);
+        $this->factory = Mockery::mock(\Abava\Routing\Contract\Dispatcher\DispatcherFactory::class);
         $this->request = Mockery::mock(\Psr\Http\Message\RequestInterface::class);
         $this->collector = Mockery::mock(\Abava\Routing\Contract\Collector::class);
         $this->dispatcher = Mockery::mock(\FastRoute\Dispatcher::class);

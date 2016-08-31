@@ -3,7 +3,7 @@
 namespace Abava\Routing;
 
 use Abava\Routing\Contract\Collector as RouteCollector;
-use Abava\Routing\Contract\Dispatcher\Factory;
+use Abava\Routing\Contract\Dispatcher\DispatcherFactory;
 use Abava\Routing\Contract\Matcher as MatcherContract;
 use Abava\Routing\Exceptions\NotAllowedException;
 use Abava\Routing\Exceptions\NotFoundException;
@@ -20,11 +20,11 @@ class Matcher implements MatcherContract
     /**
      * Dispatcher factory instance
      *
-     * @var Factory
+     * @var DispatcherFactory
      */
     protected $factory;
 
-    public function __construct(Factory $factory)
+    public function __construct(DispatcherFactory $factory)
     {
         $this->factory = $factory;
     }

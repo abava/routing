@@ -2,7 +2,7 @@
 
 namespace Abava\Routing\Dispatcher\Factory;
 
-use Abava\Routing\Contract\Dispatcher\Factory;
+use Abava\Routing\Contract\Dispatcher\DispatcherFactory;
 use FastRoute\Dispatcher;
 
 /**
@@ -10,7 +10,7 @@ use FastRoute\Dispatcher;
  *
  * @package Abava\Routing\Dispatcher\Factory
  */
-class GroupCountBasedFactory implements Factory
+class GroupCountBasedDispatcherFactory implements DispatcherFactory
 {
 
     /**
