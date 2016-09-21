@@ -1,17 +1,17 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing\Middleware;
+namespace Venta\Routing\Middleware;
 
-use Abava\Container\Contract\Container;
-use Abava\Routing\Contract\Middleware;
-use Abava\Routing\Contract\Middleware\Collector as CollectorContract;
+use Venta\Container\Contract\Container;
+use Venta\Routing\Contract\Middleware;
+use Venta\Routing\Contract\Middleware\Collector as CollectorContract;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Collector
  *
- * @package Abava\Routing\Middleware
+ * @package Venta\Routing\Middleware
  */
 class Collector implements CollectorContract
 {
@@ -57,23 +57,51 @@ class Collector implements CollectorContract
     }
 
     /**
+     * @return Middleware
+     */
+    public function current()
+    {
+        $name = current($this->order);
+        $middleware = $this->middlewares[$name];
+        // Middleware instantiation is deferred
+        if (is_string($middleware)) {
+            // Make middleware using container instance
+            return $this->middlewares[$name] = $this->container->make($middleware);
+        } elseif (is_callable($middleware)) {
+            // Wrap callable middleware to return MiddlewareContract instance
+            return $this->middlewares[$name] = $this->wrapCallableToContract($middleware);
+        } else {
+            // No additional action needed, already instance of MiddlewareContract
+            return $middleware;
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
-    public function pushMiddleware(string $name, $middleware)
+    public function has(string $name): bool
     {
-        if ($this->has($name)) {
-            throw new \InvalidArgumentException("Middleware '$name' is already defined");
-        } elseif ($this->isValidMiddleware($middleware)) {
-            $this->middlewares[$name] = $middleware;
-            // Adding middleware to the end of the list
-            if ($this->reversed) {
-                array_unshift($this->order, $name);
-            } else {
-                $this->order[] = $name;
-            }
-        } else {
-            throw new \InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
-        }
+        return isset($this->middlewares[$name]);
+    }
+
+    /**
+     * Returns current middleware name
+     *
+     * @return string
+     */
+    public function key()
+    {
+        return $this->order[key($this->order)];
+    }
+
+    /**
+     * Returns next middleware name
+     *
+     * @return string
+     */
+    public function next()
+    {
+        return next($this->order);
     }
 
     /**
@@ -92,9 +120,9 @@ class Collector implements CollectorContract
             $afterIndex = array_search($after, $this->order);
             // Adding middleware after provided name
             $this->order = array_merge(
-                array_slice($this->order, 0, $afterIndex+1),
+                array_slice($this->order, 0, $afterIndex + 1),
                 [$name],
-                array_slice($this->order, $afterIndex+1)
+                array_slice($this->order, $afterIndex + 1)
             );
         } else {
             throw new \InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
@@ -129,49 +157,35 @@ class Collector implements CollectorContract
     /**
      * {@inheritdoc}
      */
-    public function has(string $name): bool
+    public function pushMiddleware(string $name, $middleware)
     {
-        return isset($this->middlewares[$name]);
-    }
-
-    /**
-     * @return Middleware
-     */
-    public function current()
-    {
-        $name = current($this->order);
-        $middleware = $this->middlewares[$name];
-        // Middleware instantiation is deferred
-        if (is_string($middleware)) {
-            // Make middleware using container instance
-            return $this->middlewares[$name] = $this->container->make($middleware);
-        } elseif (is_callable($middleware)) {
-            // Wrap callable middleware to return MiddlewareContract instance
-            return $this->middlewares[$name] = $this->wrapCallableToContract($middleware);
+        if ($this->has($name)) {
+            throw new \InvalidArgumentException("Middleware '$name' is already defined");
+        } elseif ($this->isValidMiddleware($middleware)) {
+            $this->middlewares[$name] = $middleware;
+            // Adding middleware to the end of the list
+            if ($this->reversed) {
+                array_unshift($this->order, $name);
+            } else {
+                $this->order[] = $name;
+            }
         } else {
-            // No additional action needed, already instance of MiddlewareContract
-            return $middleware;
+            throw new \InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
         }
     }
 
     /**
-     * Returns next middleware name
+     * Rewinds middleware array
      *
-     * @return string
+     * @return int
      */
-    public function next()
+    public function rewind()
     {
-        return next($this->order);
-    }
+        if (!$this->reversed) {
+            $this->reverse();
+        }
 
-    /**
-     * Returns current middleware name
-     *
-     * @return string
-     */
-    public function key()
-    {
-        return $this->order[key($this->order)];
+        return reset($this->order);
     }
 
     /**
@@ -185,19 +199,6 @@ class Collector implements CollectorContract
     }
 
     /**
-     * Rewinds middleware array
-     *
-     * @return int
-     */
-    public function rewind()
-    {
-        if (!$this->reversed) {
-            $this->reverse();
-        }
-        return reset($this->order);
-    }
-
-    /**
      * Wraps callable (e.g. closure) with anonymous class that implements Middleware contract
      * Does not check if callable's typehinting fits Middleware contract's handle method.
      *
@@ -206,7 +207,8 @@ class Collector implements CollectorContract
      */
     protected function wrapCallableToContract(
         /** @noinspection PhpUnusedParameterInspection */
-        callable $callable): Middleware
+        callable $callable
+    ): Middleware
     {
         return new class($callable) implements Middleware
         {

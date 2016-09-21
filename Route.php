@@ -1,16 +1,16 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing;
+namespace Venta\Routing;
 
-use Abava\Routing\Contract\Middleware;
-use Abava\Routing\Contract\UrlBuilder;
-use Abava\Routing\Middleware\ValidatorTrait;
+use Venta\Routing\Contract\Middleware;
+use Venta\Routing\Contract\UrlBuilder;
+use Venta\Routing\Middleware\ValidatorTrait;
 
 /**
  * Class Route
  * Is immutable Value-Object
  *
- * @package Abava\Routing
+ * @package Venta\Routing
  */
 class Route implements UrlBuilder
 {
@@ -25,20 +25,6 @@ class Route implements UrlBuilder
     protected $callable;
 
     /**
-     * Route allowed methods
-     *
-     * @var string[]
-     */
-    protected $methods = [];
-
-    /**
-     * Route path
-     *
-     * @var string
-     */
-    protected $path = '';
-
-    /**
      * Host to apply route to
      *
      * @var string
@@ -46,11 +32,18 @@ class Route implements UrlBuilder
     protected $host = '';
 
     /**
-     * Scheme to apply route to
+     * Route allowed methods
      *
-     * @var string
+     * @var string[]
      */
-    protected $scheme = '';
+    protected $methods = [];
+
+    /**
+     * Route middlewares
+     *
+     * @var Middleware[]
+     */
+    protected $middlewares = [];
 
     /**
      * Route name
@@ -67,11 +60,18 @@ class Route implements UrlBuilder
     protected $parameters = [];
 
     /**
-     * Route middlewares
+     * Route path
      *
-     * @var Middleware[]
+     * @var string
      */
-    protected $middlewares = [];
+    protected $path = '';
+
+    /**
+     * Scheme to apply route to
+     *
+     * @var string
+     */
+    protected $scheme = '';
 
     /**
      * Route constructor.
@@ -98,13 +98,13 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get the path.
+     * Get the host
      *
      * @return string
      */
-    public function getPath(): string
+    public function getHost(): string
     {
-        return $this->path;
+        return $this->host;
     }
 
     /**
@@ -118,23 +118,13 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get the host
+     * Get route specific middleware array
      *
-     * @return string
+     * @return array
      */
-    public function getHost(): string
+    public function getMiddlewares(): array
     {
-        return $this->host;
-    }
-
-    /**
-     * Get the scheme
-     *
-     * @return string
-     */
-    public function getScheme(): string
-    {
-        return $this->scheme;
+        return $this->middlewares;
     }
 
     /**
@@ -148,48 +138,6 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Set the host
-     *
-     * @param string $host
-     * @return Route
-     */
-    public function withHost(string $host): Route
-    {
-        $route = clone $this;
-        $route->host = $host;
-
-        return $route;
-    }
-
-    /**
-     * Set the scheme
-     *
-     * @param string $scheme
-     * @return Route
-     */
-    public function withScheme(string $scheme): Route
-    {
-        $route = clone $this;
-        $route->scheme = $scheme;
-
-        return $route;
-    }
-
-    /**
-     * Set the name
-     *
-     * @param string $name
-     * @return Route
-     */
-    public function withName(string $name): Route
-    {
-        $route = clone $this;
-        $route->name = $name;
-
-        return $route;
-    }
-
-    /**
      * Get route parameters
      *
      * @return array
@@ -200,60 +148,23 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Set route parameters
+     * Get the path.
      *
-     * @param array $parameters
-     * @return Route
+     * @return string
      */
-    public function withParameters(array $parameters): Route
+    public function getPath(): string
     {
-        $route = clone $this;
-        $route->parameters = $parameters;
-
-        return $route;
+        return $this->path;
     }
 
     /**
-     * Get route specific middleware array
+     * Get the scheme
      *
-     * @return array
+     * @return string
      */
-    public function getMiddlewares(): array
+    public function getScheme(): string
     {
-        return $this->middlewares;
-    }
-
-    /**
-     * Add middleware to route
-     *
-     * @param string $name
-     * @param $middleware
-     * @return Route
-     */
-    public function withMiddleware(string $name, $middleware): Route
-    {
-        if ($this->isValidMiddleware($middleware)) {
-            $route = clone $this;
-            $route->middlewares[$name] = $middleware;
-
-            return $route;
-        } else {
-            throw new \InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
-        }
-    }
-
-    /**
-     * Set the path
-     *
-     * @param string $path
-     * @return Route
-     */
-    public function withPath(string $path): Route
-    {
-        $route = clone $this;
-        $route->path = $path;
-
-        return $route;
+        return $this->scheme;
     }
 
     /**
@@ -305,6 +216,95 @@ class Route implements UrlBuilder
         $path = implode('', array_reverse($segs));
 
         return $path;
+    }
+
+    /**
+     * Set the host
+     *
+     * @param string $host
+     * @return Route
+     */
+    public function withHost(string $host): Route
+    {
+        $route = clone $this;
+        $route->host = $host;
+
+        return $route;
+    }
+
+    /**
+     * Add middleware to route
+     *
+     * @param string $name
+     * @param $middleware
+     * @return Route
+     */
+    public function withMiddleware(string $name, $middleware): Route
+    {
+        if ($this->isValidMiddleware($middleware)) {
+            $route = clone $this;
+            $route->middlewares[$name] = $middleware;
+
+            return $route;
+        } else {
+            throw new \InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
+        }
+    }
+
+    /**
+     * Set the name
+     *
+     * @param string $name
+     * @return Route
+     */
+    public function withName(string $name): Route
+    {
+        $route = clone $this;
+        $route->name = $name;
+
+        return $route;
+    }
+
+    /**
+     * Set route parameters
+     *
+     * @param array $parameters
+     * @return Route
+     */
+    public function withParameters(array $parameters): Route
+    {
+        $route = clone $this;
+        $route->parameters = $parameters;
+
+        return $route;
+    }
+
+    /**
+     * Set the path
+     *
+     * @param string $path
+     * @return Route
+     */
+    public function withPath(string $path): Route
+    {
+        $route = clone $this;
+        $route->path = $path;
+
+        return $route;
+    }
+
+    /**
+     * Set the scheme
+     *
+     * @param string $scheme
+     * @return Route
+     */
+    public function withScheme(string $scheme): Route
+    {
+        $route = clone $this;
+        $route->scheme = $scheme;
+
+        return $route;
     }
 
 }

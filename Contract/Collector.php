@@ -1,15 +1,15 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing\Contract;
+namespace Venta\Routing\Contract;
 
-use Abava\Routing\Route;
+use Venta\Routing\Route;
 use FastRoute\DataGenerator;
 use Psr\Http\Message\RequestInterface;
 
 /**
  * Interface Collector
  *
- * @package Abava\Routing\Contract
+ * @package Venta\Routing\Contracts
  */
 interface Collector extends DataGenerator
 {
@@ -24,7 +24,7 @@ interface Collector extends DataGenerator
 
     /**
      * Filters route collection to fit provided request
-     * 
+     *
      * @param RequestInterface $request
      * @return array
      */

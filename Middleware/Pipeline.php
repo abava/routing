@@ -1,16 +1,16 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing\Middleware;
+namespace Venta\Routing\Middleware;
 
-use Abava\Routing\Contract\Middleware;
-use Abava\Routing\Contract\Middleware\Pipeline as PipelineContract;
+use Venta\Routing\Contract\Middleware;
+use Venta\Routing\Contract\Middleware\Pipeline as PipelineContract;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Pipeline
  *
- * @package Abava\Routing\Middleware
+ * @package Venta\Routing\Middleware
  */
 class Pipeline implements PipelineContract
 {

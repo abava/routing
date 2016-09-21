@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing\Contract\Middleware;
+namespace Venta\Routing\Contract\Middleware;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Interface Pipeline
  *
- * @package Abava\Routing\Contract\Middleware
+ * @package Venta\Routing\Contracts\Middleware
  */
 interface Pipeline
 {

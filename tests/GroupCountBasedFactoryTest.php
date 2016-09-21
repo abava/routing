@@ -1,6 +1,6 @@
 <?php
 
-use Abava\Routing\Dispatcher\Factory\GroupCountBasedDispatcherFactory;
+use Venta\Routing\Dispatcher\Factory\GroupCountBasedDispatcherFactory;
 use FastRoute\Dispatcher\GroupCountBased;
 use PHPUnit\Framework\TestCase;
 
@@ -15,7 +15,7 @@ class GroupCountBasedFactoryTest extends TestCase
     public function canMake()
     {
         $factory = new GroupCountBasedDispatcherFactory();
-        $dispatcher = $factory->make([[], []]);
+        $dispatcher = $factory->create([[], []]);
         $this->assertInstanceOf(GroupCountBased::class, $dispatcher);
     }
 

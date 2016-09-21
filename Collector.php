@@ -1,20 +1,27 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing;
+namespace Venta\Routing;
 
-use Abava\Routing\Contract\Collector as CollectorContract;
-use Abava\Routing\Contract\Group as GroupRouteCollectorContract;
-use Abava\Routing\Contract\UrlGenerator;
+use Venta\Routing\Contract\Collector as CollectorContract;
+use Venta\Routing\Contract\Group as GroupRouteCollectorContract;
+use Venta\Routing\Contract\UrlGenerator;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\RequestInterface;
 
 /**
  * Class RouteCollector
  *
- * @package Abava\Routing
+ * @package Venta\Routing
  */
 class Collector extends RouteCollector implements CollectorContract, UrlGenerator
 {
+
+    /**
+     * Route groups
+     *
+     * @var Group[]
+     */
+    protected $groups = [];
 
     /**
      * Captured routes
@@ -24,11 +31,16 @@ class Collector extends RouteCollector implements CollectorContract, UrlGenerato
     protected $routes = [];
 
     /**
-     * Route groups
-     *
-     * @var Group[]
+     * {@inheritdoc}
      */
-    protected $groups = [];
+    public function add(Route $route)
+    {
+        if ($route->getName()) {
+            $this->routes[$route->getName()] = $route;
+        } else {
+            $this->routes[] = $route;
+        }
+    }
 
     /**
      * Adds route directly to parser / data-generator
@@ -44,30 +56,6 @@ class Collector extends RouteCollector implements CollectorContract, UrlGenerato
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function add(Route $route)
-    {
-        if ($route->getName()) {
-            $this->routes[$route->getName()] = $route;
-        } else {
-            $this->routes[] = $route;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function group(string $prefix, callable $callback): GroupRouteCollectorContract
-    {
-        $group = new Group($prefix, $callback, $this);
-
-        $this->groups[] = $group;
-
-        return $group;
-    }
-
-    /**
      * Returns ALL routes
      *
      * @return array
@@ -80,6 +68,7 @@ class Collector extends RouteCollector implements CollectorContract, UrlGenerato
             // This won't filter host / scheme routes
             parent::addRoute($route->getMethods(), $route->getPath(), $route);
         }
+
         return parent::getData();
     }
 
@@ -108,6 +97,7 @@ class Collector extends RouteCollector implements CollectorContract, UrlGenerato
             // Pass route for parsing and data generation
             parent::addRoute($route->getMethods(), $route->getPath(), $route);
         }
+
         return parent::getData();
     }
 
@@ -119,26 +109,20 @@ class Collector extends RouteCollector implements CollectorContract, UrlGenerato
     public function getRoutes(): array
     {
         $this->collectGroups();
+
         return $this->routes;
     }
 
     /**
-     * Collect routes from groups
-     *
-     * @return void
+     * {@inheritdoc}
      */
-    protected function collectGroups()
+    public function group(string $prefix, callable $callback): GroupRouteCollectorContract
     {
-        do {
-            // Groups may add other groups,
-            // so we need to iterate through array
-            // until no groups remain
-            foreach ($this->groups as $key => $group) {
-                $group->collect();
-                // delete group to prevent route duplication
-                unset($this->groups[$key]);
-            }
-        } while (count($this->groups) > 0);
+        $group = new Group($prefix, $callback, $this);
+
+        $this->groups[] = $group;
+
+        return $group;
     }
 
     /**
@@ -161,7 +145,27 @@ class Collector extends RouteCollector implements CollectorContract, UrlGenerato
             throw new \InvalidArgumentException("Route '$name' not found");
         }
         $route = $routes[$name];
+
         return $route->url($substitutions);
+    }
+
+    /**
+     * Collect routes from groups
+     *
+     * @return void
+     */
+    protected function collectGroups()
+    {
+        do {
+            // Groups may add other groups,
+            // so we need to iterate through array
+            // until no groups remain
+            foreach ($this->groups as $key => $group) {
+                $group->collect();
+                // delete group to prevent route duplication
+                unset($this->groups[$key]);
+            }
+        } while (count($this->groups) > 0);
     }
 
 }

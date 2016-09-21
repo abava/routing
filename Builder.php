@@ -1,26 +1,16 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing;
+namespace Venta\Routing;
 
-use Abava\Routing\Contract\Middleware;
+use Venta\Routing\Contract\Middleware;
 
 /**
  * Class Builder
  *
- * @package Abava\Routing
+ * @package Venta\Routing
  */
 class Builder
 {
-    /**
-     * @var string
-     */
-    protected $path;
-
-    /**
-     * @var array
-     */
-    protected $methods;
-
     /**
      * @var string|callable
      */
@@ -32,9 +22,9 @@ class Builder
     protected $host;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $scheme;
+    protected $methods;
 
     /**
      * @var array
@@ -45,6 +35,16 @@ class Builder
      * @var string
      */
     protected $name;
+
+    /**
+     * @var string
+     */
+    protected $path;
+
+    /**
+     * @var string
+     */
+    protected $scheme;
 
     /**
      * Builder constructor.
@@ -61,14 +61,94 @@ class Builder
     }
 
     /**
-     * @param string $path
+     * @param $path
+     * @param callable|string $action
      * @return Builder
      */
-    public function path(string $path): Builder
+    public static function any($path, $action): Builder
     {
-        $this->path = $path;
+        return new static(['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE'], $path, $action);
+    }
 
-        return $this;
+    /**
+     * @param array $methods
+     * @param string $path
+     * @param callable|string $action
+     * @return Builder
+     */
+    public static function create(array $methods, string $path, $action): Builder
+    {
+        return new static($methods, $path, $action);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $action
+     * @return Builder
+     */
+    public static function delete(string $path, $action): Builder
+    {
+        return new static(['DELETE'], $path, $action);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $action
+     * @return Builder
+     */
+    public static function get(string $path, $action): Builder
+    {
+        return new static(['GET'], $path, $action);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $action
+     * @return Builder
+     */
+    public static function head(string $path, $action): Builder
+    {
+        return new static(['HEAD'], $path, $action);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $action
+     * @return Builder
+     */
+    public static function options(string $path, $action): Builder
+    {
+        return new static(['OPTIONS'], $path, $action);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $action
+     * @return Builder
+     */
+    public static function patch(string $path, $action): Builder
+    {
+        return new static(['PATCH'], $path, $action);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $action
+     * @return Builder
+     */
+    public static function post(string $path, $action): Builder
+    {
+        return new static(['POST'], $path, $action);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $action
+     * @return Builder
+     */
+    public static function put(string $path, $action): Builder
+    {
+        return new static(['PUT'], $path, $action);
     }
 
     /**
@@ -82,62 +162,6 @@ class Builder
         return $this;
     }
 
-    /**
-     * @param array ...$method
-     * @return Builder
-     */
-    public function method(...$method): Builder
-    {
-        $this->methods = $method;
-
-        return $this;
-    }
-
-    /**
-     * @param string $host
-     * @return Builder
-     */
-    public function host(string $host): Builder
-    {
-        $this->host = $host;
-
-        return $this;
-    }
-
-    /**
-     * @param string $scheme
-     * @return Builder
-     */
-    public function scheme(string $scheme): Builder
-    {
-        $this->scheme = $scheme;
-
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     * @param string|callable|Middleware $middleware
-     * @return Builder
-     */
-    public function middleware(string $name, $middleware): Builder
-    {
-        $this->middleware[$name] = $middleware;
-
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     * @return Builder
-     */
-    public function name(string $name): Builder
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-    
     /**
      * @return Route
      */
@@ -165,94 +189,70 @@ class Builder
     }
 
     /**
-     * @param string $path
-     * @param callable|string $action
+     * @param string $host
      * @return Builder
      */
-    public static function get(string $path, $action): Builder
+    public function host(string $host): Builder
     {
-        return new static(['GET'], $path, $action);
+        $this->host = $host;
+
+        return $this;
+    }
+
+    /**
+     * @param array ...$method
+     * @return Builder
+     */
+    public function method(...$method): Builder
+    {
+        $this->methods = $method;
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param string|callable|Middleware $middleware
+     * @return Builder
+     */
+    public function middleware(string $name, $middleware): Builder
+    {
+        $this->middleware[$name] = $middleware;
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return Builder
+     */
+    public function name(string $name): Builder
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     /**
      * @param string $path
-     * @param callable|string $action
      * @return Builder
      */
-    public static function post(string $path, $action): Builder
+    public function path(string $path): Builder
     {
-        return new static(['POST'], $path, $action);
+        $this->path = $path;
+
+        return $this;
     }
 
     /**
-     * @param string $path
-     * @param callable|string $action
+     * @param string $scheme
      * @return Builder
      */
-    public static function put(string $path, $action): Builder
+    public function scheme(string $scheme): Builder
     {
-        return new static(['PUT'], $path, $action);
-    }
+        $this->scheme = $scheme;
 
-    /**
-     * @param string $path
-     * @param callable|string $action
-     * @return Builder
-     */
-    public static function patch(string $path, $action): Builder
-    {
-        return new static(['PATCH'], $path, $action);
-    }
-
-    /**
-     * @param string $path
-     * @param callable|string $action
-     * @return Builder
-     */
-    public static function options(string $path, $action): Builder
-    {
-        return new static(['OPTIONS'], $path, $action);
-    }
-
-    /**
-     * @param string $path
-     * @param callable|string $action
-     * @return Builder
-     */
-    public static function delete(string $path, $action): Builder
-    {
-        return new static(['DELETE'], $path, $action);
-    }
-
-    /**
-     * @param string $path
-     * @param callable|string $action
-     * @return Builder
-     */
-    public static function head(string $path, $action): Builder
-    {
-        return new static(['HEAD'], $path, $action);
-    }
-
-    /**
-     * @param $path
-     * @param callable|string $action
-     * @return Builder
-     */
-    public static function any($path, $action): Builder
-    {
-        return new static(['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE'], $path, $action);
-    }
-
-    /**
-     * @param array $methods
-     * @param string $path
-     * @param callable|string $action
-     * @return Builder
-     */
-    public static function create(array $methods, string $path, $action): Builder
-    {
-        return new static($methods, $path, $action);
+        return $this;
     }
 
 }

@@ -1,23 +1,22 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing\Contract\Middleware;
+namespace Venta\Routing\Contract\Middleware;
 
 /**
  * Class Collector
  *
- * @package Abava\Routing\Contract\Middleware
+ * @package Venta\Routing\Contracts\Middleware
  */
 interface Collector extends \Iterator
 {
 
     /**
-     * Add middleware to the end
+     * Check if $name middleware has already been added to the collector
      *
      * @param string $name
-     * @param $middleware
-     * @return void
+     * @return bool
      */
-    public function pushMiddleware(string $name, $middleware);
+    public function has(string $name): bool;
 
     /**
      * Add middleware after $after named middleware
@@ -40,11 +39,12 @@ interface Collector extends \Iterator
     public function pushBefore(string $before, string $name, $middleware);
 
     /**
-     * Check if $name middleware has already been added to the collector
+     * Add middleware to the end
      *
      * @param string $name
-     * @return bool
+     * @param $middleware
+     * @return void
      */
-    public function has(string $name): bool;
+    public function pushMiddleware(string $name, $middleware);
 
 }

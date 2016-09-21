@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing\Contract\Dispatcher;
+namespace Venta\Routing\Contract\Dispatcher;
 
 use FastRoute\Dispatcher;
 
 /**
  * Interface Factory
  *
- * @package Abava\Routing\Contract\Dispatcher
+ * @package Venta\Routing\Contracts\Dispatcher
  */
 interface DispatcherFactory
 {
@@ -18,6 +18,6 @@ interface DispatcherFactory
      * @param array $data
      * @return Dispatcher
      */
-    public function make(array $data): Dispatcher;
+    public function create(array $data): Dispatcher;
 
 }

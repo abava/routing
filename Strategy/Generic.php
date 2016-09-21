@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing\Strategy;
+namespace Venta\Routing\Strategy;
 
-use Abava\Container\Contract\Container;
-use Abava\Http\Factory\ResponseFactory;
-use Abava\Routing\Contract\Strategy;
-use Abava\Routing\Route;
+use Venta\Container\Contract\Container;
+use Venta\Http\Factory\ResponseFactory;
+use Venta\Routing\Contract\Strategy;
+use Venta\Routing\Route;
 use ArrayObject;
 use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
@@ -13,7 +13,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Class Generic
  *
- * @package Abava\Routing\Strategy
+ * @package Venta\Routing\Strategy
  */
 class Generic implements Strategy
 {
@@ -93,7 +93,7 @@ class Generic implements Strategy
     protected function shouldBeJson($content)
     {
         return $content instanceof JsonSerializable
-            || $content instanceof ArrayObject
-            || is_array($content);
+               || $content instanceof ArrayObject
+               || is_array($content);
     }
 }

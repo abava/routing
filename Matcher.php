@@ -1,18 +1,18 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing;
+namespace Venta\Routing;
 
-use Abava\Routing\Contract\Collector as RouteCollector;
-use Abava\Routing\Contract\Dispatcher\DispatcherFactory;
-use Abava\Routing\Contract\Matcher as MatcherContract;
-use Abava\Routing\Exceptions\NotAllowedException;
-use Abava\Routing\Exceptions\NotFoundException;
+use Venta\Routing\Contract\Collector as RouteCollector;
+use Venta\Routing\Contract\Dispatcher\DispatcherFactory;
+use Venta\Routing\Contract\Matcher as MatcherContract;
+use Venta\Routing\Exceptions\NotAllowedException;
+use Venta\Routing\Exceptions\NotFoundException;
 use Psr\Http\Message\RequestInterface;
 
 /**
  * Class Dispatcher
  *
- * @package Abava\Routing
+ * @package Venta\Routing
  */
 class Matcher implements MatcherContract
 {
@@ -36,12 +36,13 @@ class Matcher implements MatcherContract
      */
     public function match(RequestInterface $request, RouteCollector $collector): Route
     {
-        $dispatcher = $this->factory->make($collector->getFilteredData($request));
+        $dispatcher = $this->factory->create($collector->getFilteredData($request));
         $match = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
         switch ($match[0]) {
             case $dispatcher::FOUND:
                 /** @var Route $route */
                 $route = $match[1];
+
                 return $route->withParameters($match[2]);
                 break;
             case $dispatcher::METHOD_NOT_ALLOWED:

@@ -4,6 +4,11 @@ use PHPUnit\Framework\TestCase;
 
 class MiddlewarePipelineTest extends TestCase
 {
+    public function tearDown()
+    {
+        Mockery::close();
+    }
+
     /**
      * @test
      */
@@ -15,6 +20,7 @@ class MiddlewarePipelineTest extends TestCase
             echo '1';
             $response = $next($request);
             echo '1';
+
             return $response;
         };
 
@@ -22,15 +28,16 @@ class MiddlewarePipelineTest extends TestCase
             echo '2';
             $response = $next($request);
             echo '2';
+
             return $response;
         };
 
-        $mock1 = Mockery::mock(\Abava\Routing\Contract\Middleware::class);
+        $mock1 = Mockery::mock(\Venta\Routing\Contract\Middleware::class);
         $mock1->shouldReceive('handle')->andReturnUsing($middleware1);
-        $mock2 = Mockery::mock(\Abava\Routing\Contract\Middleware::class);
+        $mock2 = Mockery::mock(\Venta\Routing\Contract\Middleware::class);
         $mock2->shouldReceive('handle')->andReturnUsing($middleware2);
 
-        $collector = Mockery::mock(\Abava\Routing\Middleware\Collector::class);
+        $collector = Mockery::mock(\Venta\Routing\Middleware\Collector::class);
         $collector->shouldReceive('rewind')->once();
         $collector->shouldReceive('next');
         $collector->shouldReceive('key');
@@ -39,19 +46,15 @@ class MiddlewarePipelineTest extends TestCase
             $mock1
         );
         $collector->shouldReceive('valid')->andReturn(true, true, false);
-        $pipeline = new \Abava\Routing\Middleware\Pipeline($collector);
+        $pipeline = new \Venta\Routing\Middleware\Pipeline($collector);
         $pipeline->handle(
             Mockery::mock(\Psr\Http\Message\RequestInterface::class),
             function () {
                 echo '3';
+
                 return Mockery::mock(\Psr\Http\Message\ResponseInterface::class);
             }
         );
-    }
-
-    public function tearDown()
-    {
-        Mockery::close();
     }
 
 }

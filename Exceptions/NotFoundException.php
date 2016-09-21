@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing\Exceptions;
+namespace Venta\Routing\Exceptions;
 
 /**
  * Class NotFoundException
  *
- * @package Abava\Routing
+ * @package Venta\Routing
  */
 class NotFoundException extends \LogicException
 {

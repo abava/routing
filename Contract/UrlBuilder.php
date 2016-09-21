@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing\Contract;
+namespace Venta\Routing\Contract;
 
 /**
  * Interface UrlBuilder
  *
- * @package Abava\Routing\Contract
+ * @package Venta\Routing\Contracts
  */
 interface UrlBuilder
 {

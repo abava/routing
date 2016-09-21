@@ -1,6 +1,6 @@
 {
-    "name": "abava/routing",
-    "description": "Abava Routing package",
+    "name": "venta/routing",
+    "description": "Venta Routing package",
     "authors": [
         {
             "name": "Konstantins Zukovs",
@@ -9,11 +9,19 @@
         {
             "name": "Alexey Rehov",
             "email": "aleksejs@scandiweb.com"
+        },
+        {
+            "name": "Vsevolods Mihailovs",
+            "email": "vsevolods@scandiweb.com"
+        },
+        {
+            "name": "Ilja Lapkovskis",
+            "email": "ilja@scandiweb.com"
         }
     ],
     "autoload": {
         "psr-4": {
-            "Abava\\Routing\\": "/"
+            "Venta\\Routing\\": ""
         },
         "exclude-from-classmap": [
             "/tests/"
@@ -21,11 +29,13 @@
     },
     "minimum-stability": "dev",
     "require-dev": {
-        "phpunit/phpunit": "^5.4"
+        "phpunit/phpunit": "^5.4",
+        "mockery/mockery": "^0.9.5"
     },
     "require": {
+        "php": "^7.0",
         "nikic/fast-route": "^1.0",
-        "abava/container": "dev-master",
-        "abava/http": "dev-master"
+        "venta/container": "dev-master",
+        "venta/http": "dev-master"
     }
 }

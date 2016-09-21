@@ -9,7 +9,7 @@ class RoutingRouteTest extends TestCase
      */
     public function testConstruct()
     {
-        $route = new \Abava\Routing\Route(['GET', 'POST'], '/uri', 'controller@action');
+        $route = new \Venta\Routing\Route(['GET', 'POST'], '/uri', 'controller@action');
         $this->assertSame(['GET', 'POST'], $route->getMethods());
         $this->assertSame('/uri', $route->getPath());
         $this->assertSame('controller@action', $route->getCallable());
@@ -21,7 +21,7 @@ class RoutingRouteTest extends TestCase
     public function testImmutability()
     {
         // creating basic route
-        $route = new \Abava\Routing\Route(['GET', 'POST'], '/uri', 'controller@action');
+        $route = new \Venta\Routing\Route(['GET', 'POST'], '/uri', 'controller@action');
         $this->assertSame(['GET', 'POST'], $route->getMethods());
         $this->assertSame('/uri', $route->getPath());
         $this->assertSame('controller@action', $route->getCallable());
@@ -62,7 +62,8 @@ class RoutingRouteTest extends TestCase
         $this->assertNotSame($route, $new);
 
         // testing middleware immutability
-        $closure = function(){};
+        $closure = function () {
+        };
         $new = $route->withMiddleware('middleware', $closure);
         $this->assertSame(['middleware' => $closure], $new->getMiddlewares());
         $this->assertSame([], $route->getMiddlewares());
@@ -73,12 +74,12 @@ class RoutingRouteTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Middleware must either implement Middleware contract or be callable
-     * @test 
+     * @test
      */
     public function testPassingInvalidMiddleware()
     {
         // creating basic route
-        $route = new \Abava\Routing\Route(['GET', 'POST'], '/uri', 'controller@action');
+        $route = new \Venta\Routing\Route(['GET', 'POST'], '/uri', 'controller@action');
         $route->withMiddleware('invalid', 'middleware');
     }
 
@@ -87,36 +88,26 @@ class RoutingRouteTest extends TestCase
      */
     public function testUrlBuild()
     {
-        $route = new \Abava\Routing\Route(['GET'], '/url/{id}', 'handle');
+        $route = new \Venta\Routing\Route(['GET'], '/url/{id}', 'handle');
         $this->assertSame('/url/123', $route->url(['id' => 123]), 'common parameter replaced');
 
-        $route = new \Abava\Routing\Route(['GET'], '/url/{id:[0-9]+}', 'handle');
+        $route = new \Venta\Routing\Route(['GET'], '/url/{id:[0-9]+}', 'handle');
         $this->assertSame('/url/123', $route->url(['id' => 123]), 'parameter with pattern replaced');
 
-        $route = new \Abava\Routing\Route(['GET'], '/url/{id:number}', 'handle');
+        $route = new \Venta\Routing\Route(['GET'], '/url/{id:number}', 'handle');
         $this->assertSame('/url/123', $route->url(['id' => 123]), 'parameter with named pattern replaced');
 
-        $route = new \Abava\Routing\Route(['GET'], '/url[/{id:number}[/{name}]]', 'handle');
+        $route = new \Venta\Routing\Route(['GET'], '/url[/{id:number}[/{name}]]', 'handle');
         $this->assertSame('/url/123', $route->url(['id' => 123]), 'optional parameter with named pattern replaced');
 
-        $route = new \Abava\Routing\Route(['GET'], '/url[/{id:number}[//{name}]]', 'handle');
+        $route = new \Venta\Routing\Route(['GET'], '/url[/{id:number}[//{name}]]', 'handle');
         $this->assertSame('/url/123', $route->url(['id' => 123]), 'optional parameter with named pattern replaced');
 
-        $route = new \Abava\Routing\Route(['GET'], '/url[/{id:number}[/{name}]]', 'handle');
+        $route = new \Venta\Routing\Route(['GET'], '/url[/{id:number}[/{name}]]', 'handle');
         $this->assertSame('/url/123/a', $route->url(['id' => 123, 'name' => 'a']), 'all optional parameters replaced');
 
-        $route = new \Abava\Routing\Route(['GET'], '/url[/{one:number}[/{two}[/{three:[0-9]+}[/{four}]]]]', 'handle');
+        $route = new \Venta\Routing\Route(['GET'], '/url[/{one:number}[/{two}[/{three:[0-9]+}[/{four}]]]]', 'handle');
         $this->assertSame('/url', $route->url(), 'none optional parameters replaced');
-    }
-
-    /**
-     * @test
-     */
-    public function testUrlBuildParameterDoesntMatchPattern()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $route = new \Abava\Routing\Route(['GET'], '/url/{id:number}', 'handle');
-        $route->url(['id' => 'abc']);
     }
 
     /**
@@ -125,7 +116,7 @@ class RoutingRouteTest extends TestCase
     public function testUrlBuildNonOptionalParameterIsNotProvided()
     {
         $this->expectException(InvalidArgumentException::class);
-        $route = new \Abava\Routing\Route(['GET'], '/url/{id:number}[/{optional}]', 'handle');
+        $route = new \Venta\Routing\Route(['GET'], '/url/{id:number}[/{optional}]', 'handle');
         $route->url();
     }
 
@@ -135,8 +126,18 @@ class RoutingRouteTest extends TestCase
     public function testUrlBuildOptionalParametersPassed()
     {
         $this->expectException(InvalidArgumentException::class);
-        $route = new \Abava\Routing\Route(['GET'], '/url[/{one}[/{two}[/{three}]]]', 'handle');
+        $route = new \Venta\Routing\Route(['GET'], '/url[/{one}[/{two}[/{three}]]]', 'handle');
         $route->url(['two' => 'abc']);
+    }
+
+    /**
+     * @test
+     */
+    public function testUrlBuildParameterDoesntMatchPattern()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $route = new \Venta\Routing\Route(['GET'], '/url/{id:number}', 'handle');
+        $route->url(['id' => 'abc']);
     }
 
 }

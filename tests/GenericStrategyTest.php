@@ -9,17 +9,46 @@ class GenericStrategyTest extends TestCase
 {
 
     protected $container;
-    protected $route;
-    protected $response;
+
     protected $factory;
+
+    protected $response;
+
+    protected $route;
 
     public function setUp()
     {
-        $this->container = Mockery::mock(\Abava\Container\Contract\Container::class);
+        $this->container = Mockery::mock(\Venta\Container\Contract\Container::class);
         $this->response = Mockery::mock(\Psr\Http\Message\ResponseInterface::class);
-        $this->route = (new \Abava\Routing\Route(['GET'], '/url', 'controller@action'))
+        $this->route = (new \Venta\Routing\Route(['GET'], '/url', 'controller@action'))
             ->withParameters(['param' => 'value']);
-        $this->factory = Mockery::mock(\Abava\Http\Factory\ResponseFactory::class);
+        $this->factory = Mockery::mock(\Venta\Http\Factory\ResponseFactory::class);
+    }
+
+    public function tearDown()
+    {
+        Mockery::close();
+    }
+
+    /**
+     * @test
+     */
+    public function canReturnJSONResponse()
+    {
+        $this->container->shouldReceive('call')
+                        ->with($this->route->getCallable(), $this->route->getParameters())
+                        ->andReturn(['foo' => 'bar'])
+                        ->once();
+
+        $response = Mockery::mock(\Venta\Http\JsonResponse::class);
+        $this->factory->shouldReceive('createJsonResponse')->with(['foo' => 'bar'])->andReturn($response)->once();
+
+        $strategy = new \Venta\Routing\Strategy\Generic($this->container, $this->factory);
+        $result = $strategy->dispatch($this->route);
+
+        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $result);
+        $this->assertInstanceOf(\Venta\Http\JsonResponse::class, $result);
+        $this->assertSame($response, $result);
     }
 
     /**
@@ -31,7 +60,7 @@ class GenericStrategyTest extends TestCase
                         ->with($this->route->getCallable(), $this->route->getParameters())
                         ->andReturn($this->response)
                         ->once();
-        $strategy = new \Abava\Routing\Strategy\Generic($this->container, $this->factory);
+        $strategy = new \Venta\Routing\Strategy\Generic($this->container, $this->factory);
         $result = $strategy->dispatch($this->route);
 
         $this->assertSame($this->response, $result);
@@ -45,43 +74,22 @@ class GenericStrategyTest extends TestCase
         $this->container->shouldReceive('call')
                         ->with($this->route->getCallable(), $this->route->getParameters())
                         ->andReturn(new class
-            {
-                public function __toString()
-                {
-                    return 'string';
-                }
-            })
+                        {
+                            public function __toString()
+                            {
+                                return 'string';
+                            }
+                        })
                         ->once();
         // todo check of can be replaced with contract
-        $ventaResponse = Mockery::mock(\Abava\Http\Response::class);
+        $ventaResponse = Mockery::mock(\Venta\Http\Response::class);
         $ventaResponse->shouldReceive('append')->with('string')->andReturn($ventaResponse)->once();
         $this->factory->shouldReceive('new')->withNoArgs()->andReturn($ventaResponse);
         $this->factory->shouldReceive('createResponse')->withNoArgs()->andReturn($ventaResponse);
-        $strategy = new \Abava\Routing\Strategy\Generic($this->container, $this->factory);
+        $strategy = new \Venta\Routing\Strategy\Generic($this->container, $this->factory);
         $result = $strategy->dispatch($this->route);
 
         $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function canReturnJSONResponse()
-    {
-        $this->container->shouldReceive('call')
-                        ->with($this->route->getCallable(), $this->route->getParameters())
-                        ->andReturn(['foo' => 'bar'])
-                        ->once();
-
-        $response = Mockery::mock(\Abava\Http\JsonResponse::class);
-        $this->factory->shouldReceive('createJsonResponse')->with(['foo' => 'bar'])->andReturn($response)->once();
-
-        $strategy = new \Abava\Routing\Strategy\Generic($this->container, $this->factory);
-        $result = $strategy->dispatch($this->route);
-
-        $this->assertInstanceOf(\Psr\Http\Message\ResponseInterface::class, $result);
-        $this->assertInstanceOf(\Abava\Http\JsonResponse::class, $result);
-        $this->assertSame($response, $result);
     }
 
     /**
@@ -96,13 +104,8 @@ class GenericStrategyTest extends TestCase
                         ->with($this->route->getCallable(), $this->route->getParameters())
                         ->andReturn(new stdClass)
                         ->once();
-        $strategy = new \Abava\Routing\Strategy\Generic($this->container, $this->factory);
+        $strategy = new \Venta\Routing\Strategy\Generic($this->container, $this->factory);
         $result = $strategy->dispatch($this->route);
-    }
-
-    public function tearDown()
-    {
-        Mockery::close();
     }
 
 }

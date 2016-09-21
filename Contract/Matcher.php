@@ -1,14 +1,14 @@
 <?php declare(strict_types = 1);
 
-namespace Abava\Routing\Contract;
+namespace Venta\Routing\Contract;
 
-use Abava\Routing\Route;
+use Venta\Routing\Route;
 use Psr\Http\Message\RequestInterface;
 
 /**
  * Interface Matcher
  *
- * @package Abava\Routing\Contract
+ * @package Venta\Routing\Contracts
  */
 interface Matcher
 {
