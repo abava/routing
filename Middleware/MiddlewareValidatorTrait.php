@@ -1,13 +1,13 @@
 <?php namespace Venta\Routing\Middleware;
 
-use Venta\Routing\Contract\Middleware;
+use Venta\Contracts\Routing\Middleware;
 
 /**
- * Trait ValidatorTrait
+ * Class MiddlewareValidatorTrait
  *
  * @package Venta\Routing\Middleware
  */
-trait ValidatorTrait
+trait MiddlewareValidatorTrait
 {
 
     /**

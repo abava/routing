@@ -9,13 +9,13 @@ class GroupTest extends TestCase
 {
 
     /**
-     * @var \Venta\Routing\Collector|\Mockery\MockInterface
+     * @var \Venta\Routing\RouteCollector|\Mockery\MockInterface
      */
     protected $collector;
 
     public function setUp()
     {
-        $this->collector = Mockery::mock(\Venta\Routing\Collector::class);
+        $this->collector = Mockery::mock(\Venta\Routing\RouteCollector::class);
     }
 
     public function tearDown()
@@ -30,7 +30,7 @@ class GroupTest extends TestCase
     {
         $callbackMock = Mockery::mock(function () {
         });
-        $group = new \Venta\Routing\Group('/', [$callbackMock, '__invoke'], $this->collector);
+        $group = new \Venta\Routing\RouteGroup('/', [$callbackMock, '__invoke'], $this->collector);
         $callbackMock->shouldReceive('__invoke')
                      ->with($group)
                      ->once();
@@ -42,7 +42,7 @@ class GroupTest extends TestCase
      */
     public function canAddRoute()
     {
-        $group = new \Venta\Routing\Group('/', function () {
+        $group = new \Venta\Routing\RouteGroup('/', function () {
         }, $this->collector);
         $group->addRoute('GET', '/', 'handle');
         $existingRoutes = $group->getRoutes();
@@ -56,7 +56,7 @@ class GroupTest extends TestCase
     public function canAddRouteInstance()
     {
         $route = new \Venta\Routing\Route(['GET'], '/', 'callable');
-        $group = new \Venta\Routing\Group('/', function () {
+        $group = new \Venta\Routing\RouteGroup('/', function () {
         }, $this->collector);
         $group->add($route);
         $this->assertContains($route, $group->getRoutes());
@@ -69,7 +69,7 @@ class GroupTest extends TestCase
     {
         $callback = function () {
         };
-        $group = new \Venta\Routing\Group('/', $callback, $this->collector);
+        $group = new \Venta\Routing\RouteGroup('/', $callback, $this->collector);
         $this->collector->shouldReceive('getData')->withNoArgs()->andReturn(['data'])->once();
         $this->assertSame(['data'], $group->getData());
         $request = Mockery::mock(\Psr\Http\Message\RequestInterface::class);
@@ -77,7 +77,7 @@ class GroupTest extends TestCase
         $this->assertSame(['data'], $group->getFilteredData($request));
         $group->setHost('localhost');
         $group->setScheme('https');
-        $groupMock = Mockery::mock(\Venta\Routing\Contract\Group::class);
+        $groupMock = Mockery::mock(\Venta\Contracts\Routing\RouteGroup::class);
         $groupMock->shouldReceive('setHost')->with('localhost')->andReturnSelf()->once();
         $groupMock->shouldReceive('setScheme')->with('https')->andReturnSelf()->once();
         $this->collector->shouldReceive('group')
@@ -92,7 +92,7 @@ class GroupTest extends TestCase
      */
     public function canSetPrefix()
     {
-        $group = new \Venta\Routing\Group('/', function () {
+        $group = new \Venta\Routing\RouteGroup('/', function () {
         }, $this->collector);
         $this->collector->shouldReceive('addRoute')->with('GET', '/abcdef', 'handler');
         $group->addRoute('GET', '/abcdef', 'handler');
@@ -106,7 +106,7 @@ class GroupTest extends TestCase
      */
     public function collectSetsHostAndScheme()
     {
-        $callback = function (\Venta\Routing\Contract\Collector $collector) {
+        $callback = function (\Venta\Contracts\Routing\RouteCollector $collector) {
             $collector->add(new \Venta\Routing\Route(['GET'], 'abc', 'handle'));
             $collector->add(
                 (new \Venta\Routing\Route(['POST'], 'def', 'handle'))
@@ -114,7 +114,7 @@ class GroupTest extends TestCase
                     ->withScheme('http')
             );
         };
-        $group = new \Venta\Routing\Group('/prefix', $callback, $this->collector);
+        $group = new \Venta\Routing\RouteGroup('/prefix', $callback, $this->collector);
         $group->setHost('localhost');
         $group->setScheme('https');
         $this->collector->shouldReceive('add')->with(Mockery::on(function (\Venta\Routing\Route $route) {

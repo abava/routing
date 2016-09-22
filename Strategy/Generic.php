@@ -2,13 +2,13 @@
 
 namespace Venta\Routing\Strategy;
 
-use Venta\Container\Contract\Container;
-use Venta\Http\Factory\ResponseFactory;
-use Venta\Routing\Contract\Strategy;
-use Venta\Routing\Route;
 use ArrayObject;
 use JsonSerializable;
 use Psr\Http\Message\ResponseInterface;
+use Venta\Contracts\Container\Container;
+use Venta\Contracts\Routing\Strategy;
+use Venta\Http\Factory\ResponseFactory;
+use Venta\Routing\Route;
 
 /**
  * Class Generic
@@ -21,7 +21,7 @@ class Generic implements Strategy
     /**
      * Caller instance to create controller and call action
      *
-     * @var Container
+     * @var \Venta\Contracts\Container\Container
      */
     protected $container;
 
@@ -35,7 +35,7 @@ class Generic implements Strategy
     /**
      * Generic strategy constructor.
      *
-     * @param Container $container
+     * @param \Venta\Contracts\Container\Container $container
      * @param ResponseFactory $responseFactory
      */
     public function __construct(Container $container, ResponseFactory $responseFactory)

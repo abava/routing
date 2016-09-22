@@ -2,14 +2,12 @@
 
 namespace Venta\Routing;
 
-use Venta\Routing\Contract\Middleware;
-
 /**
- * Class Builder
+ * Class RouteBuilder.
  *
  * @package Venta\Routing
  */
-class Builder
+class RouteBuilder
 {
     /**
      * @var string|callable
@@ -63,9 +61,9 @@ class Builder
     /**
      * @param $path
      * @param callable|string $action
-     * @return Builder
+     * @return RouteBuilder
      */
-    public static function any($path, $action): Builder
+    public static function any($path, $action): RouteBuilder
     {
         return new static(['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE'], $path, $action);
     }
@@ -74,9 +72,9 @@ class Builder
      * @param array $methods
      * @param string $path
      * @param callable|string $action
-     * @return Builder
+     * @return RouteBuilder
      */
-    public static function create(array $methods, string $path, $action): Builder
+    public static function create(array $methods, string $path, $action): RouteBuilder
     {
         return new static($methods, $path, $action);
     }
@@ -84,9 +82,9 @@ class Builder
     /**
      * @param string $path
      * @param callable|string $action
-     * @return Builder
+     * @return RouteBuilder
      */
-    public static function delete(string $path, $action): Builder
+    public static function delete(string $path, $action): RouteBuilder
     {
         return new static(['DELETE'], $path, $action);
     }
@@ -94,9 +92,9 @@ class Builder
     /**
      * @param string $path
      * @param callable|string $action
-     * @return Builder
+     * @return RouteBuilder
      */
-    public static function get(string $path, $action): Builder
+    public static function get(string $path, $action): RouteBuilder
     {
         return new static(['GET'], $path, $action);
     }
@@ -104,9 +102,9 @@ class Builder
     /**
      * @param string $path
      * @param callable|string $action
-     * @return Builder
+     * @return RouteBuilder
      */
-    public static function head(string $path, $action): Builder
+    public static function head(string $path, $action): RouteBuilder
     {
         return new static(['HEAD'], $path, $action);
     }
@@ -114,9 +112,9 @@ class Builder
     /**
      * @param string $path
      * @param callable|string $action
-     * @return Builder
+     * @return RouteBuilder
      */
-    public static function options(string $path, $action): Builder
+    public static function options(string $path, $action): RouteBuilder
     {
         return new static(['OPTIONS'], $path, $action);
     }
@@ -124,9 +122,9 @@ class Builder
     /**
      * @param string $path
      * @param callable|string $action
-     * @return Builder
+     * @return RouteBuilder
      */
-    public static function patch(string $path, $action): Builder
+    public static function patch(string $path, $action): RouteBuilder
     {
         return new static(['PATCH'], $path, $action);
     }
@@ -134,9 +132,9 @@ class Builder
     /**
      * @param string $path
      * @param callable|string $action
-     * @return Builder
+     * @return RouteBuilder
      */
-    public static function post(string $path, $action): Builder
+    public static function post(string $path, $action): RouteBuilder
     {
         return new static(['POST'], $path, $action);
     }
@@ -144,18 +142,18 @@ class Builder
     /**
      * @param string $path
      * @param callable|string $action
-     * @return Builder
+     * @return RouteBuilder
      */
-    public static function put(string $path, $action): Builder
+    public static function put(string $path, $action): RouteBuilder
     {
         return new static(['PUT'], $path, $action);
     }
 
     /**
      * @param callable|string $action
-     * @return Builder
+     * @return RouteBuilder
      */
-    public function action($action): Builder
+    public function action($action): RouteBuilder
     {
         $this->action = $action;
 
@@ -190,9 +188,9 @@ class Builder
 
     /**
      * @param string $host
-     * @return Builder
+     * @return RouteBuilder
      */
-    public function host(string $host): Builder
+    public function host(string $host): RouteBuilder
     {
         $this->host = $host;
 
@@ -201,9 +199,9 @@ class Builder
 
     /**
      * @param array ...$method
-     * @return Builder
+     * @return RouteBuilder
      */
-    public function method(...$method): Builder
+    public function method(...$method): RouteBuilder
     {
         $this->methods = $method;
 
@@ -212,10 +210,10 @@ class Builder
 
     /**
      * @param string $name
-     * @param string|callable|Middleware $middleware
-     * @return Builder
+     * @param string|callable|\Venta\Contracts\Routing\Middleware $middleware
+     * @return RouteBuilder
      */
-    public function middleware(string $name, $middleware): Builder
+    public function middleware(string $name, $middleware): RouteBuilder
     {
         $this->middleware[$name] = $middleware;
 
@@ -224,9 +222,9 @@ class Builder
 
     /**
      * @param string $name
-     * @return Builder
+     * @return RouteBuilder
      */
-    public function name(string $name): Builder
+    public function name(string $name): RouteBuilder
     {
         $this->name = $name;
 
@@ -235,9 +233,9 @@ class Builder
 
     /**
      * @param string $path
-     * @return Builder
+     * @return RouteBuilder
      */
-    public function path(string $path): Builder
+    public function path(string $path): RouteBuilder
     {
         $this->path = $path;
 
@@ -246,9 +244,9 @@ class Builder
 
     /**
      * @param string $scheme
-     * @return Builder
+     * @return RouteBuilder
      */
-    public function scheme(string $scheme): Builder
+    public function scheme(string $scheme): RouteBuilder
     {
         $this->scheme = $scheme;
 

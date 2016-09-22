@@ -2,21 +2,21 @@
 
 namespace Venta\Routing\Middleware;
 
-use Venta\Container\Contract\Container;
-use Venta\Routing\Contract\Middleware;
-use Venta\Routing\Contract\Middleware\Collector as CollectorContract;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Venta\Contracts\Container\Container;
+use Venta\Contracts\Routing\Middleware;
+use Venta\Contracts\Routing\MiddlewareCollector as MiddlewareCollectorContract;
 
 /**
- * Class Collector
+ * Class MiddlewareCollector
  *
  * @package Venta\Routing\Middleware
  */
-class Collector implements CollectorContract
+class MiddlewareCollector implements MiddlewareCollectorContract
 {
 
-    use ValidatorTrait;
+    use MiddlewareValidatorTrait;
 
     /**
      * Container instance is used to make middlewares provided as string
@@ -57,7 +57,7 @@ class Collector implements CollectorContract
     }
 
     /**
-     * @return Middleware
+     * @return \Venta\Contracts\Routing\Middleware
      */
     public function current()
     {
@@ -203,7 +203,7 @@ class Collector implements CollectorContract
      * Does not check if callable's typehinting fits Middleware contract's handle method.
      *
      * @param callable $callable
-     * @return Middleware
+     * @return \Venta\Contracts\Routing\Middleware
      */
     protected function wrapCallableToContract(
         /** @noinspection PhpUnusedParameterInspection */

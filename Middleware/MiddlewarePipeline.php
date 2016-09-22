@@ -2,32 +2,32 @@
 
 namespace Venta\Routing\Middleware;
 
-use Venta\Routing\Contract\Middleware;
-use Venta\Routing\Contract\Middleware\Pipeline as PipelineContract;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Venta\Contracts\Routing\Middleware;
+use Venta\Contracts\Routing\MiddlewarePipeline as MiddlewarePipelineContract;
 
 /**
- * Class Pipeline
+ * Class MiddlewarePipeline
  *
  * @package Venta\Routing\Middleware
  */
-class Pipeline implements PipelineContract
+class MiddlewarePipeline implements MiddlewarePipelineContract
 {
 
     /**
      * Middleware collector instance
      *
-     * @var Collector
+     * @var MiddlewareCollector
      */
     protected $middlewares;
 
     /**
      * Middleware Pipeline constructor.
      *
-     * @param Collector $collector
+     * @param MiddlewareCollector $collector
      */
-    public function __construct(Collector $collector)
+    public function __construct(MiddlewareCollector $collector)
     {
         $this->middlewares = $collector;
     }
@@ -41,7 +41,7 @@ class Pipeline implements PipelineContract
 
         foreach ($this->middlewares as $middleware) {
             $next = function (RequestInterface $request) use ($middleware, $next) {
-                /** @var Middleware $middleware */
+                /** @var \Venta\Contracts\Routing\Middleware $middleware */
                 return $middleware->handle($request, $next);
             };
         }

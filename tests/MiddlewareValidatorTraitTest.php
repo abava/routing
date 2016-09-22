@@ -16,10 +16,10 @@ class MiddlewareValidatorTraitTest extends TestCase
     {
         $validator = new class
         {
-            use \Venta\Routing\Middleware\ValidatorTrait;
+            use \Venta\Routing\Middleware\MiddlewareValidatorTrait;
         };
 
-        $middleware = Mockery::mock(\Venta\Routing\Contract\Middleware::class);
+        $middleware = Mockery::mock(\Venta\Contracts\Routing\Middleware::class);
 
         // these are valid middlewares
         $this->assertTrue($validator->isValidMiddleware($middleware));

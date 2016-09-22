@@ -19,9 +19,9 @@ class MatcherTest extends TestCase
 
     public function setUp()
     {
-        $this->factory = Mockery::mock(\Venta\Routing\Contract\Dispatcher\DispatcherFactory::class);
+        $this->factory = Mockery::mock(\Venta\Contracts\Routing\DispatcherFactory::class);
         $this->request = Mockery::mock(\Psr\Http\Message\RequestInterface::class);
-        $this->collector = Mockery::mock(\Venta\Routing\Contract\Collector::class);
+        $this->collector = Mockery::mock(\Venta\Contracts\Routing\RouteCollector::class);
         $this->dispatcher = Mockery::mock(\FastRoute\Dispatcher::class);
         $this->collector->shouldReceive('getFilteredData')->with($this->request)->andReturn(['data'])->once();
         $this->factory->shouldReceive('create')->with(['data'])->andReturn($this->dispatcher)->once();
@@ -52,7 +52,7 @@ class MatcherTest extends TestCase
         // Mock dispatch result
         $this->dispatcher->shouldReceive('dispatch')->with('GET', '/url')->andReturn($match)->once();
 
-        $matcher = new \Venta\Routing\Matcher($this->factory);
+        $matcher = new \Venta\Routing\RouteMatcher($this->factory);
         $result = $matcher->match($this->request, $this->collector);
 
         // Check for route params
@@ -75,7 +75,7 @@ class MatcherTest extends TestCase
 
         $match = [\FastRoute\Dispatcher::METHOD_NOT_ALLOWED, ['POST', 'PUT']];
         $this->dispatcher->shouldReceive('dispatch')->with('GET', '/url')->andReturn($match)->once();
-        $matcher = new \Venta\Routing\Matcher($this->factory);
+        $matcher = new \Venta\Routing\RouteMatcher($this->factory);
         $matcher->match($this->request, $this->collector);
     }
 
@@ -86,7 +86,7 @@ class MatcherTest extends TestCase
 
         $match = [\FastRoute\Dispatcher::NOT_FOUND];
         $this->dispatcher->shouldReceive('dispatch')->with('GET', '/url')->andReturn($match)->once();
-        $matcher = new \Venta\Routing\Matcher($this->factory);
+        $matcher = new \Venta\Routing\RouteMatcher($this->factory);
         $matcher->match($this->request, $this->collector);
     }
 

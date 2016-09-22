@@ -32,12 +32,12 @@ class MiddlewarePipelineTest extends TestCase
             return $response;
         };
 
-        $mock1 = Mockery::mock(\Venta\Routing\Contract\Middleware::class);
+        $mock1 = Mockery::mock(\Venta\Contracts\Routing\Middleware::class);
         $mock1->shouldReceive('handle')->andReturnUsing($middleware1);
-        $mock2 = Mockery::mock(\Venta\Routing\Contract\Middleware::class);
+        $mock2 = Mockery::mock(\Venta\Contracts\Routing\Middleware::class);
         $mock2->shouldReceive('handle')->andReturnUsing($middleware2);
 
-        $collector = Mockery::mock(\Venta\Routing\Middleware\Collector::class);
+        $collector = Mockery::mock(\Venta\Routing\Middleware\MiddlewareCollector::class);
         $collector->shouldReceive('rewind')->once();
         $collector->shouldReceive('next');
         $collector->shouldReceive('key');
@@ -46,7 +46,7 @@ class MiddlewarePipelineTest extends TestCase
             $mock1
         );
         $collector->shouldReceive('valid')->andReturn(true, true, false);
-        $pipeline = new \Venta\Routing\Middleware\Pipeline($collector);
+        $pipeline = new \Venta\Routing\Middleware\MiddlewarePipeline($collector);
         $pipeline->handle(
             Mockery::mock(\Psr\Http\Message\RequestInterface::class),
             function () {

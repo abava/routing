@@ -2,24 +2,24 @@
 
 namespace Venta\Routing;
 
-use Venta\Routing\Contract\Collector as CollectorContract;
-use Venta\Routing\Contract\Group as GroupRouteCollectorContract;
-use Venta\Routing\Contract\UrlGenerator;
-use FastRoute\RouteCollector;
+use FastRoute\RouteCollector as FastRouteCollector;
 use Psr\Http\Message\RequestInterface;
+use Venta\Contracts\Routing\RouteCollector as RouteCollectorContract;
+use Venta\Contracts\Routing\RouteGroup as GroupRouteCollectorContract;
+use Venta\Contracts\Routing\UrlGenerator;
 
 /**
  * Class RouteCollector
  *
  * @package Venta\Routing
  */
-class Collector extends RouteCollector implements CollectorContract, UrlGenerator
+class RouteCollector extends FastRouteCollector implements RouteCollectorContract, UrlGenerator
 {
 
     /**
      * Route groups
      *
-     * @var Group[]
+     * @var RouteGroup[]
      */
     protected $groups = [];
 
@@ -118,7 +118,7 @@ class Collector extends RouteCollector implements CollectorContract, UrlGenerato
      */
     public function group(string $prefix, callable $callback): GroupRouteCollectorContract
     {
-        $group = new Group($prefix, $callback, $this);
+        $group = new RouteGroup($prefix, $callback, $this);
 
         $this->groups[] = $group;
 

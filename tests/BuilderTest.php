@@ -10,7 +10,7 @@ class BuilderTest extends TestCase
      */
     public function canChangeAction()
     {
-        $builder = new \Venta\Routing\Builder(['GET'], '/url', 'handle');
+        $builder = new \Venta\Routing\RouteBuilder(['GET'], '/url', 'handle');
         $handleRoute = $builder->build();
         $builder->action('callback');
         $callbackRoute = $builder->build();
@@ -25,7 +25,7 @@ class BuilderTest extends TestCase
      */
     public function canChangeMethods()
     {
-        $builder = new \Venta\Routing\Builder(['GET'], '/url', 'handle');
+        $builder = new \Venta\Routing\RouteBuilder(['GET'], '/url', 'handle');
         $getRoute = $builder->build();
         $builder->method('POST');
         $postRoute = $builder->build();
@@ -40,7 +40,7 @@ class BuilderTest extends TestCase
      */
     public function canChangePath()
     {
-        $builder = new \Venta\Routing\Builder(['GET'], '/url', 'handle');
+        $builder = new \Venta\Routing\RouteBuilder(['GET'], '/url', 'handle');
         $urlRoute = $builder->build();
         $builder->path('/prefix/url');
         $prefixRoute = $builder->build();
@@ -55,7 +55,7 @@ class BuilderTest extends TestCase
      */
     public function canCleanNameAfterCreatingRoute()
     {
-        $builder = new \Venta\Routing\Builder(['GET'], '/url', 'handle');
+        $builder = new \Venta\Routing\RouteBuilder(['GET'], '/url', 'handle');
         $namedRoute = $builder->name('named')->build();
         $anonymousRoute = $builder->build();
 
@@ -69,7 +69,7 @@ class BuilderTest extends TestCase
      */
     public function canCreateMultipleRoutes()
     {
-        $builder = new \Venta\Routing\Builder(['GET'], '/url', 'handle');
+        $builder = new \Venta\Routing\RouteBuilder(['GET'], '/url', 'handle');
         $route1 = $builder->build();
         $route2 = $builder->build();
 
@@ -82,7 +82,7 @@ class BuilderTest extends TestCase
      */
     public function canCreateRoute()
     {
-        $builder = new \Venta\Routing\Builder(['GET', 'HEAD'], '/url', 'handle');
+        $builder = new \Venta\Routing\RouteBuilder(['GET', 'HEAD'], '/url', 'handle');
         $route = $builder->build();
         $this->assertInstanceOf(\Venta\Routing\Route::class, $route);
         $this->assertSame('/url', $route->getPath());
@@ -95,8 +95,8 @@ class BuilderTest extends TestCase
      */
     public function canCreateStatic()
     {
-        $builder = new \Venta\Routing\Builder(['GET', 'HEAD'], '/url', 'handle');
-        $staticBuilder = \Venta\Routing\Builder::create(['GET', 'HEAD'], '/url', 'handle');
+        $builder = new \Venta\Routing\RouteBuilder(['GET', 'HEAD'], '/url', 'handle');
+        $staticBuilder = \Venta\Routing\RouteBuilder::create(['GET', 'HEAD'], '/url', 'handle');
 
         $route = $builder->build();
         $staticRoute = $staticBuilder->build();
@@ -111,7 +111,7 @@ class BuilderTest extends TestCase
      */
     public function canSetHostSchemeMiddlewareName()
     {
-        $builder = new \Venta\Routing\Builder(['GET', 'HEAD'], '/url', 'handle');
+        $builder = new \Venta\Routing\RouteBuilder(['GET', 'HEAD'], '/url', 'handle');
         $builder->host('localhost')
                 ->scheme('http')
                 ->name('named')
@@ -129,7 +129,7 @@ class BuilderTest extends TestCase
      */
     public function canStaticAny()
     {
-        $route = \Venta\Routing\Builder::any('/url', 'handle')->build();
+        $route = \Venta\Routing\RouteBuilder::any('/url', 'handle')->build();
         $this->assertContains('HEAD', $route->getMethods());
         $this->assertContains('GET', $route->getMethods());
         $this->assertContains('POST', $route->getMethods());
@@ -144,7 +144,7 @@ class BuilderTest extends TestCase
      */
     public function canStaticDelete()
     {
-        $route = \Venta\Routing\Builder::delete('/url', 'handle')->build();
+        $route = \Venta\Routing\RouteBuilder::delete('/url', 'handle')->build();
         $this->assertContains('DELETE', $route->getMethods());
     }
 
@@ -153,7 +153,7 @@ class BuilderTest extends TestCase
      */
     public function canStaticGet()
     {
-        $route = \Venta\Routing\Builder::get('/url', 'handle')->build();
+        $route = \Venta\Routing\RouteBuilder::get('/url', 'handle')->build();
         $this->assertContains('GET', $route->getMethods());
     }
 
@@ -162,7 +162,7 @@ class BuilderTest extends TestCase
      */
     public function canStaticHead()
     {
-        $route = \Venta\Routing\Builder::head('/url', 'handle')->build();
+        $route = \Venta\Routing\RouteBuilder::head('/url', 'handle')->build();
         $this->assertContains('HEAD', $route->getMethods());
     }
 
@@ -171,7 +171,7 @@ class BuilderTest extends TestCase
      */
     public function canStaticOptions()
     {
-        $route = \Venta\Routing\Builder::options('/url', 'handle')->build();
+        $route = \Venta\Routing\RouteBuilder::options('/url', 'handle')->build();
         $this->assertContains('OPTIONS', $route->getMethods());
     }
 
@@ -180,7 +180,7 @@ class BuilderTest extends TestCase
      */
     public function canStaticPatch()
     {
-        $route = \Venta\Routing\Builder::patch('/url', 'handle')->build();
+        $route = \Venta\Routing\RouteBuilder::patch('/url', 'handle')->build();
         $this->assertContains('PATCH', $route->getMethods());
     }
 
@@ -189,7 +189,7 @@ class BuilderTest extends TestCase
      */
     public function canStaticPost()
     {
-        $route = \Venta\Routing\Builder::post('/url', 'handle')->build();
+        $route = \Venta\Routing\RouteBuilder::post('/url', 'handle')->build();
         $this->assertContains('POST', $route->getMethods());
     }
 
@@ -198,7 +198,7 @@ class BuilderTest extends TestCase
      */
     public function canStaticPut()
     {
-        $route = \Venta\Routing\Builder::put('/url', 'handle')->build();
+        $route = \Venta\Routing\RouteBuilder::put('/url', 'handle')->build();
         $this->assertContains('PUT', $route->getMethods());
     }
 

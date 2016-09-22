@@ -2,8 +2,8 @@
 
 namespace Venta\Routing\Dispatcher\Factory;
 
-use Venta\Routing\Contract\Dispatcher\DispatcherFactory;
 use FastRoute\Dispatcher;
+use Venta\Contracts\Routing\DispatcherFactory;
 
 /**
  * Class GroupCountBasedFactory

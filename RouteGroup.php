@@ -2,62 +2,62 @@
 
 namespace Venta\Routing;
 
-use Venta\Routing\Contract\Collector as RouteCollectorContract;
-use Venta\Routing\Contract\Group as GroupRouteCollectorContract;
 use Psr\Http\Message\RequestInterface;
+use Venta\Contracts\Routing\RouteCollector as RouteCollectorContract;
+use Venta\Contracts\Routing\RouteGroup as RouteGroupContract;
 
 /**
- * Class Group
+ * Class RouteGroup
  *
  * @package Venta\Routing
  */
-class Group implements RouteCollectorContract, GroupRouteCollectorContract
+class RouteGroup implements RouteGroupContract
 {
 
     /**
-     * Callback to collect routes
+     * Callback to collect routes.
      *
      * @var callable
      */
     protected $callback;
 
     /**
-     * Route collector instance
+     * Route collector instance.
      *
-     * @var Collector
+     * @var RouteCollector
      */
     protected $collector;
 
     /**
-     * Host to set to each route
+     * Host to set to each route.
      *
      * @var string
      */
     protected $host = '';
 
     /**
-     * Prefix to prepend to each route
+     * Prefix to prepend to each route.
      *
      * @var string
      */
     protected $prefix;
 
     /**
-     * Captured route array
+     * Captured route array.
      *
      * @var Route[]
      */
     protected $routes = [];
 
     /**
-     * Scheme to set to each route
+     * Scheme to set to each route.
      *
      * @var string
      */
     protected $scheme = '';
 
     /**
-     * Group constructor.
+     * RouteGroup constructor.
      *
      * @param $prefix
      * @param callable $callback
@@ -79,7 +79,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
     }
 
     /**
-     * Add route directly to collector
+     * Add route directly to collector.
      *
      * @param string $method
      * @param string $path
@@ -136,7 +136,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
     /**
      * {@inheritdoc}
      */
-    public function group(string $prefix, callable $callback): GroupRouteCollectorContract
+    public function group(string $prefix, callable $callback): RouteGroupContract
     {
         $group = $this->collector->group($this->addPrefixToPath($prefix), $callback);
         $group->setHost($this->host);
@@ -148,7 +148,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
     /**
      * {@inheritdoc}
      */
-    public function setHost(string $host): GroupRouteCollectorContract
+    public function setHost(string $host): RouteGroupContract
     {
         $this->host = $host;
 
@@ -158,7 +158,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
     /**
      * {@inheritdoc}
      */
-    public function setPrefix(string $prefix): GroupRouteCollectorContract
+    public function setPrefix(string $prefix): RouteGroupContract
     {
         $this->prefix = $prefix;
 
@@ -168,7 +168,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
     /**
      * {@inheritdoc}
      */
-    public function setScheme(string $scheme): GroupRouteCollectorContract
+    public function setScheme(string $scheme): RouteGroupContract
     {
         $this->scheme = $scheme;
 
@@ -176,7 +176,7 @@ class Group implements RouteCollectorContract, GroupRouteCollectorContract
     }
 
     /**
-     * Adds group prefix to provided path
+     * Adds group prefix to provided path.
      *
      * @param string $path
      * @return string

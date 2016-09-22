@@ -18,7 +18,7 @@ class GenericStrategyTest extends TestCase
 
     public function setUp()
     {
-        $this->container = Mockery::mock(\Venta\Container\Contract\Container::class);
+        $this->container = Mockery::mock(\Venta\Contracts\Container\Container::class);
         $this->response = Mockery::mock(\Psr\Http\Message\ResponseInterface::class);
         $this->route = (new \Venta\Routing\Route(['GET'], '/url', 'controller@action'))
             ->withParameters(['param' => 'value']);

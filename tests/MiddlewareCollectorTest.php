@@ -6,19 +6,19 @@ class MiddlewareCollectorTest extends TestCase
 {
 
     /**
-     * @var \Venta\Routing\Middleware\Collector|\Mockery\MockInterface
+     * @var \Venta\Routing\Middleware\MiddlewareCollector|\Mockery\MockInterface
      */
     protected $collector;
 
     /**
-     * @var \Venta\Container\Contract\Container|\Mockery\MockInterface
+     * @var \Venta\Contracts\Container\Container|\Mockery\MockInterface
      */
     protected $container;
 
     public function setUp()
     {
-        $this->container = Mockery::mock(\Venta\Container\Contract\Container::class);
-        $this->collector = new \Venta\Routing\Middleware\Collector($this->container);
+        $this->container = Mockery::mock(\Venta\Contracts\Container\Container::class);
+        $this->collector = new \Venta\Routing\Middleware\MiddlewareCollector($this->container);
     }
 
     public function tearDown()
@@ -32,7 +32,7 @@ class MiddlewareCollectorTest extends TestCase
     public function canIterateMiddlewares()
     {
         $request = Mockery::mock(\Psr\Http\Message\RequestInterface::class);
-        $first = Mockery::mock(\Venta\Routing\Contract\Middleware::class);
+        $first = Mockery::mock(\Venta\Contracts\Routing\Middleware::class);
         $first->shouldReceive('handle')
               ->with($request, Mockery::type(Closure::class))
               ->andReturnUsing(function ($request, $next) {
@@ -43,7 +43,7 @@ class MiddlewareCollectorTest extends TestCase
                   return $response;
               })
               ->once();
-        $second = Mockery::mock(\Venta\Routing\Contract\Middleware::class);
+        $second = Mockery::mock(\Venta\Contracts\Routing\Middleware::class);
         $second->shouldReceive('handle')
                ->with($request, Mockery::type(Closure::class))
                ->andReturnUsing(function ($request, $next) {
@@ -54,7 +54,7 @@ class MiddlewareCollectorTest extends TestCase
                    return $response;
                })
                ->once();
-        $third = Mockery::mock(\Venta\Routing\Contract\Middleware::class);
+        $third = Mockery::mock(\Venta\Contracts\Routing\Middleware::class);
         $third->shouldReceive('handle')
               ->with($request, Mockery::type(Closure::class))
               ->andReturnUsing(function ($request, $next) {
@@ -79,7 +79,7 @@ class MiddlewareCollectorTest extends TestCase
         foreach ($this->collector as $name => $middleware) {
             $names[] = $name;
             $next = function ($request) use ($middleware, $next) {
-                /** @var \Venta\Routing\Contract\Middleware $middleware */
+                /** @var \Venta\Contracts\Routing\Middleware $middleware */
                 return $middleware->handle($request, $next);
             };
         }
@@ -95,8 +95,8 @@ class MiddlewareCollectorTest extends TestCase
      */
     public function canPushAfter()
     {
-        /** @var \Venta\Routing\Middleware\Collector $collector */
-        $collector = new class($this->container) extends \Venta\Routing\Middleware\Collector
+        /** @var \Venta\Routing\Middleware\MiddlewareCollector $collector */
+        $collector = new class($this->container) extends \Venta\Routing\Middleware\MiddlewareCollector
         {
             public function getOrder()
             {
@@ -132,8 +132,8 @@ class MiddlewareCollectorTest extends TestCase
      */
     public function canPushBefore()
     {
-        /** @var \Venta\Routing\Middleware\Collector $collector */
-        $collector = new class($this->container) extends \Venta\Routing\Middleware\Collector
+        /** @var \Venta\Routing\Middleware\MiddlewareCollector $collector */
+        $collector = new class($this->container) extends \Venta\Routing\Middleware\MiddlewareCollector
         {
             public function getOrder()
             {
@@ -173,7 +173,7 @@ class MiddlewareCollectorTest extends TestCase
             return $next($request);
         });
         $middleware = $this->collector->current();
-        $this->assertInstanceOf(\Venta\Routing\Contract\Middleware::class, $middleware);
+        $this->assertInstanceOf(\Venta\Contracts\Routing\Middleware::class, $middleware);
         $response = Mockery::mock(\Psr\Http\Message\ResponseInterface::class);
         $result = $middleware->handle(
             Mockery::mock(\Psr\Http\Message\RequestInterface::class),
@@ -189,7 +189,7 @@ class MiddlewareCollectorTest extends TestCase
      */
     public function canPushMiddlewareAsString()
     {
-        $middleware = Mockery::mock(\Venta\Routing\Contract\Middleware::class);
+        $middleware = Mockery::mock(\Venta\Contracts\Routing\Middleware::class);
         $this->container->shouldReceive('make')
                         ->with(get_class($middleware))
                         ->andReturn($middleware)
@@ -206,7 +206,7 @@ class MiddlewareCollectorTest extends TestCase
      */
     public function canReverseOrder()
     {
-        $middleware = Mockery::mock(\Venta\Routing\Contract\Middleware::class);
+        $middleware = Mockery::mock(\Venta\Contracts\Routing\Middleware::class);
         $this->collector->pushMiddleware('first', $middleware);
         $this->collector->rewind();
         $this->collector->pushMiddleware('second', $middleware);
@@ -221,7 +221,7 @@ class MiddlewareCollectorTest extends TestCase
     public function testPushMiddleware()
     {
         $this->assertFalse($this->collector->has('middleware'));
-        $this->collector->pushMiddleware('middleware', Mockery::mock(\Venta\Routing\Contract\Middleware::class));
+        $this->collector->pushMiddleware('middleware', Mockery::mock(\Venta\Contracts\Routing\Middleware::class));
         $this->assertTrue($this->collector->has('middleware'));
     }
 
@@ -232,8 +232,8 @@ class MiddlewareCollectorTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->collector->pushMiddleware('middleware', Mockery::mock(\Venta\Routing\Contract\Middleware::class));
-        $this->collector->pushMiddleware('middleware', Mockery::mock(\Venta\Routing\Contract\Middleware::class));
+        $this->collector->pushMiddleware('middleware', Mockery::mock(\Venta\Contracts\Routing\Middleware::class));
+        $this->collector->pushMiddleware('middleware', Mockery::mock(\Venta\Contracts\Routing\Middleware::class));
     }
 
     /**

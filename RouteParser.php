@@ -5,11 +5,11 @@ namespace Venta\Routing;
 use FastRoute\RouteParser\Std;
 
 /**
- * Class Parser
+ * Class RouteParser
  *
  * @package Venta\Routing
  */
-class Parser extends Std
+class RouteParser extends Std
 {
 
     /**

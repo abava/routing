@@ -2,9 +2,10 @@
 
 namespace Venta\Routing;
 
-use Venta\Routing\Contract\Middleware;
-use Venta\Routing\Contract\UrlBuilder;
-use Venta\Routing\Middleware\ValidatorTrait;
+use InvalidArgumentException;
+use Venta\Contracts\Routing\Middleware;
+use Venta\Contracts\Routing\UrlBuilder;
+use Venta\Routing\Middleware\MiddlewareValidatorTrait;
 
 /**
  * Class Route
@@ -15,45 +16,45 @@ use Venta\Routing\Middleware\ValidatorTrait;
 class Route implements UrlBuilder
 {
 
-    use ValidatorTrait;
+    use MiddlewareValidatorTrait;
 
     /**
-     * Route handle, may contain callable or controller action
+     * Route handle, may contain callable or controller action.
      *
      * @var string|callable
      */
     protected $callable;
 
     /**
-     * Host to apply route to
+     * Host to apply route to.
      *
      * @var string
      */
     protected $host = '';
 
     /**
-     * Route allowed methods
+     * Route allowed methods.
      *
      * @var string[]
      */
     protected $methods = [];
 
     /**
-     * Route middlewares
+     * Route middlewares.
      *
-     * @var Middleware[]
+     * @var \Venta\Contracts\Routing\Middleware[]
      */
     protected $middlewares = [];
 
     /**
-     * Route name
+     * Route name.
      *
      * @var string
      */
     protected $name = '';
 
     /**
-     * Route parameters
+     * Route parameters.
      *
      * @var array
      */
@@ -67,7 +68,7 @@ class Route implements UrlBuilder
     protected $path = '';
 
     /**
-     * Scheme to apply route to
+     * Scheme to apply route to.
      *
      * @var string
      */
@@ -98,7 +99,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get the host
+     * Get the host.
      *
      * @return string
      */
@@ -118,7 +119,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get route specific middleware array
+     * Get route specific middleware array.
      *
      * @return array
      */
@@ -128,7 +129,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get the name
+     * Get the name.
      *
      * @return string
      */
@@ -138,7 +139,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get route parameters
+     * Get route parameters.
      *
      * @return array
      */
@@ -158,7 +159,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get the scheme
+     * Get the scheme.
      *
      * @return string
      */
@@ -176,7 +177,7 @@ class Route implements UrlBuilder
      */
     public function url(array $parameters = []): string
     {
-        $path = Parser::replacePatternMatchers($this->getPath());
+        $path = RouteParser::replacePatternMatchers($this->getPath());
         foreach ($parameters as $key => $value) {
             $pattern = sprintf(
                 '~%s~x',
@@ -184,7 +185,7 @@ class Route implements UrlBuilder
             );
             preg_match($pattern, $path, $matches);
             if (isset($matches[1]) && !preg_match('/' . $matches[1] . '/', (string)$value)) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     "Substitution value '$value' does not match '$key' parameter '{$matches[1]}' pattern."
                 );
             }
@@ -200,7 +201,7 @@ class Route implements UrlBuilder
         foreach ($segs as $n => $seg) {
             if (strpos($seg, '{') !== false) {
                 if (isset($segs[$n - 1])) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         'Optional segments with unsubstituted parameters cannot '
                         . 'contain segments with substituted parameters when using FastRoute'
                     );
@@ -209,7 +210,7 @@ class Route implements UrlBuilder
                 if (count($segs) == 0) {
                     preg_match('/{.+}/', $seg, $params);
                     $mandatory = $params[0] ?? $seg;
-                    throw new \InvalidArgumentException("Parameter '$mandatory' is mandatory");
+                    throw new InvalidArgumentException("Parameter '$mandatory' is mandatory");
                 }
             }
         }
@@ -219,7 +220,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Set the host
+     * Set the host.
      *
      * @param string $host
      * @return Route
@@ -233,11 +234,12 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Add middleware to route
+     * Add middleware to route.
      *
      * @param string $name
      * @param $middleware
      * @return Route
+     * @throws InvalidArgumentException
      */
     public function withMiddleware(string $name, $middleware): Route
     {
@@ -247,12 +249,12 @@ class Route implements UrlBuilder
 
             return $route;
         } else {
-            throw new \InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
+            throw new InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
         }
     }
 
     /**
-     * Set the name
+     * Set the name.
      *
      * @param string $name
      * @return Route
@@ -266,7 +268,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Set route parameters
+     * Set route parameters.
      *
      * @param array $parameters
      * @return Route
@@ -280,7 +282,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Set the path
+     * Set the path.
      *
      * @param string $path
      * @return Route
@@ -294,7 +296,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Set the scheme
+     * Set the scheme.
      *
      * @param string $scheme
      * @return Route

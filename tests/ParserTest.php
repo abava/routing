@@ -9,9 +9,9 @@ class ParserTest extends TestCase
      */
     public function canAddPatterMatcher()
     {
-        \Venta\Routing\Parser::addPatternMatcher('test', 'venta');
+        \Venta\Routing\RouteParser::addPatternMatcher('test', 'venta');
         $path = '{id:test}';
-        $replaced = \Venta\Routing\Parser::replacePatternMatchers($path);
+        $replaced = \Venta\Routing\RouteParser::replacePatternMatchers($path);
         $this->assertEquals('{id:venta}', $replaced);
     }
 
@@ -20,7 +20,7 @@ class ParserTest extends TestCase
      */
     public function canParse()
     {
-        $parser = new \Venta\Routing\Parser();
+        $parser = new \Venta\Routing\RouteParser();
         $data = $parser->parse('{id:number}');
         $this->assertSame([[['id', '[0-9]+']]], $data);
     }
@@ -31,7 +31,7 @@ class ParserTest extends TestCase
     public function canReplacePatternMatchers()
     {
         $path = '{id:number}';
-        $replaced = \Venta\Routing\Parser::replacePatternMatchers($path);
+        $replaced = \Venta\Routing\RouteParser::replacePatternMatchers($path);
         $this->assertEquals('{id:[0-9]+}', $replaced);
     }
 
