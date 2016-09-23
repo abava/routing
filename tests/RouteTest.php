@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class RoutingRouteTest extends TestCase
+class RouteTest extends TestCase
 {
     /**
      * @test

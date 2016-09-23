@@ -2,10 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class GroupTest
- */
-class GroupTest extends TestCase
+class RouteGroupTest extends TestCase
 {
 
     /**

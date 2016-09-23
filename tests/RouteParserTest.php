@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class ParserTest extends TestCase
+class RouteParserTest extends TestCase
 {
     /**
      * @test

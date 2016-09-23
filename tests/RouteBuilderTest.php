@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class BuilderTest extends TestCase
+class RouteBuilderTest extends TestCase
 {
 
     /**

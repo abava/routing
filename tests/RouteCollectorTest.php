@@ -2,10 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class CollectorTest
- */
-class CollectorTest extends TestCase
+class RouteCollectorTest extends TestCase
 {
 
     protected $dataGenerator;
