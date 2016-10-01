@@ -81,7 +81,7 @@ class Generic implements Strategy
         }
 
         // arrays, non-stringable objects, resources are considered as invalid controller action results
-        throw new \RuntimeException('Controller action result must be either ResponseInterface or string');
+        throw new \RuntimeException('Action result must be either ResponseInterface or string');
     }
 
     /**

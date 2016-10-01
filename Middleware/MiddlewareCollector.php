@@ -4,7 +4,8 @@ namespace Venta\Routing\Middleware;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Venta\Contracts\Container\Container;
+use Venta\Container\ContainerAwareTrait;
+use Venta\Contracts\Container\ContainerAware;
 use Venta\Contracts\Routing\Middleware;
 use Venta\Contracts\Routing\MiddlewareCollector as MiddlewareCollectorContract;
 
@@ -13,17 +14,10 @@ use Venta\Contracts\Routing\MiddlewareCollector as MiddlewareCollectorContract;
  *
  * @package Venta\Routing\Middleware
  */
-class MiddlewareCollector implements MiddlewareCollectorContract
+class MiddlewareCollector implements MiddlewareCollectorContract, ContainerAware
 {
-
+    use ContainerAwareTrait;
     use MiddlewareValidatorTrait;
-
-    /**
-     * Container instance is used to make middlewares provided as string
-     *
-     * @var Container
-     */
-    protected $container;
 
     /**
      * Middleware array
@@ -47,16 +41,6 @@ class MiddlewareCollector implements MiddlewareCollectorContract
     private $reversed = false;
 
     /**
-     * Collector constructor.
-     *
-     * @param Container $container
-     */
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-    }
-
-    /**
      * @return \Venta\Contracts\Routing\Middleware
      */
     public function current()
@@ -66,7 +50,7 @@ class MiddlewareCollector implements MiddlewareCollectorContract
         // Middleware instantiation is deferred
         if (is_string($middleware)) {
             // Make middleware using container instance
-            return $this->middlewares[$name] = $this->container->make($middleware);
+            return $this->middlewares[$name] = $this->container->get($middleware);
         } elseif (is_callable($middleware)) {
             // Wrap callable middleware to return MiddlewareContract instance
             return $this->middlewares[$name] = $this->wrapCallableToContract($middleware);
@@ -233,7 +217,7 @@ class MiddlewareCollector implements MiddlewareCollectorContract
     }
 
     /**
-     * Reversed order and toggles reverse flag
+     * Reverses order and toggles reverse flag.
      *
      * @return void
      */

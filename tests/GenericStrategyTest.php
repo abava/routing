@@ -98,7 +98,7 @@ class GenericStrategyTest extends TestCase
     public function throwsExceptionOnInvalidCallerResult()
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Controller action result must be either ResponseInterface or string');
+        $this->expectExceptionMessage('Action result must be either ResponseInterface or string');
 
         $this->container->shouldReceive('call')
                         ->with($this->route->getCallable(), $this->route->getParameters())
