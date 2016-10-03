@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace Venta\Routing\Exceptions;
+namespace Venta\Routing\Exception;
 
 /**
  * Class NotAllowedException
  *
- * @package Venta\Routing
+ * @package Venta\Routing\Exception
  */
 class NotAllowedException extends \LogicException
 {

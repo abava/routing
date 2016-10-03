@@ -6,8 +6,8 @@ use Psr\Http\Message\RequestInterface;
 use Venta\Contracts\Routing\DispatcherFactory;
 use Venta\Contracts\Routing\RouteCollector as RouteCollectorContract;
 use Venta\Contracts\Routing\RouteMatcher as RouteMatcherContract;
-use Venta\Routing\Exceptions\NotAllowedException;
-use Venta\Routing\Exceptions\NotFoundException;
+use Venta\Routing\Exception\NotAllowedException;
+use Venta\Routing\Exception\NotFoundException;
 
 /**
  * Class RouteMatcher

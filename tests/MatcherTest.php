@@ -68,7 +68,7 @@ class MatcherTest extends TestCase
      */
     public function testMethodNotAllowed()
     {
-        $this->expectException(\Venta\Routing\Exceptions\NotAllowedException::class);
+        $this->expectException(\Venta\Routing\Exception\NotAllowedException::class);
         $this->expectExceptionMessageRegExp('/Method is not allowed/');
         $this->expectExceptionMessageRegExp('/POST/');
         $this->expectExceptionMessageRegExp('/PUT/');
@@ -81,7 +81,7 @@ class MatcherTest extends TestCase
 
     public function testNotFound()
     {
-        $this->expectException(\Venta\Routing\Exceptions\NotFoundException::class);
+        $this->expectException(\Venta\Routing\Exception\NotFoundException::class);
         $this->expectExceptionMessage('Can not route to this URI.');
 
         $match = [\FastRoute\Dispatcher::NOT_FOUND];
