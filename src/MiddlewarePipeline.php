@@ -19,7 +19,7 @@ class MiddlewarePipeline implements MiddlewarePipelineContract
     /**
      * @var Middleware[]
      */
-    private $middlewares = [];
+    protected $middlewares = [];
 
     /**
      * @inheritDoc
@@ -49,7 +49,7 @@ class MiddlewarePipeline implements MiddlewarePipelineContract
      * @param DelegateContract $nextDelegate
      * @return DelegateContract
      */
-    protected function createDelegate(Middleware $middleware, DelegateContract $nextDelegate): DelegateContract
+    protected function createDelegate($middleware, DelegateContract $nextDelegate): DelegateContract
     {
         return new class($middleware, $nextDelegate) implements DelegateContract
         {
