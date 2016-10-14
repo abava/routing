@@ -1,0 +1,5 @@
+suites:
+    routing_suite:
+        namespace: Venta\Routing
+        psr4_prefix: Venta\Routing
+        code_generation: false
