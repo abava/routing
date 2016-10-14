@@ -2,6 +2,7 @@
 
 namespace Venta\Routing;
 
+use ArrayIterator;
 use Venta\Contracts\Routing\Route;
 use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\RouteGroup;
@@ -39,6 +40,14 @@ class RouteCollection implements RouteCollectionContract
         $this->routes[] = $route;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->getRoutes());
     }
 
     /**
