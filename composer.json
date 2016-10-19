@@ -21,11 +21,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "Venta\\Routing\\": ""
-        },
-        "exclude-from-classmap": [
-            "/tests/"
-        ]
+            "Venta\\Routing\\": "src/"
+        }
     },
     "minimum-stability": "dev",
     "require-dev": {
