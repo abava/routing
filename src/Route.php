@@ -2,104 +2,176 @@
 
 namespace Venta\Routing;
 
-use InvalidArgumentException;
-use Venta\Contracts\Routing\UrlBuilder;
-use Venta\Routing\Middleware\MiddlewareValidatorTrait;
+use Venta\Contracts\Routing\Route as RouteContract;
 
 /**
  * Class Route
  *
  * @package Venta\Routing
  */
-class Route implements UrlBuilder
+class Route implements RouteContract
 {
 
-    use MiddlewareValidatorTrait;
-
     /**
-     * Route handle, may contain callable or controller action.
+     * Route handler, may contain callable or controller action.
      *
      * @var string|callable
      */
-    protected $callable;
+    private $handler;
 
     /**
      * Host to apply route to.
      *
      * @var string
      */
-    protected $host = '';
+    private $host = '';
 
     /**
      * Route allowed methods.
      *
      * @var string[]
      */
-    protected $methods = [];
+    private $methods = [];
 
     /**
-     * Route middlewares.
+     * List of middleware class names.
      *
-     * @var \Venta\Contracts\Routing\Middleware[]
+     * @var string[]
      */
-    protected $middlewares = [];
+    private $middlewares = [];
 
     /**
      * Route name.
      *
      * @var string
      */
-    protected $name = '';
-
-    /**
-     * Route parameters.
-     *
-     * @var array
-     */
-    protected $parameters = [];
+    private $name = '';
 
     /**
      * Route path
      *
      * @var string
      */
-    protected $path = '';
+    private $path = '';
 
     /**
      * Scheme to apply route to.
      *
      * @var string
      */
-    protected $scheme = '';
+    private $scheme = '';
+
+    /**
+     * Route variables.
+     *
+     * @var string[]
+     */
+    private $variables = [];
 
     /**
      * Route constructor.
      *
      * @param array $methods
      * @param string $path
-     * @param $callable
+     * @param string|callable $handler
      */
-    public function __construct(array $methods, string $path, $callable)
+    public function __construct(array $methods, string $path, $handler)
     {
         $this->methods = $methods;
-        $this->path = $path;
-        $this->callable = $callable;
+        $this->path = '/' . ltrim($path, '/');
+        $this->handler = $handler;
     }
 
     /**
-     * Get the callable.
-     *
-     * @return string|callable
+     * @param $path
+     * @param callable|string $handler
+     * @return Route
      */
-    public function getCallable()
+    public static function any($path, $handler): Route
     {
-        return $this->callable;
+        return new static(['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE'], $path, $handler);
     }
 
     /**
-     * Get the host.
-     *
-     * @return string
+     * @param string $path
+     * @param callable|string $handler
+     * @return Route
+     */
+    public static function delete(string $path, $handler): Route
+    {
+        return new static(['DELETE'], $path, $handler);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $handler
+     * @return Route
+     */
+    public static function get(string $path, $handler): Route
+    {
+        return new static(['GET'], $path, $handler);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $handler
+     * @return Route
+     */
+    public static function head(string $path, $handler): Route
+    {
+        return new static(['HEAD'], $path, $handler);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $handler
+     * @return Route
+     */
+    public static function options(string $path, $handler): Route
+    {
+        return new static(['OPTIONS'], $path, $handler);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $handler
+     * @return Route
+     */
+    public static function patch(string $path, $handler): Route
+    {
+        return new static(['PATCH'], $path, $handler);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $handler
+     * @return Route
+     */
+    public static function post(string $path, $handler): Route
+    {
+        return new static(['POST'], $path, $handler);
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $handler
+     * @return Route
+     */
+    public static function put(string $path, $handler): Route
+    {
+        return new static(['PUT'], $path, $handler);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHandler()
+    {
+        return $this->handler;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function getHost(): string
     {
@@ -107,9 +179,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get the methods.
-     *
-     * @return string[]
+     * @inheritDoc
      */
     public function getMethods(): array
     {
@@ -117,9 +187,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get route specific middleware array.
-     *
-     * @return array
+     * @inheritDoc
      */
     public function getMiddlewares(): array
     {
@@ -127,9 +195,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get the name.
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getName(): string
     {
@@ -137,19 +203,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get route parameters.
-     *
-     * @return array
-     */
-    public function getParameters(): array
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * Get the path.
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getPath(): string
     {
@@ -157,9 +211,7 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Get the scheme.
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getScheme(): string
     {
@@ -169,9 +221,9 @@ class Route implements UrlBuilder
     /**
      * @inheritDoc
      */
-    public function url(array $parameters = []): string
+    public function getVariables(): array
     {
-        return UrlGenerator::generate($this->getPath(), $parameters);
+        return $this->variables;
     }
 
     /**
@@ -189,23 +241,15 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Add middleware to route.
-     *
-     * @param string $name
-     * @param $middleware
+     * @param string $middleware Middleware class name
      * @return Route
-     * @throws InvalidArgumentException
      */
-    public function withMiddleware(string $name, $middleware): Route
+    public function withMiddleware(string $middleware): Route
     {
-        if ($this->isValidMiddleware($middleware)) {
-            $route = clone $this;
-            $route->middlewares[$name] = $middleware;
+        $route = clone $this;
+        $route->middlewares[] = $middleware;
 
-            return $route;
-        } else {
-            throw new InvalidArgumentException('Middleware must either implement Middleware contract or be callable');
-        }
+        return $route;
     }
 
     /**
@@ -223,29 +267,17 @@ class Route implements UrlBuilder
     }
 
     /**
-     * Set route parameters.
+     * Prefix the path.
      *
-     * @param array $parameters
+     * @param string $prefix
      * @return Route
      */
-    public function withParameters(array $parameters): Route
+    public function withPathPrefix(string $prefix): Route
     {
         $route = clone $this;
-        $route->parameters = $parameters;
-
-        return $route;
-    }
-
-    /**
-     * Set the path.
-     *
-     * @param string $path
-     * @return Route
-     */
-    public function withPath(string $path): Route
-    {
-        $route = clone $this;
-        $route->path = $path;
+        $route->path = $prefix == '/' || $prefix == '' ?
+            $route->path :
+            sprintf('/%s/%s', trim($prefix, '/'), ltrim($route->path, '/'));
 
         return $route;
     }
@@ -260,6 +292,20 @@ class Route implements UrlBuilder
     {
         $route = clone $this;
         $route->scheme = $scheme;
+
+        return $route;
+    }
+
+    /**
+     * Set route parameters.
+     *
+     * @param array $variables
+     * @return Route
+     */
+    public function withVariables(array $variables): Route
+    {
+        $route = clone $this;
+        $route->variables = $variables;
 
         return $route;
     }

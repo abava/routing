@@ -2,57 +2,43 @@
 
 namespace Venta\Routing;
 
-use FastRoute\RouteParser\Std;
+use FastRoute\RouteCollector;
+use Venta\Contracts\Routing\RouteParser as RouteParserContract;
 
 /**
  * Class RouteParser
  *
  * @package Venta\Routing
  */
-class RouteParser extends Std
+class RouteParser implements RouteParserContract
 {
 
     /**
-     * Predefined pattern matcher array
+     * @var RouteCollector
+     */
+    protected $collector;
+
+    /**
+     * RouteParser constructor.
      *
-     * @var array
+     * @param RouteCollector $collector
      */
-    protected static $patternMatchers = [
-        '/{(.+?):number}/' => '{$1:[0-9]+}',
-        '/{(.+?):word}/' => '{$1:[a-zA-Z]+}',
-        '/{(.+?):alphanum}/' => '{$1:[a-zA-Z0-9-_]+}',
-        '/{(.+?):slug}/' => '{$1:[a-z0-9-]+}',
-    ];
-
-    /**
-     * Adds pattern matcher
-     *
-     * @param $alias
-     * @param $regex
-     * @return void
-     */
-    public static function addPatternMatcher(string $alias, string $regex)
+    public function __construct(RouteCollector $collector)
     {
-        $pattern = '/{(.+?):' . $alias . '}/';
-        $regex = '{$1:' . $regex . '}';
-
-        static::$patternMatchers[$pattern] = $regex;
+        $this->collector = $collector;
     }
 
     /**
-     * @param string $path
-     * @return string
+     * @inheritDoc
      */
-    public static function replacePatternMatchers(string $path): string
+    public function parse(array $routes): array
     {
-        return preg_replace(array_keys(static::$patternMatchers), array_values(static::$patternMatchers), $path);
+        /** @var \Venta\Contracts\Routing\Route $route */
+        foreach ($routes as $route) {
+            $this->collector->addRoute($route->getMethods(), $route->getPath(), $route);
+        }
+
+        return $this->collector->getData();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function parse($route)
-    {
-        return parent::parse(static::replacePatternMatchers($route));
-    }
 }
