@@ -230,9 +230,9 @@ class Route implements RouteContract
      * Set the host.
      *
      * @param string $host
-     * @return Route
+     * @return RouteContract
      */
-    public function withHost(string $host): Route
+    public function withHost(string $host): RouteContract
     {
         $route = clone $this;
         $route->host = $host;
@@ -242,9 +242,9 @@ class Route implements RouteContract
 
     /**
      * @param string $middleware Middleware class name
-     * @return Route
+     * @return RouteContract
      */
-    public function withMiddleware(string $middleware): Route
+    public function withMiddleware(string $middleware): RouteContract
     {
         $route = clone $this;
         $route->middlewares[] = $middleware;
@@ -256,9 +256,9 @@ class Route implements RouteContract
      * Set the name.
      *
      * @param string $name
-     * @return Route
+     * @return RouteContract
      */
-    public function withName(string $name): Route
+    public function withName(string $name): RouteContract
     {
         $route = clone $this;
         $route->name = $name;
@@ -270,9 +270,9 @@ class Route implements RouteContract
      * Prefix the path.
      *
      * @param string $prefix
-     * @return Route
+     * @return RouteContract
      */
-    public function withPathPrefix(string $prefix): Route
+    public function withPathPrefix(string $prefix): RouteContract
     {
         $route = clone $this;
         $route->path = $prefix == '/' || $prefix == '' ?
@@ -286,9 +286,9 @@ class Route implements RouteContract
      * Set the scheme.
      *
      * @param string $scheme
-     * @return Route
+     * @return RouteContract
      */
-    public function withScheme(string $scheme): Route
+    public function withScheme(string $scheme): RouteContract
     {
         $route = clone $this;
         $route->scheme = $scheme;
@@ -300,9 +300,9 @@ class Route implements RouteContract
      * Set route parameters.
      *
      * @param array $variables
-     * @return Route
+     * @return RouteContract
      */
-    public function withVariables(array $variables): Route
+    public function withVariables(array $variables): RouteContract
     {
         $route = clone $this;
         $route->variables = $variables;

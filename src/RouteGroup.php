@@ -12,10 +12,19 @@ use Venta\Contracts\Routing\RouteGroup as RouteGroupContract;
 class RouteGroup extends RouteCollection implements RouteGroupContract
 {
 
+    /**
+     * @var string
+     */
     private $host = '';
 
+    /**
+     * @var string
+     */
     private $prefix = '/';
 
+    /**
+     * @var string
+     */
     private $scheme = '';
 
     /**

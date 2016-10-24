@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Venta\Routing;
+namespace spec\Venta\Routing\Factory;
 
 use PhpSpec\ObjectBehavior;
 use Venta\Contracts\Container\Container;
@@ -27,3 +27,4 @@ class RouteDispatcherFactorySpec extends ObjectBehavior
         $this->shouldImplement(\Venta\Contracts\Routing\RouteDispatcherFactory::class);
     }
 }
+

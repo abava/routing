@@ -8,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Venta\Contracts\Routing\Delegate;
 use Venta\Contracts\Routing\MiddlewarePipeline;
 use Venta\Contracts\Routing\MiddlewarePipelineFactory;
+use Venta\Contracts\Routing\RequestRouteCollectionFactory;
 use Venta\Contracts\Routing\Route;
 use Venta\Contracts\Routing\RouteCollection;
 use Venta\Contracts\Routing\RouteDispatcherFactory;
@@ -21,9 +22,11 @@ class RouterSpec extends ObjectBehavior
         RouteMatcher $matcher,
         MiddlewarePipelineFactory $pipelineFactory,
         RouteCollection $routes,
-        RouteDispatcherFactory $dispatcherFactory
+        RouteDispatcherFactory $dispatcherFactory,
+        RequestRouteCollectionFactory $requestRouteCollectionFactory
     ) {
-        $this->beConstructedWith($matcher, $pipelineFactory, $routes, $dispatcherFactory);
+        $this->beConstructedWith($dispatcherFactory, $matcher, $pipelineFactory, $routes,
+            $requestRouteCollectionFactory);
     }
 
     function it_is_initializable()
@@ -36,6 +39,7 @@ class RouterSpec extends ObjectBehavior
         MiddlewarePipelineFactory $pipelineFactory,
         RouteCollection $routes,
         RouteDispatcherFactory $dispatcherFactory,
+        RequestRouteCollectionFactory $requestRouteCollectionFactory,
         Route $route,
         MiddlewarePipeline $pipeline,
         RouteDispatcher $routeDispatcher,
@@ -47,6 +51,7 @@ class RouterSpec extends ObjectBehavior
         $pipelineFactory->create(['middleware'])->willReturn($pipeline->getWrappedObject());
         $dispatcherFactory->create($route)->willReturn($routeDispatcher);
         $pipeline->process($request, $routeDispatcher)->willReturn($response);
+        $requestRouteCollectionFactory->create($routes, $request)->willReturn($routes);
         $this->next($request)->shouldBe($response);
     }
 }

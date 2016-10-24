@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Venta\Contracts\Routing\Delegate;
 use Venta\Contracts\Routing\MiddlewarePipelineFactory as MiddlewarePipelineFactoryContract;
+use Venta\Contracts\Routing\RequestRouteCollectionFactory;
 use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\RouteDispatcherFactory as RouteDispatcherFactoryContract;
 use Venta\Contracts\Routing\RouteMatcher as RouteMatcherContract;
@@ -15,7 +16,7 @@ use Venta\Contracts\Routing\RouteMatcher as RouteMatcherContract;
  *
  * @package Venta\Routing
  */
-class Router implements Delegate
+final class Router implements Delegate
 {
     /**
      * @var RouteDispatcherFactoryContract
@@ -33,6 +34,11 @@ class Router implements Delegate
     private $pipelineFactory;
 
     /**
+     * @var RequestRouteCollectionFactory
+     */
+    private $routeCollectionFactory;
+
+    /**
      * @var RouteCollectionContract
      */
     private $routes;
@@ -40,21 +46,24 @@ class Router implements Delegate
     /**
      * Router constructor.
      *
+     * @param RouteDispatcherFactoryContract $dispatcherFactory
      * @param RouteMatcherContract $matcher
      * @param MiddlewarePipelineFactoryContract $pipelineFactory
      * @param RouteCollectionContract $routes
-     * @param RouteDispatcherFactoryContract $dispatcherFactory
+     * @param RequestRouteCollectionFactory $routeCollectionFactory
      */
     public function __construct(
+        RouteDispatcherFactoryContract $dispatcherFactory,
         RouteMatcherContract $matcher,
         MiddlewarePipelineFactoryContract $pipelineFactory,
         RouteCollectionContract $routes,
-        RouteDispatcherFactoryContract $dispatcherFactory
+        RequestRouteCollectionFactory $routeCollectionFactory
     ) {
+        $this->dispatcherFactory = $dispatcherFactory;
         $this->matcher = $matcher;
         $this->pipelineFactory = $pipelineFactory;
         $this->routes = $routes;
-        $this->dispatcherFactory = $dispatcherFactory;
+        $this->routeCollectionFactory = $routeCollectionFactory;
     }
 
     /**
@@ -62,8 +71,9 @@ class Router implements Delegate
      */
     public function next(ServerRequestInterface $request): ResponseInterface
     {
+        $requestRouteCollection = $this->routeCollectionFactory->create($this->routes, $request);
         // Find matching route against provided request
-        $route = $this->matcher->match($request, $this->routes);
+        $route = $this->matcher->match($request, $requestRouteCollection);
 
         // Create route middleware pipeline
         $pipeline = $this->pipelineFactory->create($route->getMiddlewares());
@@ -72,6 +82,5 @@ class Router implements Delegate
 
         return $pipeline->process($request, $delegate);
     }
-
 
 }

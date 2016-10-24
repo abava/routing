@@ -1,11 +1,11 @@
 <?php
 
-namespace spec\Venta\Routing;
+namespace spec\Venta\Routing\Factory;
 
 use FastRoute\Dispatcher\GroupCountBased;
 use PhpSpec\ObjectBehavior;
 
-class DispatcherFactorySpec extends ObjectBehavior
+class GroupCountBasedDispatcherFactorySpec extends ObjectBehavior
 {
     function it_creates_group_count_based_dispatcher()
     {
@@ -14,6 +14,6 @@ class DispatcherFactorySpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldImplement(\Venta\Contracts\Routing\DispatcherFactory::class);
+        $this->shouldImplement(\Venta\Contracts\Routing\FastrouteDispatcherFactory::class);
     }
 }

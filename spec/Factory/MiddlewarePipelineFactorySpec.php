@@ -1,6 +1,6 @@
 <?php
 
-namespace spec\Venta\Routing;
+namespace spec\Venta\Routing\Factory;
 
 use PhpSpec\ObjectBehavior;
 use Venta\Contracts\Container\Container;

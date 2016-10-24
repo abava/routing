@@ -7,7 +7,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
-use Venta\Contracts\Routing\DispatcherFactory;
+use Venta\Contracts\Routing\FastrouteDispatcherFactory;
 use Venta\Contracts\Routing\Route;
 use Venta\Contracts\Routing\RouteCollection;
 use Venta\Contracts\Routing\RouteParser;
@@ -17,7 +17,7 @@ use Venta\Routing\Exception\NotFoundException;
 class RouteMatcherSpec extends ObjectBehavior
 {
 
-    function let(RouteParser $parser, DispatcherFactory $factory, Route $route, Dispatcher $dispatcher)
+    function let(RouteParser $parser, FastrouteDispatcherFactory $factory, Route $route, Dispatcher $dispatcher)
     {
         $parser->parse(Argument::containing($route->getWrappedObject()))->willReturn(['parsed']);
         $factory->create(['parsed'])->willReturn($dispatcher);
@@ -40,7 +40,8 @@ class RouteMatcherSpec extends ObjectBehavior
         $request->getUri()->willReturn($uri);
         $uri->getPath()->willReturn('/url');
         $request->getMethod()->willReturn('GET');
-        $dispatcher->dispatch('GET', '/url')->willReturn([Dispatcher::FOUND, $route, []]);
+        $dispatcher->dispatch('GET', '/url')->willReturn([Dispatcher::FOUND, $route, ['vars']]);
+        $route->withVariables(['vars'])->willReturn($route);
         $this->match($request, $routeCollection)->shouldBe($route);
     }
 

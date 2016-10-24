@@ -3,7 +3,7 @@
 namespace Venta\Routing;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Venta\Contracts\Routing\DispatcherFactory as DispatcherFactoryContract;
+use Venta\Contracts\Routing\FastrouteDispatcherFactory;
 use Venta\Contracts\Routing\Route as RouteContract;
 use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\RouteMatcher as RouteMatcherContract;
@@ -16,29 +16,29 @@ use Venta\Routing\Exception\NotFoundException;
  *
  * @package Venta\Routing
  */
-class RouteMatcher implements RouteMatcherContract
+final class RouteMatcher implements RouteMatcherContract
 {
 
     /**
-     * @var DispatcherFactoryContract
+     * @var FastrouteDispatcherFactory
      */
-    protected $dispatcherFactory;
+    private $fastrouteDispatcherFactory;
 
     /**
      * @var RouteParserContract
      */
-    protected $parser;
+    private $parser;
 
     /**
      * RouteMatcher constructor.
      *
      * @param RouteParserContract $parser
-     * @param DispatcherFactoryContract $dispatcherFactory
+     * @param FastrouteDispatcherFactory $fastrouteDispatcherFactory
      */
-    public function __construct(RouteParserContract $parser, DispatcherFactoryContract $dispatcherFactory)
+    public function __construct(RouteParserContract $parser, FastrouteDispatcherFactory $fastrouteDispatcherFactory)
     {
         $this->parser = $parser;
-        $this->dispatcherFactory = $dispatcherFactory;
+        $this->fastrouteDispatcherFactory = $fastrouteDispatcherFactory;
     }
 
     /**
@@ -46,16 +46,16 @@ class RouteMatcher implements RouteMatcherContract
      */
     public function match(ServerRequestInterface $request, RouteCollectionContract $routeCollection): RouteContract
     {
-        $parsedRouteData = $this->parser->parse($routeCollection->getRoutes());
-        $dispatcher = $this->dispatcherFactory->create($parsedRouteData);
+        $routes = $routeCollection->getRoutes();
+        $parsedRouteData = $this->parser->parse($routes);
+        $dispatcher = $this->fastrouteDispatcherFactory->create($parsedRouteData);
         $match = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());
         switch ($match[0]) {
             case $dispatcher::FOUND:
-                /** @var Route $route */
+                /** @var RouteContract $route */
                 list(, $route, $variables) = $match;
 
-                return $route;//->withVariables($variables); TODO: add ->withVariables to interface?
-                break;
+                return $route->withVariables($variables);
             case $dispatcher::METHOD_NOT_ALLOWED:
                 throw new NotAllowedException($match[1]);
             default:

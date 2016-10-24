@@ -1,10 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace Venta\Routing;
+namespace Venta\Routing\Factory;
 
 use Venta\Contracts\Container\Container;
-use Venta\Contracts\Routing\MiddlewarePipeline;
+use Venta\Contracts\Routing\MiddlewarePipeline as MiddlewarePipelineContract;
 use Venta\Contracts\Routing\MiddlewarePipelineFactory as MiddlewarePipelineFactoryContract;
+use Venta\Routing\MiddlewarePipeline;
 
 /**
  * Class MiddlewarePipelineFactory
@@ -31,9 +32,9 @@ class MiddlewarePipelineFactory implements MiddlewarePipelineFactoryContract
     /**
      * @inheritDoc
      */
-    public function create(array $middlewares): MiddlewarePipeline
+    public function create(array $middlewares): MiddlewarePipelineContract
     {
-        $pipeline = new \Venta\Routing\MiddlewarePipeline();
+        $pipeline = new MiddlewarePipeline();
         foreach ($middlewares as $middleware) {
             $pipeline = $pipeline->withMiddleware($this->container->get($middleware));
         }
