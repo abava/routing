@@ -5,15 +5,15 @@ namespace Venta\Routing;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Venta\Contracts\Container\Container;
-use Venta\Contracts\Routing\Delegate;
 use Venta\Contracts\Routing\Route as RouteContract;
+use Venta\Contracts\Routing\RouteDispatcher as RouteDispatcherContract;
 
 /**
  * Class RouteDispatcher
  *
  * @package Venta\Routing
  */
-class RouteDispatcher implements Delegate
+class RouteDispatcher implements RouteDispatcherContract
 {
 
     /**

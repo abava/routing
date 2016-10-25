@@ -4,19 +4,19 @@ namespace Venta\Routing;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Venta\Contracts\Routing\Delegate;
 use Venta\Contracts\Routing\MiddlewarePipelineFactory as MiddlewarePipelineFactoryContract;
 use Venta\Contracts\Routing\RequestRouteCollectionFactory;
 use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\RouteDispatcherFactory as RouteDispatcherFactoryContract;
 use Venta\Contracts\Routing\RouteMatcher as RouteMatcherContract;
+use Venta\Contracts\Routing\Router as RouterContract;
 
 /**
  * Class Router
  *
  * @package Venta\Routing
  */
-final class Router implements Delegate
+final class Router implements RouterContract
 {
     /**
      * @var RouteDispatcherFactoryContract
@@ -72,15 +72,15 @@ final class Router implements Delegate
     public function next(ServerRequestInterface $request): ResponseInterface
     {
         $requestRouteCollection = $this->routeCollectionFactory->create($this->routes, $request);
-        // Find matching route against provided request
+        // Find matching route against provided request.
         $route = $this->matcher->match($request, $requestRouteCollection);
 
-        // Create route middleware pipeline
+        // Create route middleware pipeline.
         $pipeline = $this->pipelineFactory->create($route->getMiddlewares());
-        // Create the last delegate, which calls route handler
-        $delegate = $this->dispatcherFactory->create($route);
+        // Create the last delegate, which calls route handler.
+        $routeDispatcher = $this->dispatcherFactory->create($route);
 
-        return $pipeline->process($request, $delegate);
+        return $pipeline->process($request, $routeDispatcher);
     }
 
 }

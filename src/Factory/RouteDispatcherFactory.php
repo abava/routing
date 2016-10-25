@@ -3,8 +3,8 @@
 namespace Venta\Routing\Factory;
 
 use Venta\Contracts\Container\Container;
-use Venta\Contracts\Routing\Delegate;
 use Venta\Contracts\Routing\Route as RouteContract;
+use Venta\Contracts\Routing\RouteDispatcher as RouteDispatcherContract;
 use Venta\Contracts\Routing\RouteDispatcherFactory as RouteDispatcherFactoryContract;
 use Venta\Routing\RouteDispatcher;
 
@@ -33,7 +33,7 @@ class RouteDispatcherFactory implements RouteDispatcherFactoryContract
     /**
      * @inheritDoc
      */
-    public function create(RouteContract $route): Delegate
+    public function create(RouteContract $route): RouteDispatcherContract
     {
         return new RouteDispatcher($route, $this->container);
     }
