@@ -10,7 +10,7 @@ use Venta\Contracts\Routing\FastrouteDispatcherFactory;
  *
  * @package Venta\Routing\Factory
  */
-class GroupCountBasedDispatcherFactory implements FastrouteDispatcherFactory
+final class GroupCountBasedDispatcherFactory implements FastrouteDispatcherFactory
 {
     /**
      * @inheritDoc

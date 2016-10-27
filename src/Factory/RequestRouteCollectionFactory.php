@@ -12,7 +12,7 @@ use Venta\Routing\RequestRouteCollection;
  *
  * @package Venta\Routing\Factory
  */
-class RequestRouteCollectionFactory implements RequestRouteCollectionFactoryContract
+final class RequestRouteCollectionFactory implements RequestRouteCollectionFactoryContract
 {
 
     /**

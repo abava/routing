@@ -13,7 +13,7 @@ use Venta\Contracts\Routing\RouteDispatcher as RouteDispatcherContract;
  *
  * @package Venta\Routing
  */
-class RouteDispatcher implements RouteDispatcherContract
+final class RouteDispatcher implements RouteDispatcherContract
 {
 
     /**

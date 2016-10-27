@@ -12,7 +12,7 @@ use Venta\Contracts\Routing\RouteGroup as RouteGroupContract;
  *
  * @package Venta\Routing
  */
-class RequestRouteCollection implements RouteCollectionContract
+final class RequestRouteCollection implements RouteCollectionContract
 {
 
     /**

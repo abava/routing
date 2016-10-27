@@ -10,13 +10,13 @@ use Venta\Contracts\Routing\RouteParser as RouteParserContract;
  *
  * @package Venta\Routing
  */
-class RouteParser implements RouteParserContract
+final class RouteParser implements RouteParserContract
 {
 
     /**
      * @var RouteCollector
      */
-    protected $collector;
+    private $collector;
 
     /**
      * RouteParser constructor.

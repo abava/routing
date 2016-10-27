@@ -12,7 +12,7 @@ use Venta\Routing\MiddlewarePipeline;
  *
  * @package Venta\Routing
  */
-class MiddlewarePipelineFactory implements MiddlewarePipelineFactoryContract
+final class MiddlewarePipelineFactory implements MiddlewarePipelineFactoryContract
 {
     /**
      * @var Container

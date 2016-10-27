@@ -19,7 +19,7 @@ class MiddlewarePipeline implements MiddlewarePipelineContract
     /**
      * @var Middleware[]
      */
-    protected $middlewares = [];
+    private $middlewares = [];
 
     /**
      * @inheritDoc

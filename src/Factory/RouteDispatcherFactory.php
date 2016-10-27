@@ -13,7 +13,7 @@ use Venta\Routing\RouteDispatcher;
  *
  * @package Venta\Routing\Factory
  */
-class RouteDispatcherFactory implements RouteDispatcherFactoryContract
+final class RouteDispatcherFactory implements RouteDispatcherFactoryContract
 {
     /**
      * @var Container
