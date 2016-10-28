@@ -11,9 +11,9 @@ use Venta\Contracts\Routing\MiddlewarePipelineFactory;
 use Venta\Contracts\Routing\RequestRouteCollectionFactory;
 use Venta\Contracts\Routing\Route;
 use Venta\Contracts\Routing\RouteCollection;
+use Venta\Contracts\Routing\RouteDispatcher;
 use Venta\Contracts\Routing\RouteDispatcherFactory;
 use Venta\Contracts\Routing\RouteMatcher;
-use Venta\Routing\RouteDispatcher;
 
 class RouterSpec extends ObjectBehavior
 {
