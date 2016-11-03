@@ -230,7 +230,7 @@ class Route implements RouteContract
      */
     public function getResponder(): string
     {
-        return $this->getResponder();
+        return $this->responder;
     }
 
     /**

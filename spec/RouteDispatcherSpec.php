@@ -5,6 +5,7 @@ namespace spec\Venta\Routing;
 use PhpSpec\ObjectBehavior;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Venta\Contracts\Adr\Responder;
 use Venta\Contracts\Container\Container;
 use Venta\Contracts\Routing\Delegate;
 use Venta\Contracts\Routing\Route;
@@ -16,14 +17,18 @@ class RouteDispatcherSpec extends ObjectBehavior
         $this->beConstructedWith($route, $container);
     }
 
-    function it_calls_route_handler(
+    function it_calls_responder_only_when_domain_is_not_callable(
         Container $container,
         Route $route,
         ServerRequestInterface $request,
-        ResponseInterface $response
+        ResponseInterface $response,
+        Responder $responder
     ) {
-        $route->getHandler()->willReturn('handler');
-        $container->call('handler', ['request' => $request])->willReturn($response);
+        $route->getDomain()->willReturn('');
+        $route->getResponder()->willReturn(Responder::class);
+        $container->isCallable('')->willReturn(false);
+        $container->get(Responder::class)->willReturn($responder);
+        $responder->run($request, null)->willReturn($response);
         $this->next($request)->shouldBe($response);
     }
 
