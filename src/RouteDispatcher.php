@@ -4,6 +4,9 @@ namespace Venta\Routing;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Venta\Contracts\Adr\Input;
+use Venta\Contracts\Adr\Payload;
+use Venta\Contracts\Adr\Responder;
 use Venta\Contracts\Container\Container;
 use Venta\Contracts\Routing\Route as RouteContract;
 use Venta\Contracts\Routing\RouteDispatcher as RouteDispatcherContract;
@@ -43,7 +46,19 @@ final class RouteDispatcher implements RouteDispatcherContract
      */
     public function next(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->container->call($this->route->getHandler(), ['request' => $request]);
+        if ($this->container->isCallable($this->route->getDomain())) {
+            if ($this->container->has($this->route->getInput())) {
+                /** @var Input $input */
+                $input = $this->container->get($this->route->getInput());
+                $arguments = $input->process($request);
+            }
+            /** @var Payload $payload */
+            $payload = $this->container->call($this->route->getDomain(), $arguments ?? []);
+        }
+        /** @var Responder $responder */
+        $responder = $this->container->get($this->route->getResponder());
+        
+        return $responder->run($request, $payload ?? null);
     }
 
 }

@@ -11,13 +11,10 @@ use Venta\Contracts\Routing\Route as RouteContract;
  */
 class Route implements RouteContract
 {
-
     /**
-     * Route handler, may contain callable or controller action.
-     *
-     * @var string|callable
+     * @var string
      */
-    private $handler;
+    private $domain = '';
 
     /**
      * Host to apply route to.
@@ -25,6 +22,11 @@ class Route implements RouteContract
      * @var string
      */
     private $host = '';
+
+    /**
+     * @var string
+     */
+    private $input = '';
 
     /**
      * Route allowed methods.
@@ -55,6 +57,11 @@ class Route implements RouteContract
     private $path = '';
 
     /**
+     * @var string
+     */
+    private $responder;
+
+    /**
      * Scheme to apply route to.
      *
      * @var string
@@ -73,13 +80,13 @@ class Route implements RouteContract
      *
      * @param array $methods
      * @param string $path
-     * @param string|callable $handler
+     * @param string $responder
      */
-    public function __construct(array $methods, string $path, $handler)
+    public function __construct(array $methods, string $path, string $responder)
     {
         $this->methods = $methods;
         $this->path = '/' . ltrim($path, '/');
-        $this->handler = $handler;
+        $this->responder = $responder;
     }
 
     /**
@@ -165,9 +172,9 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getHandler()
+    public function getDomain():string
     {
-        return $this->handler;
+        return $this->domain;
     }
 
     /**
@@ -176,6 +183,14 @@ class Route implements RouteContract
     public function getHost(): string
     {
         return $this->host;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getInput(): string
+    {
+        return $this->input;
     }
 
     /**
@@ -213,6 +228,14 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
+    public function getResponder(): string
+    {
+        return $this->getResponder();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getScheme(): string
     {
         return $this->scheme;
@@ -227,6 +250,17 @@ class Route implements RouteContract
     }
 
     /**
+     * @inheritDoc
+     */
+    public function withDomain(string $domainClass): RouteContract
+    {
+        $route = clone $this;
+        $route->domain = $domainClass;
+
+        return $route;
+    }
+
+    /**
      * Set the host.
      *
      * @param string $host
@@ -236,6 +270,17 @@ class Route implements RouteContract
     {
         $route = clone $this;
         $route->host = $host;
+
+        return $route;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withInput(string $inputClass): RouteContract
+    {
+        $route = clone $this;
+        $route->input = $inputClass;
 
         return $route;
     }

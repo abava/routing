@@ -9,7 +9,14 @@ class RouteSpec extends ObjectBehavior
 
     function let()
     {
-        $this->beConstructedWith(['GET'], 'url', 'handler');
+        $this->beConstructedWith(['GET'], 'url', 'responder');
+    }
+
+    function it_has_immutable_domain()
+    {
+        $route = $this->withDomain('domain');
+        $route->getDomain()->shouldBe('domain');
+        $this->getDomain()->shouldBe('');
     }
 
     function it_has_immutable_host()
@@ -19,6 +26,13 @@ class RouteSpec extends ObjectBehavior
         $this->getHost()->shouldBe('');
     }
 
+    function it_has_immutable_input()
+    {
+        $route = $this->withInput('input');
+        $route->getInput()->shouldBe('input');
+        $this->getInput()->shouldBe('');
+    }
+    
     function it_has_immutable_name()
     {
         $route = $this->withName('named');
@@ -48,11 +62,13 @@ class RouteSpec extends ObjectBehavior
     function it_is_initializable()
     {
         $this->getPath()->shouldBe('/url');
-        $this->getHandler()->shouldBe('handler');
+        $this->getResponder()->shouldBe('responder');
         $this->getMethods()->shouldContain('GET');
         $this->getHost()->shouldBe('');
         $this->getScheme()->shouldBe('');
         $this->getName()->shouldBe('');
+        $this->getInput()->shouldBe('');
+        $this->getDomain()->shouldBe('');
     }
 
 
