@@ -59,7 +59,7 @@ final class RouteMatcher implements RouteMatcherContract
             case $dispatcher::METHOD_NOT_ALLOWED:
                 throw new NotAllowedException($match[1]);
             default:
-                throw new NotFoundException;
+                throw new NotFoundException($request->getMethod(), $request->getUri()->getPath());
         }
     }
 

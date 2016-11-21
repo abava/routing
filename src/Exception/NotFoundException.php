@@ -12,8 +12,8 @@ class NotFoundException extends \LogicException
     /**
      * {@inheritdoc}
      */
-    public function __construct(\Exception $previous = null)
+    public function __construct(string $method, string $path, \Exception $previous = null)
     {
-        parent::__construct('Can not route to this URI.', 0, $previous);
+        parent::__construct(sprintf('Cannot route "%s %s" request.', $method, $path), 0, $previous);
     }
 }
