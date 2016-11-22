@@ -8,8 +8,10 @@ use Venta\Contracts\Adr\Input;
 use Venta\Contracts\Adr\Payload;
 use Venta\Contracts\Adr\Responder;
 use Venta\Contracts\Container\Container;
+use Venta\Contracts\Http\Request as RequestContract;
 use Venta\Contracts\Routing\Route as RouteContract;
 use Venta\Contracts\Routing\RouteDispatcher as RouteDispatcherContract;
+use Venta\Http\Request;
 
 /**
  * Class RouteDispatcher
@@ -46,6 +48,11 @@ final class RouteDispatcher implements RouteDispatcherContract
      */
     public function next(ServerRequestInterface $request): ResponseInterface
     {
+        if (!$request instanceof RequestContract) {
+            // Decorate PSR-7 ServerRequest.
+            $request = new Request($request);
+        }
+
         if ($this->container->isCallable($this->route->getDomain())) {
             if ($this->container->has($this->route->getInput())) {
                 /** @var Input $input */
