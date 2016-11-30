@@ -53,6 +53,9 @@ final class RouteDispatcher implements RouteDispatcherContract
             $request = new Request($request);
         }
 
+        // Add current route to the request.
+        $request = $request->withRoute($this->route);
+
         if ($this->container->isCallable($this->route->getDomain())) {
             if ($this->container->has($this->route->getInput())) {
                 /** @var Input $input */
