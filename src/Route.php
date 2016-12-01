@@ -79,7 +79,7 @@ class Route implements RouteContract
     /**
      * Route constructor.
      *
-     * @param array $methods
+     * @param string[] $methods
      * @param string $path
      * @param string $responder
      */
@@ -91,83 +91,83 @@ class Route implements RouteContract
     }
 
     /**
-     * @param $path
-     * @param callable|string $handler
+     * @param string $path
+     * @param callable|string $responder
      * @return Route
      */
-    public static function any($path, $handler): Route
+    public static function any(string $path, $responder): Route
     {
-        return new static(['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE'], $path, $handler);
+        return new static(['HEAD', 'GET', 'POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE'], $path, $responder);
     }
 
     /**
      * @param string $path
-     * @param callable|string $handler
+     * @param callable|string $responder
      * @return Route
      */
-    public static function delete(string $path, $handler): Route
+    public static function delete(string $path, $responder): Route
     {
-        return new static(['DELETE'], $path, $handler);
+        return new static(['DELETE'], $path, $responder);
     }
 
     /**
      * @param string $path
-     * @param callable|string $handler
+     * @param callable|string $responder
      * @return Route
      */
-    public static function get(string $path, $handler): Route
+    public static function get(string $path, $responder): Route
     {
-        return new static(['GET'], $path, $handler);
+        return new static(['GET'], $path, $responder);
     }
 
     /**
      * @param string $path
-     * @param callable|string $handler
+     * @param callable|string $responder
      * @return Route
      */
-    public static function head(string $path, $handler): Route
+    public static function head(string $path, $responder): Route
     {
-        return new static(['HEAD'], $path, $handler);
+        return new static(['HEAD'], $path, $responder);
     }
 
     /**
      * @param string $path
-     * @param callable|string $handler
+     * @param callable|string $responder
      * @return Route
      */
-    public static function options(string $path, $handler): Route
+    public static function options(string $path, $responder): Route
     {
-        return new static(['OPTIONS'], $path, $handler);
+        return new static(['OPTIONS'], $path, $responder);
     }
 
     /**
      * @param string $path
-     * @param callable|string $handler
+     * @param callable|string $responder
      * @return Route
      */
-    public static function patch(string $path, $handler): Route
+    public static function patch(string $path, $responder): Route
     {
-        return new static(['PATCH'], $path, $handler);
+        return new static(['PATCH'], $path, $responder);
     }
 
     /**
      * @param string $path
-     * @param callable|string $handler
+     * @param callable|string $responder
      * @return Route
      */
-    public static function post(string $path, $handler): Route
+    public static function post(string $path, $responder): Route
     {
-        return new static(['POST'], $path, $handler);
+        return new static(['POST'], $path, $responder);
     }
 
     /**
      * @param string $path
-     * @param callable|string $handler
+     * @param callable|string $responder
      * @return Route
      */
-    public static function put(string $path, $handler): Route
+    public static function put(string $path, $responder): Route
     {
-        return new static(['PUT'], $path, $handler);
+        return new static(['PUT'], $path, $responder);
     }
 
     /**

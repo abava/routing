@@ -2,7 +2,6 @@
 
 namespace Venta\Routing;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Venta\Contracts\Http\Request;
 use Venta\Contracts\Routing\Route as RouteContract;
@@ -18,12 +17,12 @@ use Venta\Routing\Exception\RouteNotFoundException;
 class UrlGenerator implements UrlGeneratorContract
 {
     /**
-     * @var ServerRequestInterface
+     * @var Request
      */
     private $request;
 
     /**
-     * @var RouteCollection
+     * @var RouteCollectionContract
      */
     private $routes;
 
