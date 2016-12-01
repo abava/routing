@@ -3,27 +3,30 @@
 namespace spec\Venta\Routing;
 
 use PhpSpec\ObjectBehavior;
+use Venta\Contracts\Routing\RouteGroup;
 use Venta\Routing\Route;
 
 class RouteGroupSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->addRoute(new Route(['GET'], '/url', 'handler'));
+        $this->addRoute(new Route(['GET'], '/url', 'responder'));
     }
 
     function it_collects_route_by_callback()
     {
-        $route = new Route(['GET'], '/url', 'handler');
-        $group = $this->collect(function (\Venta\Contracts\Routing\RouteGroup $group) use ($route) {
+        $route = new Route(['GET'], '/url', 'responder');
+        $group = $this::collect(function (RouteGroup $group) use ($route) {
             $group->addRoute($route);
-        })->shouldBeAnInstanceOf(\Venta\Contracts\Routing\RouteGroup::class);
+        })->shouldBeAnInstanceOf(RouteGroup::class);
+
+        // todo: implement with specs
         assert(in_array($route, $group->getRoutes()));
     }
 
     function it_is_initializable()
     {
-        $this->shouldHaveType(\Venta\Contracts\Routing\RouteGroup::class);
+        $this->shouldHaveType(RouteGroup::class);
     }
 
     function it_sets_host_on_route()

@@ -51,7 +51,7 @@ class RouteGroup extends RouteCollection implements RouteGroupContract
                 $route = $route->withHost($this->host);
             }
             if (!$route->getScheme() && $this->scheme) {
-                $route = $route->withScheme($this->scheme);
+                $route = $route->secure();
             }
             $routes[] = $route->withPathPrefix($this->prefix);
         }

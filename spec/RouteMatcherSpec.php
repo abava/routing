@@ -11,8 +11,8 @@ use Venta\Contracts\Routing\FastrouteDispatcherFactory;
 use Venta\Contracts\Routing\Route;
 use Venta\Contracts\Routing\RouteCollection;
 use Venta\Contracts\Routing\RouteParser;
-use Venta\Routing\Exception\NotAllowedException;
-use Venta\Routing\Exception\NotFoundException;
+use Venta\Routing\Exception\MethodNotAllowedException;
+use Venta\Routing\Exception\RouteNotFoundException;
 
 class RouteMatcherSpec extends ObjectBehavior
 {
@@ -57,7 +57,7 @@ class RouteMatcherSpec extends ObjectBehavior
         $uri->getPath()->willReturn('/url');
         $request->getMethod()->willReturn('GET');
         $dispatcher->dispatch('GET', '/url')->willReturn([Dispatcher::METHOD_NOT_ALLOWED, ['POST']]);
-        $this->shouldThrow(NotAllowedException::class)->match($request, $routeCollection);
+        $this->shouldThrow(MethodNotAllowedException::class)->match($request, $routeCollection);
     }
 
     function it_throws_not_found_exception(
@@ -72,6 +72,6 @@ class RouteMatcherSpec extends ObjectBehavior
         $uri->getPath()->willReturn('/url');
         $request->getMethod()->willReturn('GET');
         $dispatcher->dispatch('GET', '/url')->willReturn([Dispatcher::NOT_FOUND]);
-        $this->shouldThrow(NotFoundException::class)->match($request, $routeCollection);
+        $this->shouldThrow(RouteNotFoundException::class)->match($request, $routeCollection);
     }
 }

@@ -44,6 +44,18 @@ class RouteCollection implements RouteCollectionContract
     /**
      * @inheritDoc
      */
+    public function findByName(string $routeName)
+    {
+        foreach ($this->routes as $route) {
+            if ($route->getName() === $routeName) {
+                return $route;
+            }
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getRoutes(): array
     {
         return $this->routes;

@@ -2,12 +2,14 @@
 
 namespace Venta\Routing\Exception;
 
+use RuntimeException;
+
 /**
- * Class NotAllowedException
+ * Class MethodNotAllowedException
  *
  * @package Venta\Routing\Exception
  */
-class NotAllowedException extends \LogicException
+class MethodNotAllowedException extends RuntimeException
 {
     /**
      * {@inheritdoc}

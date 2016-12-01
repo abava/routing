@@ -2,6 +2,7 @@
 
 namespace Venta\Routing;
 
+use InvalidArgumentException;
 use Venta\Contracts\Routing\Route as RouteContract;
 
 /**
@@ -172,7 +173,54 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getDomain():string
+    public function compilePath(array $variables = []): string
+    {
+        $path = $this->getPath();
+        foreach ($variables as $key => $value) {
+            $pattern = sprintf('~%s~x', sprintf('\{\s*%s\s*(?::\s*([^{}]*(?:\{(?-1)\}[^{}]*)*))?\}', preg_quote($key)));
+            preg_match($pattern, $path, $matches);
+            if (isset($matches[1]) && !preg_match('/' . $matches[1] . '/', (string)$value)) {
+                throw new InvalidArgumentException(
+                    sprintf('Substitution value "%s" does not match "%s" parameter "%s" pattern.',
+                        $value, $key, $matches[1]
+                    )
+                );
+            }
+            $path = preg_replace($pattern, $value, $path);
+        }
+        // 1. remove patterns for named prameters
+        // 2. remove optional segments' ending delimiters
+        // 3. split path into an array of optional segments and remove those
+        //    containing unsubstituted parameters starting from the last segment
+        $path = preg_replace('/{(\w+):(.+?)}/', '{$1}', $path);
+        $path = str_replace(']', '', $path);
+        $segments = array_reverse(explode('[', $path));
+        foreach ($segments as $n => $segment) {
+            if (strpos($segment, '{') !== false) {
+                if (isset($segments[$n - 1])) {
+                    throw new InvalidArgumentException(
+                        'Optional segments with unsubstituted parameters cannot '
+                        . 'contain segments with substituted parameters when using FastRoute'
+                    );
+                }
+                unset($segments[$n]);
+                if (count($segments) == 0) {
+                    preg_match('/{.+}/', $segment, $params);
+                    throw new InvalidArgumentException(
+                        sprintf('Parameter "%s" is mandatory', $params[0] ?? $segment)
+                    );
+                }
+            }
+        }
+        $path = implode('', array_reverse($segments));
+
+        return $path;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDomain(): string
     {
         return $this->domain;
     }
@@ -252,6 +300,17 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
+    public function secure(): RouteContract
+    {
+        $route = clone $this;
+        $route->scheme = 'https';
+
+        return $route;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function withDomain(string $domainClass): RouteContract
     {
         $route = clone $this;
@@ -261,10 +320,7 @@ class Route implements RouteContract
     }
 
     /**
-     * Set the host.
-     *
-     * @param string $host
-     * @return RouteContract
+     * @inheritDoc
      */
     public function withHost(string $host): RouteContract
     {
@@ -286,8 +342,7 @@ class Route implements RouteContract
     }
 
     /**
-     * @param string $middleware Middleware class name
-     * @return RouteContract
+     * @inheritDoc
      */
     public function withMiddleware(string $middleware): RouteContract
     {
@@ -298,10 +353,7 @@ class Route implements RouteContract
     }
 
     /**
-     * Set the name.
-     *
-     * @param string $name
-     * @return RouteContract
+     * @inheritDoc
      */
     public function withName(string $name): RouteContract
     {
@@ -312,10 +364,7 @@ class Route implements RouteContract
     }
 
     /**
-     * Prefix the path.
-     *
-     * @param string $prefix
-     * @return RouteContract
+     * @inheritDoc
      */
     public function withPathPrefix(string $prefix): RouteContract
     {
@@ -328,24 +377,7 @@ class Route implements RouteContract
     }
 
     /**
-     * Set the scheme.
-     *
-     * @param string $scheme
-     * @return RouteContract
-     */
-    public function withScheme(string $scheme): RouteContract
-    {
-        $route = clone $this;
-        $route->scheme = $scheme;
-
-        return $route;
-    }
-
-    /**
-     * Set route parameters.
-     *
-     * @param array $variables
-     * @return RouteContract
+     * @inheritDoc
      */
     public function withVariables(array $variables): RouteContract
     {

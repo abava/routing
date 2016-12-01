@@ -8,8 +8,8 @@ use Venta\Contracts\Routing\Route as RouteContract;
 use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\RouteMatcher as RouteMatcherContract;
 use Venta\Contracts\Routing\RouteParser as RouteParserContract;
-use Venta\Routing\Exception\NotAllowedException;
-use Venta\Routing\Exception\NotFoundException;
+use Venta\Routing\Exception\MethodNotAllowedException;
+use Venta\Routing\Exception\RouteNotFoundException;
 
 /**
  * Class RouteMatcher
@@ -57,9 +57,11 @@ final class RouteMatcher implements RouteMatcherContract
 
                 return $route->withVariables($variables);
             case $dispatcher::METHOD_NOT_ALLOWED:
-                throw new NotAllowedException($match[1]);
+                throw new MethodNotAllowedException($match[1]);
             default:
-                throw new NotFoundException($request->getMethod(), $request->getUri()->getPath());
+                throw new RouteNotFoundException(
+                    sprintf('Cannot route "%s %s" request.', $request->getMethod(), $request->getUri()->getPath())
+                );
         }
     }
 

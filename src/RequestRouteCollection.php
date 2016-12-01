@@ -3,9 +3,7 @@
 namespace Venta\Routing;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Venta\Contracts\Routing\Route as RouteContract;
 use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
-use Venta\Contracts\Routing\RouteGroup as RouteGroupContract;
 
 /**
  * Class RequestRouteCollection
@@ -40,21 +38,9 @@ final class RequestRouteCollection implements RouteCollectionContract
     /**
      * @inheritDoc
      */
-    public function addGroup(RouteGroupContract $group): RouteCollectionContract
+    public function findByName(string $routeName)
     {
-        $this->routes->addGroup($group);
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addRoute(RouteContract $route): RouteCollectionContract
-    {
-        $this->routes->addRoute($route);
-
-        return $this;
+        return $this->routes->findByName($routeName);
     }
 
     /**
