@@ -1,17 +1,20 @@
-<?php
-
+<?php declare(strict_types = 1);
 
 namespace Venta\Routing;
-
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Venta\Contracts\Http\Request;
-use Venta\Contracts\Routing\Route;
-use Venta\Contracts\Routing\RouteCollection;
+use Venta\Contracts\Routing\Route as RouteContract;
+use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\UrlGenerator as UrlGeneratorContract;
 use Venta\Routing\Exception\RouteNotFoundException;
 
+/**
+ * Class UrlGenerator
+ *
+ * @package Venta\Routing
+ */
 class UrlGenerator implements UrlGeneratorContract
 {
     /**
@@ -33,10 +36,10 @@ class UrlGenerator implements UrlGeneratorContract
      * UrlGenerator constructor.
      *
      * @param Request $request
-     * @param RouteCollection $routes
+     * @param RouteCollectionContract $routes
      * @param UriInterface $uri
      */
-    public function __construct(Request $request, RouteCollection $routes, UriInterface $uri)
+    public function __construct(Request $request, RouteCollectionContract $routes, UriInterface $uri)
     {
         $this->request = $request;
         $this->routes = $routes;
@@ -78,12 +81,12 @@ class UrlGenerator implements UrlGeneratorContract
     /**
      * Builds URI for provided route instance.
      *
-     * @param Route $route
+     * @param RouteContract $route
      * @param array $variables
      * @param array $query
      * @return UriInterface
      */
-    private function buildRouteUri(Route $route, array $variables = [], array $query = []): UriInterface
+    private function buildRouteUri(RouteContract $route, array $variables = [], array $query = []): UriInterface
     {
         $uri = $this->uri
             ->withScheme($route->getScheme() ?: $this->request->getUri()->getScheme())
