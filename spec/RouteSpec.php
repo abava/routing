@@ -65,6 +65,13 @@ class RouteSpec extends ObjectBehavior
         $this->getName()->shouldBe('');
     }
 
+    function it_has_immutable_path()
+    {
+        $route = $this->withPath('/qwerty');
+        $route->getPath()->shouldBe('/qwerty');
+        $this->getPath()->shouldBe('/url');
+    }
+
     function it_has_immutable_scheme()
     {
         $route = $this->secure();

@@ -182,7 +182,9 @@ class Route implements RouteContract
             if (isset($matches[1]) && !preg_match('/' . $matches[1] . '/', (string)$value)) {
                 throw new InvalidArgumentException(
                     sprintf('Substitution value "%s" does not match "%s" parameter "%s" pattern.',
-                        $value, $key, $matches[1]
+                        $value,
+                        $key,
+                        $matches[1]
                     )
                 );
             }
@@ -366,12 +368,10 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function withPathPrefix(string $prefix): RouteContract
+    public function withPath(string $path): RouteContract
     {
         $route = clone $this;
-        $route->path = $prefix == '/' || $prefix == '' ?
-            $route->path :
-            sprintf('/%s/%s', trim($prefix, '/'), ltrim($route->path, '/'));
+        $route->path = $path;
 
         return $route;
     }

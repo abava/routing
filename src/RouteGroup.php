@@ -53,7 +53,7 @@ class RouteGroup extends RouteCollection implements RouteGroupContract
             if (!$route->getScheme() && $this->scheme) {
                 $route = $route->secure();
             }
-            $routes[] = $route->withPathPrefix($this->prefix);
+            $routes[] = $route->withPath($this->addPathPrefix($route->getPath()));
         }
 
         return $routes;
@@ -89,5 +89,16 @@ class RouteGroup extends RouteCollection implements RouteGroupContract
         return $this;
     }
 
+    /**
+     * Prepends group prefix to provided route $path.
+     *
+     * @param string $path
+     * @return string
+     */
+    private function addPathPrefix(string $path): string
+    {
+        return $this->prefix == '/' || $this->prefix == '' ? $path :
+            sprintf('/%s/%s', trim($this->prefix, '/'), ltrim($path, '/'));
+    }
 
 }
