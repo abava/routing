@@ -92,6 +92,12 @@ class UrlGenerator implements UrlGeneratorContract
             ->withHost($route->getHost() ?: $this->request->getUri()->getHost())
             ->withPath($route->compilePath($variables));
 
+        // Check if we need to add current request port to the uri.
+        $requestPort = $this->request->getUri()->getPort();
+        if (!in_array($requestPort, [80, 443])) {
+            $uri = $uri->withPort($requestPort);
+        }
+
         if ($query) {
             $uri = $uri->withQuery(http_build_query($query));
         }
