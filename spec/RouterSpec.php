@@ -6,11 +6,11 @@ use PhpSpec\ObjectBehavior;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Venta\Contracts\Routing\Delegate;
+use Venta\Contracts\Routing\ImmutableRouteCollection;
 use Venta\Contracts\Routing\MiddlewarePipeline;
 use Venta\Contracts\Routing\MiddlewarePipelineFactory;
 use Venta\Contracts\Routing\RequestRouteCollectionFactory;
 use Venta\Contracts\Routing\Route;
-use Venta\Contracts\Routing\RouteCollection;
 use Venta\Contracts\Routing\RouteDispatcher;
 use Venta\Contracts\Routing\RouteDispatcherFactory;
 use Venta\Contracts\Routing\RouteMatcher;
@@ -21,7 +21,7 @@ class RouterSpec extends ObjectBehavior
     function let(
         RouteMatcher $matcher,
         MiddlewarePipelineFactory $pipelineFactory,
-        RouteCollection $routes,
+        ImmutableRouteCollection $routes,
         RouteDispatcherFactory $dispatcherFactory,
         RequestRouteCollectionFactory $requestRouteCollectionFactory
     ) {
@@ -37,7 +37,7 @@ class RouterSpec extends ObjectBehavior
     function it_matches_and_dispatches_route(
         RouteMatcher $matcher,
         MiddlewarePipelineFactory $pipelineFactory,
-        RouteCollection $routes,
+        ImmutableRouteCollection $routes,
         RouteDispatcherFactory $dispatcherFactory,
         RequestRouteCollectionFactory $requestRouteCollectionFactory,
         Route $route,

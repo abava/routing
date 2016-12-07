@@ -3,7 +3,7 @@
 namespace Venta\Routing;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
+use Venta\Contracts\Routing\ImmutableRouteCollection as RouteCollectionContract;
 
 /**
  * Class RequestRouteCollection

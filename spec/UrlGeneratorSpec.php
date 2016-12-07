@@ -5,13 +5,13 @@ namespace spec\Venta\Routing;
 use PhpSpec\ObjectBehavior;
 use Psr\Http\Message\UriInterface;
 use Venta\Contracts\Http\Request;
+use Venta\Contracts\Routing\ImmutableRouteCollection;
 use Venta\Contracts\Routing\Route;
-use Venta\Contracts\Routing\RouteCollection;
 use Venta\Contracts\Routing\UrlGenerator as UrlGeneratorContract;
 
 class UrlGeneratorSpec extends ObjectBehavior
 {
-    function let(Request $request, RouteCollection $routeCollection, UriInterface $uri)
+    function let(Request $request, ImmutableRouteCollection $routeCollection, UriInterface $uri)
     {
         $this->beConstructedWith($request, $routeCollection, $uri);
     }
@@ -46,7 +46,7 @@ class UrlGeneratorSpec extends ObjectBehavior
     }
 
     function it_generates_url_to_named_route(
-        RouteCollection $routeCollection,
+        ImmutableRouteCollection $routeCollection,
         Route $route,
         UriInterface $uri,
         Request $request,

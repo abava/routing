@@ -2,8 +2,8 @@
 
 namespace Venta\Routing;
 
-use Venta\Contracts\Routing\MutableRouteCollection;
 use Venta\Contracts\Routing\Route as RouteContract;
+use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\RouteGroup as RouteGroupContract;
 
 /**
@@ -11,20 +11,20 @@ use Venta\Contracts\Routing\RouteGroup as RouteGroupContract;
  *
  * @package Venta\Routing
  */
-class AliasedPathPatternRouteCollection implements MutableRouteCollection
+class AliasedPathPatternRouteCollection implements RouteCollectionContract
 {
 
     /**
-     * @var MutableRouteCollection
+     * @var RouteCollection
      */
     private $routes;
 
     /**
      * SugaredRouteCollection constructor.
      *
-     * @param MutableRouteCollection $routes
+     * @param RouteCollection $routes
      */
-    public function __construct(MutableRouteCollection $routes)
+    public function __construct(RouteCollection $routes)
     {
         $this->routes = $routes;
     }
@@ -32,7 +32,7 @@ class AliasedPathPatternRouteCollection implements MutableRouteCollection
     /**
      * @inheritDoc
      */
-    public function addGroup(RouteGroupContract $group): MutableRouteCollection
+    public function addGroup(RouteGroupContract $group): RouteCollectionContract
     {
         $this->routes->addGroup($group);
 
@@ -42,7 +42,7 @@ class AliasedPathPatternRouteCollection implements MutableRouteCollection
     /**
      * @inheritDoc
      */
-    public function addRoute(RouteContract $route): MutableRouteCollection
+    public function addRoute(RouteContract $route): RouteCollectionContract
     {
         $this->routes->addRoute($route->withPath($this->replaceRegexAliases($route->getPath())));
 

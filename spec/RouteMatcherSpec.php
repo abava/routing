@@ -8,8 +8,8 @@ use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Venta\Contracts\Routing\FastrouteDispatcherFactory;
+use Venta\Contracts\Routing\ImmutableRouteCollection;
 use Venta\Contracts\Routing\Route;
-use Venta\Contracts\Routing\RouteCollection;
 use Venta\Contracts\Routing\RouteParser;
 use Venta\Routing\Exception\MethodNotAllowedException;
 use Venta\Routing\Exception\RouteNotFoundException;
@@ -31,7 +31,7 @@ class RouteMatcherSpec extends ObjectBehavior
 
     function it_matches_route(
         ServerRequestInterface $request,
-        RouteCollection $routeCollection,
+        ImmutableRouteCollection $routeCollection,
         Route $route,
         UriInterface $uri,
         Dispatcher $dispatcher
@@ -47,7 +47,7 @@ class RouteMatcherSpec extends ObjectBehavior
 
     function it_throws_not_allowed_exception(
         ServerRequestInterface $request,
-        RouteCollection $routeCollection,
+        ImmutableRouteCollection $routeCollection,
         Route $route,
         UriInterface $uri,
         Dispatcher $dispatcher
@@ -62,7 +62,7 @@ class RouteMatcherSpec extends ObjectBehavior
 
     function it_throws_not_found_exception(
         ServerRequestInterface $request,
-        RouteCollection $routeCollection,
+        ImmutableRouteCollection $routeCollection,
         Route $route,
         UriInterface $uri,
         Dispatcher $dispatcher

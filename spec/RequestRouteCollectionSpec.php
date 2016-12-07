@@ -5,24 +5,24 @@ namespace spec\Venta\Routing;
 use PhpSpec\ObjectBehavior;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
-use Venta\Contracts\Routing\RouteCollection;
+use Venta\Contracts\Routing\ImmutableRouteCollection;
 use Venta\Routing\Route;
 
 class RequestRouteCollectionSpec extends ObjectBehavior
 {
-    function let(ServerRequestInterface $request, RouteCollection $collection)
+    function let(ServerRequestInterface $request, ImmutableRouteCollection $collection)
     {
         $this->beConstructedWith($request, $collection);
     }
 
-    function it_calls_decorated_collection_on_get_goutes(RouteCollection $collection)
+    function it_calls_decorated_collection_on_get_goutes(ImmutableRouteCollection $collection)
     {
         $collection->getRoutes()->shouldBeCalled();
         $this->getRoutes()->shouldBe([]);
     }
 
     function it_filters_decorated_collection_on_get_goutes(
-        RouteCollection $collection,
+        ImmutableRouteCollection $collection,
         ServerRequestInterface $request,
         UriInterface $uri
     ) {
@@ -38,7 +38,7 @@ class RequestRouteCollectionSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldImplement(RouteCollection::class);
+        $this->shouldImplement(ImmutableRouteCollection::class);
     }
 
 }

@@ -24,7 +24,7 @@ class RouteCollectionSpec extends ObjectBehavior
 
     function it_implements_contract()
     {
-        $this->shouldHaveType(\Venta\Contracts\Routing\RouteCollection::class);
+        $this->shouldHaveType(\Venta\Contracts\Routing\ImmutableRouteCollection::class);
     }
 
 }

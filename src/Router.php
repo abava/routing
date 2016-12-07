@@ -4,9 +4,9 @@ namespace Venta\Routing;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Venta\Contracts\Routing\ImmutableRouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\MiddlewarePipelineFactory as MiddlewarePipelineFactoryContract;
 use Venta\Contracts\Routing\RequestRouteCollectionFactory;
-use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\RouteDispatcherFactory as RouteDispatcherFactoryContract;
 use Venta\Contracts\Routing\RouteMatcher as RouteMatcherContract;
 use Venta\Contracts\Routing\Router as RouterContract;

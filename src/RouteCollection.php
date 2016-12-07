@@ -2,8 +2,8 @@
 
 namespace Venta\Routing;
 
-use Venta\Contracts\Routing\MutableRouteCollection;
 use Venta\Contracts\Routing\Route as RouteContract;
+use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\RouteGroup as RouteGroupContract;
 
 /**
@@ -11,7 +11,7 @@ use Venta\Contracts\Routing\RouteGroup as RouteGroupContract;
  *
  * @package Venta\Routing
  */
-class RouteCollection implements MutableRouteCollection
+class RouteCollection implements RouteCollectionContract
 {
 
     /**
@@ -22,7 +22,7 @@ class RouteCollection implements MutableRouteCollection
     /**
      * @inheritDoc
      */
-    public function addGroup(RouteGroupContract $group): MutableRouteCollection
+    public function addGroup(RouteGroupContract $group): RouteCollectionContract
     {
         foreach ($group->getRoutes() as $route) {
             $this->addRoute($route);
@@ -34,7 +34,7 @@ class RouteCollection implements MutableRouteCollection
     /**
      * @inheritDoc
      */
-    public function addRoute(RouteContract $route): MutableRouteCollection
+    public function addRoute(RouteContract $route): RouteCollectionContract
     {
         $this->routes[] = $route;
 

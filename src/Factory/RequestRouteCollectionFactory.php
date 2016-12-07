@@ -3,8 +3,8 @@
 namespace Venta\Routing\Factory;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Venta\Contracts\Routing\ImmutableRouteCollection;
 use Venta\Contracts\Routing\RequestRouteCollectionFactory as RequestRouteCollectionFactoryContract;
-use Venta\Contracts\Routing\RouteCollection;
 use Venta\Routing\RequestRouteCollection;
 
 /**
@@ -18,7 +18,10 @@ final class RequestRouteCollectionFactory implements RequestRouteCollectionFacto
     /**
      * @inheritDoc
      */
-    public function create(RouteCollection $routeCollection, ServerRequestInterface $request): RouteCollection
+    public function create(
+        ImmutableRouteCollection $routeCollection,
+        ServerRequestInterface $request
+    ): ImmutableRouteCollection
     {
         return new RequestRouteCollection($request, $routeCollection);
     }

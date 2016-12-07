@@ -4,8 +4,8 @@ namespace Venta\Routing;
 
 use Psr\Http\Message\UriInterface;
 use Venta\Contracts\Http\Request;
+use Venta\Contracts\Routing\ImmutableRouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\Route as RouteContract;
-use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\UrlGenerator as UrlGeneratorContract;
 use Venta\Routing\Exception\RouteNotFoundException;
 

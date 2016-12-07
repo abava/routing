@@ -4,8 +4,8 @@ namespace Venta\Routing;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Venta\Contracts\Routing\FastrouteDispatcherFactory;
+use Venta\Contracts\Routing\ImmutableRouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\Route as RouteContract;
-use Venta\Contracts\Routing\RouteCollection as RouteCollectionContract;
 use Venta\Contracts\Routing\RouteMatcher as RouteMatcherContract;
 use Venta\Contracts\Routing\RouteParser as RouteParserContract;
 use Venta\Routing\Exception\MethodNotAllowedException;
