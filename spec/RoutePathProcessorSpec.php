@@ -30,12 +30,12 @@ class RoutePathProcessorSpec extends ObjectBehavior
 
     function it_processes_optional_placeholders(Route $route)
     {
-        $route->getPath()->willReturn('/url/{?id}');
+        $route->getPath()->willReturn('/url/{?id}/segment/{?optional}');
         $route->withPath(Argument::type('string'))->willReturn($route);
 
         $this->addPattern('id', '[0-9]+')->shouldBeAnInstanceOf(RoutePathProcessorContract::class);
         $this->process($route)->shouldBe($route);
 
-        $route->withPath('/url/[{id:[0-9]+}]')->shouldHaveBeenCalled();
+        $route->withPath('/url/[{id:[0-9]+}/segment/[{optional}]]')->shouldHaveBeenCalled();
     }
 }

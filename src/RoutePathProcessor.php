@@ -14,9 +14,11 @@ class RoutePathProcessor implements RoutePathProcessorContract
 {
 
     /**
+     * Patterns to apply to route path: [pattern => replacement].
+     *
      * @var string[]
      */
-    private $patterns = ['/{\?(.+?)}/' => '[{$1}]'];
+    private $patterns = [];
 
     /**
      * @inheritDoc
@@ -33,9 +35,23 @@ class RoutePathProcessor implements RoutePathProcessorContract
      */
     public function process(RouteContract $route): RouteContract
     {
-        return $route->withPath(
-            preg_replace(array_keys($this->patterns), array_values($this->patterns), $route->getPath())
-        );
+        return $route->withPath(preg_replace(
+            array_keys($this->patterns),
+            array_values($this->patterns),
+            $this->processOptionalPlaceholders($route->getPath())
+        ));
+    }
+
+    /**
+     * Replaces {?placeholder} with [{placeholder}] FastRoute syntax.
+     * Respects following segments by adding ] to the end.
+     *
+     * @param string $path
+     * @return string
+     */
+    private function processOptionalPlaceholders(string $path): string
+    {
+        return preg_replace('/{\?(.+?)}/', '[{$1}', $path, -1, $count) . str_repeat(']', $count);
     }
 
 
