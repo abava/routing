@@ -33,21 +33,21 @@ class RouteGroupSpec extends ObjectBehavior
     {
         $this->setHost('host')->shouldBe($this);
         $routes = $this->all();
-        $routes[0]->getHost()->shouldBe('host');
+        $routes[0]->host()->shouldBe('host');
     }
 
     function it_sets_prefix_on_route()
     {
         $this->setPrefix('prefix')->shouldBe($this);
         $routes = $this->all();
-        $routes[0]->getPath()->shouldBe('/prefix/url');
+        $routes[0]->path()->shouldBe('/prefix/url');
     }
 
     function it_sets_scheme_on_route()
     {
         $this->setScheme('https')->shouldBe($this);
         $routes = $this->all();
-        $routes[0]->getScheme()->shouldBe('https');
+        $routes[0]->scheme()->shouldBe('https');
     }
 
 }
