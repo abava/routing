@@ -48,13 +48,8 @@ final class RouteDispatcher implements RouteDispatcherContract
      */
     public function next(ServerRequestInterface $request): ResponseInterface
     {
-        if (!$request instanceof RequestContract) {
-            // Decorate PSR-7 ServerRequest.
-            $request = new Request($request);
-        }
-
         // Add current route to the request.
-        $request = $request->withRoute($this->route);
+        $request = $request->withAttribute('route', $this->route);
 
         if ($this->container->isCallable($this->route->domain())) {
             if ($this->container->has($this->route->input())) {

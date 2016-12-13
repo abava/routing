@@ -3,26 +3,26 @@
 namespace spec\Venta\Routing;
 
 use PhpSpec\ObjectBehavior;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
-use Venta\Contracts\Http\Request;
 use Venta\Contracts\Routing\ImmutableRouteCollection;
 use Venta\Contracts\Routing\Route;
 use Venta\Contracts\Routing\UrlGenerator as UrlGeneratorContract;
 
 class UrlGeneratorSpec extends ObjectBehavior
 {
-    function let(Request $request, ImmutableRouteCollection $routeCollection, UriInterface $uri)
+    function let(ServerRequestInterface $request, ImmutableRouteCollection $routeCollection, UriInterface $uri)
     {
         $this->beConstructedWith($request, $routeCollection, $uri);
     }
 
     function it_generates_url_to_current_route(
-        Request $request,
+        ServerRequestInterface $request,
         Route $route,
         UriInterface $uri,
         UriInterface $requestUri
     ) {
-        $request->route()->willReturn($route);
+        $request->getAttribute('route')->willReturn($route);
         $request->getUri()->willReturn($requestUri);
         $requestUri->getPort()->willReturn(8080);
 
@@ -49,7 +49,7 @@ class UrlGeneratorSpec extends ObjectBehavior
         ImmutableRouteCollection $routeCollection,
         Route $route,
         UriInterface $uri,
-        Request $request,
+        ServerRequestInterface $request,
         UriInterface $requestUri
     ) {
         $routeCollection->findByName('name')->willReturn($route);
