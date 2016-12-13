@@ -22,12 +22,12 @@ class UrlGeneratorSpec extends ObjectBehavior
         UriInterface $uri,
         UriInterface $requestUri
     ) {
-        $request->getRoute()->willReturn($route);
+        $request->route()->willReturn($route);
         $request->getUri()->willReturn($requestUri);
         $requestUri->getPort()->willReturn(8080);
 
-        $route->getScheme()->willReturn('http');
-        $route->getHost()->willReturn('example.com');
+        $route->scheme()->willReturn('http');
+        $route->host()->willReturn('example.com');
         $route->compilePath(['key' => 'value'])->willReturn('/url');
 
         $uri->withScheme('http')->willReturn($uri);
@@ -53,8 +53,8 @@ class UrlGeneratorSpec extends ObjectBehavior
         UriInterface $requestUri
     ) {
         $routeCollection->findByName('name')->willReturn($route);
-        $route->getScheme()->willReturn('http');
-        $route->getHost()->willReturn('example.com');
+        $route->scheme()->willReturn('http');
+        $route->host()->willReturn('example.com');
         $route->compilePath(['key' => 'value'])->willReturn('/url');
 
         $request->getUri()->willReturn($requestUri);

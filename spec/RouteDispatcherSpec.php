@@ -24,8 +24,8 @@ class RouteDispatcherSpec extends ObjectBehavior
         Response $response,
         Responder $responder
     ) {
-        $route->getDomain()->willReturn('');
-        $route->getResponder()->willReturn(Responder::class);
+        $route->domain()->willReturn('');
+        $route->responder()->willReturn(Responder::class);
         $container->isCallable('')->willReturn(false);
         $container->get(Responder::class)->willReturn($responder);
         $responder->run($request, null)->willReturn($response);

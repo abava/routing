@@ -46,7 +46,7 @@ final class RouteMatcher implements RouteMatcherContract
      */
     public function match(ServerRequestInterface $request, RouteCollectionContract $routeCollection): RouteContract
     {
-        $routes = $routeCollection->getRoutes();
+        $routes = $routeCollection->all();
         $parsedRouteData = $this->parser->parse($routes);
         $dispatcher = $this->fastrouteDispatcherFactory->create($parsedRouteData);
         $match = $dispatcher->dispatch($request->getMethod(), $request->getUri()->getPath());

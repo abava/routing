@@ -38,7 +38,7 @@ class RoutePathProcessor implements RoutePathProcessorContract
         return $route->withPath(preg_replace(
             array_keys($this->patterns),
             array_values($this->patterns),
-            $this->processOptionalPlaceholders($route->getPath())
+            $this->processOptionalPlaceholders($route->path())
         ));
     }
 

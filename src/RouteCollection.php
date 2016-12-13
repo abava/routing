@@ -24,7 +24,7 @@ class RouteCollection implements RouteCollectionContract
      */
     public function addGroup(RouteGroupContract $group): RouteCollectionContract
     {
-        foreach ($group->getRoutes() as $route) {
+        foreach ($group->all() as $route) {
             $this->addRoute($route);
         }
 
@@ -47,7 +47,7 @@ class RouteCollection implements RouteCollectionContract
     public function findByName(string $routeName)
     {
         foreach ($this->routes as $route) {
-            if ($route->getName() === $routeName) {
+            if ($route->name() === $routeName) {
                 return $route;
             }
         }
@@ -56,7 +56,7 @@ class RouteCollection implements RouteCollectionContract
     /**
      * @inheritDoc
      */
-    public function getRoutes(): array
+    public function all(): array
     {
         return $this->routes;
     }

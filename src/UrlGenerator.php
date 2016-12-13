@@ -50,7 +50,7 @@ class UrlGenerator implements UrlGeneratorContract
      */
     public function toCurrent(array $variables = [], array $query = []): UriInterface
     {
-        $route = $this->request->getRoute();
+        $route = $this->request->route();
 
         if ($route === null) {
             throw new RouteNotFoundException(
@@ -88,8 +88,8 @@ class UrlGenerator implements UrlGeneratorContract
     private function buildRouteUri(RouteContract $route, array $variables = [], array $query = []): UriInterface
     {
         $uri = $this->uri
-            ->withScheme($route->getScheme() ?: $this->request->getUri()->getScheme())
-            ->withHost($route->getHost() ?: $this->request->getUri()->getHost())
+            ->withScheme($route->scheme() ?: $this->request->getUri()->getScheme())
+            ->withHost($route->host() ?: $this->request->getUri()->getHost())
             ->withPath($route->compilePath($variables));
 
         // Check if we need to add current request port to the uri.

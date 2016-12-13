@@ -47,7 +47,7 @@ class RouterSpec extends ObjectBehavior
         ResponseInterface $response
     ) {
         $matcher->match($request, $routes)->willReturn($route);
-        $route->getMiddlewares()->willReturn(['middleware']);
+        $route->middlewares()->willReturn(['middleware']);
         $pipelineFactory->create(['middleware'])->willReturn($pipeline->getWrappedObject());
         $dispatcherFactory->create($route)->willReturn($routeDispatcher);
         $pipeline->process($request, $routeDispatcher)->willReturn($response);

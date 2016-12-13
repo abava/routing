@@ -40,63 +40,63 @@ class RouteSpec extends ObjectBehavior
 
     function it_has_immutable_domain()
     {
-        $this->withDomain('domain')->getDomain()->shouldBe('domain');
-        $this->getDomain()->shouldBe('');
+        $this->withDomain('domain')->domain()->shouldBe('domain');
+        $this->domain()->shouldBe('');
     }
 
     function it_has_immutable_host()
     {
         $route = $this->withHost('host');
-        $route->getHost()->shouldBe('host');
-        $this->getHost()->shouldBe('');
+        $route->host()->shouldBe('host');
+        $this->host()->shouldBe('');
     }
 
     function it_has_immutable_input()
     {
         $route = $this->withInput('input');
-        $route->getInput()->shouldBe('input');
-        $this->getInput()->shouldBe('');
+        $route->input()->shouldBe('input');
+        $this->input()->shouldBe('');
     }
 
     function it_has_immutable_name()
     {
         $route = $this->withName('named');
-        $route->getName()->shouldBe('named');
-        $this->getName()->shouldBe('');
+        $route->name()->shouldBe('named');
+        $this->name()->shouldBe('');
     }
 
     function it_has_immutable_path()
     {
         $route = $this->withPath('/qwerty');
-        $route->getPath()->shouldBe('/qwerty');
-        $this->getPath()->shouldBe('/url');
+        $route->path()->shouldBe('/qwerty');
+        $this->path()->shouldBe('/url');
     }
 
     function it_has_immutable_scheme()
     {
         $route = $this->secure();
-        $route->getScheme()->shouldBe('https');
-        $this->getScheme()->shouldBe('');
+        $route->scheme()->shouldBe('https');
+        $this->scheme()->shouldBe('');
     }
 
     function it_has_middleware_list()
     {
         $route = $this->withMiddleware('middleware');
-        $route->getMiddlewares()->shouldContain('middleware');
-        $this->getMiddlewares()->shouldBe([]);
+        $route->middlewares()->shouldContain('middleware');
+        $this->middlewares()->shouldBe([]);
     }
 
     function it_is_initializable()
     {
         $this->shouldImplement(Route::class);
-        $this->getPath()->shouldBe('/url');
-        $this->getResponder()->shouldBe('responder');
-        $this->getMethods()->shouldContain('GET');
-        $this->getHost()->shouldBe('');
-        $this->getScheme()->shouldBe('');
-        $this->getName()->shouldBe('');
-        $this->getInput()->shouldBe('');
-        $this->getDomain()->shouldBe('');
+        $this->path()->shouldBe('/url');
+        $this->responder()->shouldBe('responder');
+        $this->methods()->shouldContain('GET');
+        $this->host()->shouldBe('');
+        $this->scheme()->shouldBe('');
+        $this->name()->shouldBe('');
+        $this->input()->shouldBe('');
+        $this->domain()->shouldBe('');
     }
 
 }

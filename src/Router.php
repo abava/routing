@@ -76,7 +76,7 @@ final class Router implements RouterContract
         $route = $this->matcher->match($request, $requestRouteCollection);
 
         // Create route middleware pipeline.
-        $pipeline = $this->pipelineFactory->create($route->getMiddlewares());
+        $pipeline = $this->pipelineFactory->create($route->middlewares());
         // Create the last delegate, which calls route handler.
         $routeDispatcher = $this->dispatcherFactory->create($route);
 

@@ -175,7 +175,7 @@ class Route implements RouteContract
      */
     public function compilePath(array $variables = []): string
     {
-        $path = $this->getPath();
+        $path = $this->path();
         foreach ($variables as $key => $value) {
             $pattern = sprintf('~%s~x', sprintf('\{\s*%s\s*(?::\s*([^{}]*(?:\{(?-1)\}[^{}]*)*))?\}', preg_quote($key)));
             preg_match($pattern, $path, $matches);
@@ -222,7 +222,7 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getDomain(): string
+    public function domain(): string
     {
         return $this->domain;
     }
@@ -230,7 +230,7 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getHost(): string
+    public function host(): string
     {
         return $this->host;
     }
@@ -238,7 +238,7 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getInput(): string
+    public function input(): string
     {
         return $this->input;
     }
@@ -246,7 +246,7 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getMethods(): array
+    public function methods(): array
     {
         return $this->methods;
     }
@@ -254,7 +254,7 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getMiddlewares(): array
+    public function middlewares(): array
     {
         return $this->middlewares;
     }
@@ -262,7 +262,7 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getName(): string
+    public function name(): string
     {
         return $this->name;
     }
@@ -270,7 +270,7 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getPath(): string
+    public function path(): string
     {
         return $this->path;
     }
@@ -278,7 +278,7 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getResponder(): string
+    public function responder(): string
     {
         return $this->responder;
     }
@@ -286,7 +286,7 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getScheme(): string
+    public function scheme(): string
     {
         return $this->scheme;
     }
@@ -294,7 +294,7 @@ class Route implements RouteContract
     /**
      * @inheritDoc
      */
-    public function getVariables(): array
+    public function variables(): array
     {
         return $this->variables;
     }

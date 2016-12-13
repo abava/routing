@@ -11,15 +11,15 @@ class RouteCollectionSpec extends ObjectBehavior
 
     function it_can_add_group(RouteGroup $group, Route $route)
     {
-        $group->getRoutes()->willReturn([$route]);
+        $group->all()->willReturn([$route]);
         $this->addGroup($group);
-        $this->getRoutes()->shouldContain($route);
+        $this->all()->shouldContain($route);
     }
 
     function it_can_add_route(Route $route)
     {
         $this->addRoute($route);
-        $this->getRoutes()->shouldContain($route);
+        $this->all()->shouldContain($route);
     }
 
     function it_implements_contract()

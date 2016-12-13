@@ -35,7 +35,7 @@ final class RouteParser implements RouteParserContract
     {
         /** @var \Venta\Contracts\Routing\Route $route */
         foreach ($routes as $route) {
-            $this->collector->addRoute($route->getMethods(), $route->getPath(), $route);
+            $this->collector->addRoute($route->methods(), $route->path(), $route);
         }
 
         return $this->collector->getData();

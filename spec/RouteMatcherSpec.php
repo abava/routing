@@ -36,7 +36,7 @@ class RouteMatcherSpec extends ObjectBehavior
         UriInterface $uri,
         Dispatcher $dispatcher
     ) {
-        $routeCollection->getRoutes()->willReturn([$route]);
+        $routeCollection->all()->willReturn([$route]);
         $request->getUri()->willReturn($uri);
         $uri->getPath()->willReturn('/url');
         $request->getMethod()->willReturn('GET');
@@ -52,7 +52,7 @@ class RouteMatcherSpec extends ObjectBehavior
         UriInterface $uri,
         Dispatcher $dispatcher
     ) {
-        $routeCollection->getRoutes()->willReturn([$route]);
+        $routeCollection->all()->willReturn([$route]);
         $request->getUri()->willReturn($uri);
         $uri->getPath()->willReturn('/url');
         $request->getMethod()->willReturn('GET');
@@ -67,7 +67,7 @@ class RouteMatcherSpec extends ObjectBehavior
         UriInterface $uri,
         Dispatcher $dispatcher
     ) {
-        $routeCollection->getRoutes()->willReturn([$route]);
+        $routeCollection->all()->willReturn([$route]);
         $request->getUri()->willReturn($uri);
         $uri->getPath()->willReturn('/url');
         $request->getMethod()->willReturn('GET');

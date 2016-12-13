@@ -19,7 +19,7 @@ class RoutePathProcessorSpec extends ObjectBehavior
 
     function it_processes(Route $route)
     {
-        $route->getPath()->willReturn('/url/{id}');
+        $route->path()->willReturn('/url/{id}');
         $route->withPath(Argument::type('string'))->willReturn($route);
 
         $this->addPattern('id', '[0-9]+')->shouldBeAnInstanceOf(RoutePathProcessorContract::class);
@@ -30,7 +30,7 @@ class RoutePathProcessorSpec extends ObjectBehavior
 
     function it_processes_optional_placeholders(Route $route)
     {
-        $route->getPath()->willReturn('/url/{?id}/segment/{?optional}');
+        $route->path()->willReturn('/url/{?id}/segment/{?optional}');
         $route->withPath(Argument::type('string'))->willReturn($route);
 
         $this->addPattern('id', '[0-9]+')->shouldBeAnInstanceOf(RoutePathProcessorContract::class);

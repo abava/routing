@@ -46,12 +46,12 @@ final class RequestRouteCollection implements RouteCollectionContract
     /**
      * @inheritDoc
      */
-    public function getRoutes(): array
+    public function all(): array
     {
         $routes = [];
-        foreach ($this->routes->getRoutes() as $route) {
-            if ((!$route->getHost() || $route->getHost() === $this->request->getUri()->getHost())
-                && (!$route->getScheme() || $route->getScheme() === $this->request->getUri()->getScheme())
+        foreach ($this->routes->all() as $route) {
+            if ((!$route->host() || $route->host() === $this->request->getUri()->getHost())
+                && (!$route->scheme() || $route->scheme() === $this->request->getUri()->getScheme())
             ) {
                 $routes[] = $route;
             }

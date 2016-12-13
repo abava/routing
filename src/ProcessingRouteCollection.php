@@ -68,9 +68,9 @@ class ProcessingRouteCollection implements RouteCollectionContract
     /**
      * @inheritDoc
      */
-    public function getRoutes(): array
+    public function all(): array
     {
-        return $this->routes->getRoutes();
+        return $this->routes->all();
     }
 
 }
