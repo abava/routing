@@ -21,7 +21,7 @@ class RouteGroupSpec extends ObjectBehavior
         })->shouldBeAnInstanceOf(RouteGroup::class);
 
         // todo: implement with specs
-        assert(in_array($route, $group->getRoutes()));
+        assert(in_array($route, $group->all()));
     }
 
     function it_is_initializable()
