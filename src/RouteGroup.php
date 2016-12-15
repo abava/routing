@@ -97,8 +97,9 @@ class RouteGroup extends RouteCollection implements RouteGroupContract
      */
     private function addPathPrefix(string $path): string
     {
-        return $this->prefix == '/' || $this->prefix == '' ? $path :
-            sprintf('/%s/%s', trim($this->prefix, '/'), ltrim($path, '/'));
+        return $this->prefix == '/' || $this->prefix == ''
+            ? $path
+            : sprintf('/%s/%s', trim($this->prefix, '/'), ltrim($path, '/'));
     }
 
 }

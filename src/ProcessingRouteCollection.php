@@ -12,7 +12,7 @@ use Venta\Contracts\Routing\RouteProcessor;
  *
  * @package Venta\Routing
  */
-class ProcessingRouteCollection implements RouteCollectionContract
+final class ProcessingRouteCollection implements RouteCollectionContract
 {
 
     /**
@@ -60,17 +60,17 @@ class ProcessingRouteCollection implements RouteCollectionContract
     /**
      * @inheritDoc
      */
-    public function findByName(string $routeName)
+    public function all(): array
     {
-        return $this->routes->findByName($routeName);
+        return $this->routes->all();
     }
 
     /**
      * @inheritDoc
      */
-    public function all(): array
+    public function findByName(string $routeName)
     {
-        return $this->routes->all();
+        return $this->routes->findByName($routeName);
     }
 
 }

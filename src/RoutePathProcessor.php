@@ -10,7 +10,7 @@ use Venta\Contracts\Routing\RoutePathProcessor as RoutePathProcessorContract;
  *
  * @package Venta\Routing
  */
-class RoutePathProcessor implements RoutePathProcessorContract
+final class RoutePathProcessor implements RoutePathProcessorContract
 {
 
     /**
@@ -53,6 +53,5 @@ class RoutePathProcessor implements RoutePathProcessorContract
     {
         return preg_replace('/{\?(.+?)}/', '[{$1}', $path, -1, $count) . str_repeat(']', $count);
     }
-
 
 }

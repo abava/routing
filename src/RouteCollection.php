@@ -17,7 +17,7 @@ class RouteCollection implements RouteCollectionContract
     /**
      * @var RouteContract[]
      */
-    protected $routes = [];
+    private $routes = [];
 
     /**
      * @inheritDoc
@@ -44,6 +44,14 @@ class RouteCollection implements RouteCollectionContract
     /**
      * @inheritDoc
      */
+    public function all(): array
+    {
+        return $this->routes;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findByName(string $routeName)
     {
         foreach ($this->routes as $route) {
@@ -51,14 +59,6 @@ class RouteCollection implements RouteCollectionContract
                 return $route;
             }
         }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function all(): array
-    {
-        return $this->routes;
     }
 
 }
