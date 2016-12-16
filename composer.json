@@ -1,36 +1,36 @@
 {
     "name": "venta/routing",
-    "description": "Venta Routing package",
+    "description": "The Venta Routing package.",
+    "keywords": [
+        "venta",
+        "routing",
+        "adr"
+    ],
     "authors": [
         {
-            "name": "Konstantins Zukovs",
-            "email": "kz@scandiweb.com"
+            "name": "Venta Core Team",
+            "email": "team@venta.io"
         },
         {
-            "name": "Alexey Rehov",
-            "email": "aleksejs@scandiweb.com"
-        },
-        {
-            "name": "Vsevolods Mihailovs",
-            "email": "vsevolods@scandiweb.com"
-        },
-        {
-            "name": "Ilja Lapkovskis",
-            "email": "ilja@scandiweb.com"
+            "name": "Venta Community",
+            "homepage": "https://github.com/venta/routing/contributors"
         }
     ],
-    "autoload": {
-        "psr-4": {
-            "Venta\\Routing\\": "src/"
-        }
-    },
-    "minimum-stability": "dev",
-    "require-dev": {
-        "phpspec/phpspec": "^3.1"
+    "support": {
+        "issues": "https://github.com/venta/framework/issues"
     },
     "require": {
         "php": "^7.0",
         "venta/contracts": "dev-master",
         "nikic/fast-route": "^1.0"
-    }
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Venta\\Routing\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
 }
