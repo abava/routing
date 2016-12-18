@@ -1,11 +1,8 @@
 {
     "name": "venta/routing",
     "description": "The Venta Routing package.",
-    "keywords": [
-        "venta",
-        "routing",
-        "adr"
-    ],
+    "keywords": ["venta", "routing", "adr"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Venta Core Team",
