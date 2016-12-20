@@ -48,6 +48,19 @@ class UrlGenerator implements UrlGeneratorContract
     /**
      * @inheritDoc
      */
+    public function toAsset(string $asset): UriInterface
+    {
+        $uri = $this->uri
+            ->withScheme($this->request->getUri()->getScheme())
+            ->withHost($this->request->getUri()->getHost())
+            ->withPath($asset);
+
+        return $this->addPortToUri($uri);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function toCurrent(array $variables = [], array $query = []): UriInterface
     {
         $route = $this->request->getAttribute('route');
@@ -78,6 +91,23 @@ class UrlGenerator implements UrlGeneratorContract
     }
 
     /**
+     * Adds port to URI if it is needed.
+     *
+     * @param UriInterface $uri
+     * @return UriInterface
+     */
+    private function addPortToUri(UriInterface $uri): UriInterface
+    {
+        $requestPort = $this->request->getUri()->getPort();
+
+        if (!in_array($requestPort, [80, 443])) {
+            $uri = $uri->withPort($requestPort);
+        }
+
+        return $uri;
+    }
+
+    /**
      * Builds URI for provided route instance.
      *
      * @param RouteContract $route
@@ -92,16 +122,10 @@ class UrlGenerator implements UrlGeneratorContract
             ->withHost($route->host() ?: $this->request->getUri()->getHost())
             ->withPath($route->compilePath($variables));
 
-        // Check if we need to add current request port to the uri.
-        $requestPort = $this->request->getUri()->getPort();
-        if (!in_array($requestPort, [80, 443])) {
-            $uri = $uri->withPort($requestPort);
-        }
-
         if ($query) {
             $uri = $uri->withQuery(http_build_query($query));
         }
 
-        return $uri;
+        return $this->addPortToUri($uri);
     }
 }
