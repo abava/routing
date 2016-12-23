@@ -36,10 +36,9 @@ class UrlGeneratorSpec extends ObjectBehavior
 
         $result->shouldImplement(UriInterface::class);
         $result->shouldBe($uri);
-
-        $uri->withScheme('http')->shouldBeCalled();
-        $uri->withHost('example.com')->shouldBeCalled();
-        $uri->withPath('assets/images/image.jpg')->shouldBeCalled();
+        $uri->withScheme('http')->shouldHaveBeenCalled();
+        $uri->withHost('example.com')->shouldHaveBeenCalled();
+        $uri->withPath('assets/images/image.jpg')->shouldHaveBeenCalled();
     }
 
     function it_generates_url_to_current_route(
@@ -63,8 +62,8 @@ class UrlGeneratorSpec extends ObjectBehavior
         $uri->withPort(8080)->willReturn($uri);
 
         $result = $this->toCurrent(['key' => 'value'], ['param' => 'val']);
-        $result->shouldBe($uri);
 
+        $result->shouldBe($uri);
         $uri->withScheme('http')->shouldHaveBeenCalled();
         $uri->withHost('example.com')->shouldHaveBeenCalled();
         $uri->withPath('/url')->shouldHaveBeenCalled();
@@ -105,7 +104,8 @@ class UrlGeneratorSpec extends ObjectBehavior
     }
 
     public function it_will_throw_exceptions_if_route_was_not_found(
-        ImmutableRouteCollection $routeCollection, ServerRequestInterface $request
+        ImmutableRouteCollection $routeCollection,
+        ServerRequestInterface $request
     ) {
         $routeCollection->findByName('missing-route')->willReturn(null);
         $request->getAttribute('route')->willReturn(null);
