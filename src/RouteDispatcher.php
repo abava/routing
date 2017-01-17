@@ -4,14 +4,10 @@ namespace Venta\Routing;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Venta\Contracts\Adr\Input;
 use Venta\Contracts\Adr\Payload;
-use Venta\Contracts\Adr\Responder;
-use Venta\Contracts\Container\Container;
-use Venta\Contracts\Http\Request as RequestContract;
+use Venta\Contracts\Container\Invoker;
 use Venta\Contracts\Routing\Route as RouteContract;
 use Venta\Contracts\Routing\RouteDispatcher as RouteDispatcherContract;
-use Venta\Http\Request;
 
 /**
  * Class RouteDispatcher
@@ -22,9 +18,9 @@ final class RouteDispatcher implements RouteDispatcherContract
 {
 
     /**
-     * @var Container
+     * @var Invoker
      */
-    private $container;
+    private $invoker;
 
     /**
      * @var RouteContract
@@ -34,13 +30,13 @@ final class RouteDispatcher implements RouteDispatcherContract
     /**
      * RouteDispatcher constructor.
      *
+     * @param Invoker $invoker
      * @param RouteContract $route
-     * @param Container $container
      */
-    public function __construct(RouteContract $route, Container $container)
+    public function __construct(Invoker $invoker, RouteContract $route)
     {
+        $this->invoker = $invoker;
         $this->route = $route;
-        $this->container = $container;
     }
 
     /**
@@ -51,19 +47,14 @@ final class RouteDispatcher implements RouteDispatcherContract
         // Add current route to the request.
         $request = $request->withAttribute('route', $this->route);
 
-        if ($this->container->isCallable($this->route->domain())) {
-            if ($this->container->has($this->route->input())) {
-                /** @var Input $input */
-                $input = $this->container->get($this->route->input());
-                $arguments = $input->process($request);
+        if ($this->invoker->isCallable($this->route->domain())) {
+            if ($this->invoker->isCallable([$this->route->input(), 'process'])) {
+                $arguments = $this->invoker->call([$this->route->input(), 'process'], [$request]);
             }
             /** @var Payload $payload */
-            $payload = $this->container->call($this->route->domain(), $arguments ?? []);
+            $payload = $this->invoker->call($this->route->domain(), $arguments ?? []);
         }
-        /** @var Responder $responder */
-        $responder = $this->container->get($this->route->responder());
-        
-        return $responder->run($request, $payload ?? null);
+        return $this->invoker->call([$this->route->responder(), 'run'], [$request, $payload ?? null]);
     }
 
 }

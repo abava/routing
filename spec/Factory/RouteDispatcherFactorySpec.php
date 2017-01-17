@@ -3,22 +3,22 @@
 namespace spec\Venta\Routing\Factory;
 
 use PhpSpec\ObjectBehavior;
-use Venta\Contracts\Container\Container;
+use Venta\Contracts\Container\Invoker;
 use Venta\Contracts\Routing\Route;
 use Venta\Routing\RouteDispatcher;
 
 class RouteDispatcherFactorySpec extends ObjectBehavior
 {
 
-    function let(Container $container)
+    function let(Invoker $invoker)
     {
-        $this->beConstructedWith($container);
+        $this->beConstructedWith($invoker);
     }
 
-    function it_creates_route_dispatcher(Route $route, Container $container)
+    function it_creates_route_dispatcher(Route $route, Invoker $invoker)
     {
         $this->create($route)->shouldBeLike(
-            new RouteDispatcher($route->getWrappedObject(), $container->getWrappedObject())
+            new RouteDispatcher($invoker->getWrappedObject(), $route->getWrappedObject())
         );
     }
 

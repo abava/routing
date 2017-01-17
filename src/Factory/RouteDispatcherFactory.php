@@ -2,7 +2,7 @@
 
 namespace Venta\Routing\Factory;
 
-use Venta\Contracts\Container\Container;
+use Venta\Contracts\Container\Invoker;
 use Venta\Contracts\Routing\Route as RouteContract;
 use Venta\Contracts\Routing\RouteDispatcher as RouteDispatcherContract;
 use Venta\Contracts\Routing\RouteDispatcherFactory as RouteDispatcherFactoryContract;
@@ -16,18 +16,18 @@ use Venta\Routing\RouteDispatcher;
 final class RouteDispatcherFactory implements RouteDispatcherFactoryContract
 {
     /**
-     * @var Container
+     * @var Invoker
      */
-    private $container;
+    private $invoker;
 
     /**
      * RouteDispatcherFactory constructor.
      *
-     * @param Container $container
+     * @param Invoker $invoker
      */
-    public function __construct(Container $container)
+    public function __construct(Invoker $invoker)
     {
-        $this->container = $container;
+        $this->invoker = $invoker;
     }
 
     /**
@@ -35,7 +35,7 @@ final class RouteDispatcherFactory implements RouteDispatcherFactoryContract
      */
     public function create(RouteContract $route): RouteDispatcherContract
     {
-        return new RouteDispatcher($route, $this->container);
+        return new RouteDispatcher($this->invoker, $route);
     }
 
 
